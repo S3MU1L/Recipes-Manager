@@ -1,7 +1,28 @@
 # PV168 Project: Easy food
 
 
-Easy food is a desktop application that let's users create, edit and look through recipes. 
+## Introduction
+
+Welcome to Easy Food, a user-friendly desktop application designed to simplify the process of creating, managing, and editing your own recipes. Whether you're a seasoned chef or a novice cook, Easy Food makes it easy to organize your culinary ideas, customize ingredients, and experiment with new flavors.
+
+### With Easy Food, you can:
+
+- Create and store your own recipes.
+- Edit and refine recipes as your cooking skills evolve.
+- Customize ingredients and measurements to suit your preferences.
+- Keep track of your favorite dishes and culinary creations.
+
+### Features
+
+- Recipe Creation: Easily create and save your own recipes with step-by-step instructions.
+
+- Recipe Editing: Modify your recipes whenever you like, adjusting ingredients, quantities, and instructions.
+
+- Ingredient Customization: Define custom ingredients, including name, category, and measurement units.
+
+- Search and Sort: Quickly find recipes by name, category, or ingredients.
+
+- Export and Share: Share your recipes with friends or export them in various formats.
 
 ## Team Information
 
