@@ -91,6 +91,8 @@ public class MainWindow {
         optionsMenu.add(addRecipeAction);
         optionsMenu.add(addIngredientAction);
         optionsMenu.addSeparator();
+        optionsMenu.add(deleteAction);
+        optionsMenu.add(editAction);
         optionsMenu.add(quitAction);
         menuBar.add(optionsMenu);
         return menuBar;
