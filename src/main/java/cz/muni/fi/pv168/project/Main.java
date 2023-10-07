@@ -2,8 +2,8 @@ package cz.muni.fi.pv168.project;
 
 import cz.muni.fi.pv168.project.ui.MainWindow;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.UIManager;
+import java.awt.EventQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,7 +22,7 @@ public class Main {
                 }
             }
         } catch (Exception ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, "Nimus layout initialisation failed", ex);
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, "Nimbus layout initialization failed", ex);
         }
     }
 }
