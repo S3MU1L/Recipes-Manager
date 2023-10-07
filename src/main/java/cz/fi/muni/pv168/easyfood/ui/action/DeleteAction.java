@@ -27,25 +27,7 @@ public final class DeleteAction extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        var table = tabContainer.getSelectedTab().getTable();
-
-        if (table.getModel() instanceof RecipeTableModel) {
-            var tableModel = (RecipeTableModel) table.getModel();
-            Arrays.stream(table.getSelectedRows())
-                    .map(table::convertRowIndexToModel)
-                    .boxed()
-                    .sorted(Comparator.reverseOrder())
-                    .forEach(tableModel::deleteRow);
-        }
-        if (table.getModel() instanceof IngredientTableModel) {
-            var tableModel = (IngredientTableModel) table.getModel();
-            Arrays.stream(table.getSelectedRows())
-                    .map(table::convertRowIndexToModel)
-                    .boxed()
-                    .sorted(Comparator.reverseOrder())
-                    .forEach(tableModel::deleteRow);
-        }
+        tabContainer.getSelectedTab().delete();
     }
-
 }
 
