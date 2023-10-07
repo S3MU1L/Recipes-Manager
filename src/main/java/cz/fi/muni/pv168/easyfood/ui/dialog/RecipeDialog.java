@@ -3,7 +3,6 @@ package cz.fi.muni.pv168.easyfood.ui.dialog;
 import cz.fi.muni.pv168.easyfood.model.Recipe;
 
 import javax.swing.*;
-import java.time.LocalDate;
 
 public final class RecipeDialog extends EntityDialog<Recipe> {
 
