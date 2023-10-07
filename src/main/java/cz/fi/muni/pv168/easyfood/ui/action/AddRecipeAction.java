@@ -1,34 +1,33 @@
-package cz.fi.muni.pv168.easyfood.ui.actions;
+package cz.fi.muni.pv168.easyfood.ui.action;
 
-import cz.fi.muni.pv168.easyfood.model.Recipe;
-import cz.fi.muni.pv168.easyfood.service.Service;
+
+import cz.fi.muni.pv168.easyfood.data.TestDataGenerator;
 import cz.fi.muni.pv168.easyfood.ui.Icons;
+import cz.fi.muni.pv168.easyfood.ui.model.RecipeTableModel;
 
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.JTable;
+import javax.swing.KeyStroke;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
-/**
- * AddRecipeAction class
- *
- * @author Tomáš Jančička
- */
-public class AddRecipeAction extends AbstractAction{
+public final class AddRecipeAction extends AbstractAction {
 
-    private static final I18N I18N = new I18N(AddRecipeAction.class);
+    private final JTable recipeTable;
+    private final TestDataGenerator testDataGenerator;
 
-    private final Service<Recipe> recipeService;
-
-    public AddRecipeAction(Service<Recipe> recipeService) {
-        super(I18N.getString("title"), Icons.ADD_RECIPE_ICON);
-        this.recipeService = recipeService;
-        putValue(SHORT_DESCRIPTION, I18N.getString("description"));
-        putValue(MNEMONIC_KEY, KeyEvent.VK_R);
-        putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke("ctrl R"));
+    public AddRecipeAction(JTable recipeTable, TestDataGenerator testDataGenerator) {
+        super("Add", Icons.ADD_RECIPE_ICON);
+        this.recipeTable = recipeTable;
+        this.testDataGenerator = testDataGenerator;
+        putValue(SHORT_DESCRIPTION, "Adds new recipe");
+        putValue(MNEMONIC_KEY, KeyEvent.VK_A);
+        putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke("ctrl N"));
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        recipeService.openAddWindow();
+        var recipeTableModel = (RecipeTableModel) recipeTable.getModel();
+        recipeTableModel.addRow(testDataGenerator.createTestRecipe());
     }
 }

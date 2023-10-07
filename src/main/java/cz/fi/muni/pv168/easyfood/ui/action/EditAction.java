@@ -1,29 +1,27 @@
-package cz.fi.muni.pv168.easyfood.ui.actions;
+package cz.fi.muni.pv168.easyfood.ui.action;
 
-import cz.fi.muni.pv168.easyfood.ui.tab.Tab;
+
 import cz.fi.muni.pv168.easyfood.ui.Icons;
 
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.JTable;
+import javax.swing.KeyStroke;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.util.function.Supplier;
 
 public final class EditAction extends AbstractAction {
 
-    private static final I18N I18N = new I18N(EditAction.class);
+    private final JTable recipeTable;
 
-    private final Supplier<Tab<?>> selectedTabSupplier;
-
-    public EditAction(Supplier<Tab<?>> selectedTabSupplier) {
-        super(I18N.getString("title"), Icons.EDIT_ICON);
-        this.selectedTabSupplier = selectedTabSupplier;
-        putValue(SHORT_DESCRIPTION, I18N.getString("description"));
+    public EditAction(JTable recipeTable) {
+        super("Edit", Icons.EDIT_ICON);
+        this.recipeTable = recipeTable;
+        putValue(SHORT_DESCRIPTION, "Edits selected row");
         putValue(MNEMONIC_KEY, KeyEvent.VK_E);
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke("ctrl E"));
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        selectedTabSupplier.get().updateSelected();
     }
 }
