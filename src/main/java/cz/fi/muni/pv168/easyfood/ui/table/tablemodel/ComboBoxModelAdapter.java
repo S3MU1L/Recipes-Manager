@@ -1,4 +1,4 @@
-package cz.fi.muni.pv168.easyfood.ui.model;
+package cz.fi.muni.pv168.easyfood.ui.table;
 
 import javax.swing.AbstractListModel;
 import javax.swing.ComboBoxModel;
