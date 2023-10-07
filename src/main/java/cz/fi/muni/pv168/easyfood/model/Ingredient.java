@@ -25,6 +25,18 @@ public class Ingredient {
         return calories;
     }
 
+    public String getFormattedCalories() {
+        int multiplier = 1;
+        if (calories < 10) {
+            double log10Calories = Math.log10(calories);
+            double exponent = 1 - Math.floor(log10Calories);
+            multiplier = (int) Math.pow(10, exponent);
+        }
+
+        int formattedCalories = (int) Math.round(calories * multiplier);
+        return formattedCalories + " kJ (" + multiplier + " " + unit + ")";
+    }
+
     public void setCalories(double calories) {
         this.calories = calories;
     }

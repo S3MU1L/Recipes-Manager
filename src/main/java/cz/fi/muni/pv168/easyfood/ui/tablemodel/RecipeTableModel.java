@@ -1,20 +1,20 @@
-package cz.fi.muni.pv168.easyfood.ui.table;
-
+package cz.fi.muni.pv168.easyfood.ui.table.tablemodel;
 
 import cz.fi.muni.pv168.easyfood.model.Recipe;
+import cz.fi.muni.pv168.easyfood.ui.column.Column;
 
 import javax.swing.table.AbstractTableModel;
+
 import java.util.ArrayList;
+
 import java.util.List;
 
 public class RecipeTableModel extends AbstractTableModel {
-
     private final List<Recipe> recipes;
-
-    private final List<Column<Recipe, ?>> columns = List.of(
-            Column.readonly("Name", String.class, Recipe::getName),
-            Column.readonly("Calories", String.class, Recipe::getFormattedCalories),
-            Column.readonly("Preparation time", String.class, Recipe::getFormattedPreparationTime)
+    private final List<Column<?, Recipe>> columns = List.of(
+            Column.readOnly("Name", String.class, Recipe::getName),
+            Column.readOnly("Calories", String.class, Recipe::getFormattedCalories),
+            Column.readOnly("Preparation time", String.class, Recipe::getFormattedPreparationTime)
     );
 
     public RecipeTableModel(List<Recipe> recipes) {
@@ -33,8 +33,7 @@ public class RecipeTableModel extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        var recipe = getEntity(rowIndex);
-        return columns.get(columnIndex).getValue(recipe);
+        return columns.get(columnIndex).getValue(getEntity(rowIndex));
     }
 
     @Override
@@ -44,7 +43,7 @@ public class RecipeTableModel extends AbstractTableModel {
 
     @Override
     public Class<?> getColumnClass(int columnIndex) {
-        return columns.get(columnIndex).getColumnType();
+        return columns.get(columnIndex).getColumnClass();
     }
 
     @Override
