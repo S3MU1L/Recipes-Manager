@@ -11,6 +11,7 @@ public final class ImportAction extends AbstractAction {
 
     public ImportAction() {
         super("Filter", Icons.IMPORT_ICON);
+        setEnabled(false);
         putValue(SHORT_DESCRIPTION, "Import recipes");
         putValue(MNEMONIC_KEY, KeyEvent.VK_M);
     }

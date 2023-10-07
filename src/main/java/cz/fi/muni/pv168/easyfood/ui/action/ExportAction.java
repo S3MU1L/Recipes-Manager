@@ -10,9 +10,10 @@ import java.awt.event.KeyEvent;
 public final class ExportAction extends AbstractAction {
 
     public ExportAction() {
-        super("Export", Icons.EXPORT_ICON);
-        putValue(SHORT_DESCRIPTION, "Exports recipes");
-        putValue(MNEMONIC_KEY, KeyEvent.VK_X);
+        super("Quit", Icons.EXPORT_ICON);
+        setEnabled(false);
+        putValue(SHORT_DESCRIPTION, "Terminates the application");
+        putValue(MNEMONIC_KEY, KeyEvent.VK_Q);
     }
 
     @Override

@@ -11,12 +11,11 @@ public final class FilterAction extends AbstractAction {
 
     public FilterAction() {
         super("Filter", Icons.FILTER_ICON);
-        putValue(SHORT_DESCRIPTION, "Filteer recipes");
+        setEnabled(false);
+        putValue(SHORT_DESCRIPTION, "Filter recipes");
         putValue(MNEMONIC_KEY, KeyEvent.VK_F);
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
-        System.exit(0);
-    }
+    public void actionPerformed(ActionEvent e) {}
 }
