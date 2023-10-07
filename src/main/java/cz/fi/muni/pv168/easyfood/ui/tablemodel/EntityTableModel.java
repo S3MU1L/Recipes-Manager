@@ -30,7 +30,10 @@ public abstract class EntityTableModel<E> extends AbstractTableModel {
 
     protected abstract void updateEntity(E entity);
 
-    protected abstract void deleteRow(int rowIndex);
+    public void deleteRow(int rowIndex) {
+        columns.remove(rowIndex);
+        fireTableRowsDeleted(rowIndex, rowIndex);
+    }
 
     @Override
     public String getColumnName(int columnIndex) {
