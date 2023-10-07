@@ -7,6 +7,9 @@ import cz.fi.muni.pv168.easyfood.ui.action.AddIngredientAction;
 import cz.fi.muni.pv168.easyfood.ui.action.AddRecipeAction;
 import cz.fi.muni.pv168.easyfood.ui.action.DeleteAction;
 import cz.fi.muni.pv168.easyfood.ui.action.EditAction;
+import cz.fi.muni.pv168.easyfood.ui.action.ExportAction;
+import cz.fi.muni.pv168.easyfood.ui.action.FilterAction;
+import cz.fi.muni.pv168.easyfood.ui.action.ImportAction;
 import cz.fi.muni.pv168.easyfood.ui.action.QuitAction;
 import cz.fi.muni.pv168.easyfood.ui.action.ShowAction;
 import cz.fi.muni.pv168.easyfood.ui.model.RecipeTableModel;
@@ -35,6 +38,9 @@ public class MainWindow {
     private final Action showAction;
     private final Action deleteAction;
     private final Action editAction;
+    private final Action filterAction;
+    private final Action exportAction;
+    private final Action importAction;
 
     public MainWindow() {
         frame = createFrame();
@@ -45,6 +51,9 @@ public class MainWindow {
         deleteAction = new DeleteAction(recipeTable);
         editAction = new EditAction(recipeTable);
         showAction = new ShowAction(recipeTable);
+        filterAction = new FilterAction();
+        importAction = new ImportAction();
+        exportAction = new ExportAction();
         recipeTable.setComponentPopupMenu(createRecipeTablePopupMenu());
         frame.add(new JScrollPane(recipeTable), BorderLayout.CENTER);
         frame.add(createToolbar(), BorderLayout.BEFORE_FIRST_LINE);
@@ -93,6 +102,9 @@ public class MainWindow {
         optionsMenu.addSeparator();
         optionsMenu.add(deleteAction);
         optionsMenu.add(editAction);
+        optionsMenu.add(filterAction);
+        optionsMenu.add(importAction);
+        optionsMenu.add(exportAction);
         optionsMenu.add(quitAction);
         menuBar.add(optionsMenu);
         return menuBar;
@@ -107,6 +119,9 @@ public class MainWindow {
         toolbar.add(editAction);
         toolbar.add(deleteAction);
         toolbar.add(showAction);
+        toolbar.add(filterAction);
+        toolbar.add(importAction);
+        toolbar.add(exportAction);
         return toolbar;
     }
 

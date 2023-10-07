@@ -17,6 +17,9 @@ public final class Icons {
     public static final Icon QUIT_ICON = createIcon("icons/exit.png");
     public static final Icon SHOW_ICON = createIcon("icons/show.png");
 
+    public static final Icon FILTER_ICON = createIcon("icons/filter.png");
+    public static final Icon IMPORT_ICON = createIcon("icons/import.png");
+    public static final Icon EXPORT_ICON = createIcon("icons/export.png");
     public static final int ICON_WIDTH = 30;
     public static final int ICON_HEIGHT = 30;
 
@@ -34,6 +37,6 @@ public final class Icons {
     private static ImageIcon createIcon(String name) {
         ImageIcon imageIcon = new ImageIcon(AddIngredientAction.class.getResource(name));
         Image image = imageIcon.getImage();
-        return new ImageIcon(image.getScaledInstance(ICON_WIDTH, ICON_HEIGHT,  java.awt.Image.SCALE_SMOOTH));
+        return new ImageIcon(image.getScaledInstance(ICON_WIDTH, ICON_HEIGHT, java.awt.Image.SCALE_SMOOTH));
     }
 }
