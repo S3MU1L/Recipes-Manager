@@ -1,6 +1,6 @@
-package cz.fi.muni.pv168.dietaryAssistantApp.ui;
+package cz.fi.muni.pv168.easyfood.ui;
 
-import cz.fi.muni.pv168.dietaryAssistantApp.ui.actions.AddIngredientAction;
+import cz.fi.muni.pv168.easyfood.ui.action.AddIngredientAction;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,7 +16,6 @@ public final class Icons {
     public static final Icon ADD_RECIPE_ICON = createIcon("icons/add_recipe.png");
     public static final Icon QUIT_ICON = createIcon("icons/exit.png");
     public static final Icon SHOW_ICON = createIcon("icons/show.png");
-    public static final Icon SHOP_ICON = createIcon("icons/shopping_cart.png");
 
     public static final int ICON_WIDTH = 30;
     public static final int ICON_HEIGHT = 30;
