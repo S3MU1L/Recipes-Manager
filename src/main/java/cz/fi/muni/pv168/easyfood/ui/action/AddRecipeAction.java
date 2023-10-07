@@ -3,6 +3,7 @@ package cz.fi.muni.pv168.easyfood.ui.action;
 
 import cz.fi.muni.pv168.easyfood.data.TestDataGenerator;
 import cz.fi.muni.pv168.easyfood.ui.Icons;
+import cz.fi.muni.pv168.easyfood.ui.dialog.RecipeDialog;
 import cz.fi.muni.pv168.easyfood.ui.model.RecipeTableModel;
 
 import javax.swing.AbstractAction;
@@ -28,6 +29,7 @@ public final class AddRecipeAction extends AbstractAction {
     @Override
     public void actionPerformed(ActionEvent e) {
         var recipeTableModel = (RecipeTableModel) recipeTable.getModel();
-        recipeTableModel.addRow(testDataGenerator.createTestRecipe());
+        var dialog = new RecipeDialog(testDataGenerator.createTestRecipe());
+        dialog.show(recipeTable, "Add recipe").ifPresent(recipeTableModel::addRow);
     }
 }
