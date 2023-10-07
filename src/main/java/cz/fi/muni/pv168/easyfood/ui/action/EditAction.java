@@ -11,14 +11,22 @@ import java.awt.event.KeyEvent;
 
 public final class EditAction extends AbstractAction {
 
-    private final JTable recipeTable;
+    private JTable table;
 
-    public EditAction(JTable recipeTable) {
+    public EditAction(JTable table) {
         super("Edit", Icons.EDIT_ICON);
-        this.recipeTable = recipeTable;
+        this.table = table;
         putValue(SHORT_DESCRIPTION, "Edits selected row");
         putValue(MNEMONIC_KEY, KeyEvent.VK_E);
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke("ctrl E"));
+    }
+
+    public JTable getTable() {
+        return table;
+    }
+
+    public void setTable(JTable table) {
+        this.table = table;
     }
 
     @Override

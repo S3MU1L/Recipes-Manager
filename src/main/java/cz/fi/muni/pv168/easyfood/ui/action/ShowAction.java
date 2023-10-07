@@ -7,12 +7,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
 public class ShowAction extends AbstractAction {
+    private JTable table;
 
-    private final JTable recipeTable;
-
-    public ShowAction(JTable recipeTable) {
+    public ShowAction(JTable table) {
         super("Show", Icons.SHOW_ICON);
-        this.recipeTable = recipeTable;
+        this.table = table;
         putValue(SHORT_DESCRIPTION, "Show the details of a recipe");
         putValue(MNEMONIC_KEY, KeyEvent.VK_S);
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke("ctrl S"));
@@ -21,5 +20,13 @@ public class ShowAction extends AbstractAction {
     @Override
     public void actionPerformed(ActionEvent e) {
 
+    }
+
+    public JTable getTable() {
+        return table;
+    }
+
+    public void setTable(JTable table) {
+        this.table = table;
     }
 }
