@@ -1,9 +1,10 @@
-package cz.fi.muni.pv168.dietaryAssistantApp.data;
+package cz.fi.muni.pv168.easyfood.data;
 
-import cz.fi.muni.pv168.dietaryAssistantApp.model.Ingredient;
-import cz.fi.muni.pv168.dietaryAssistantApp.model.IngredientAndAmount;
-import cz.fi.muni.pv168.dietaryAssistantApp.model.Recipe;
-import cz.fi.muni.pv168.dietaryAssistantApp.model.Unit;
+
+import cz.fi.muni.pv168.easyfood.model.Ingredient;
+import cz.fi.muni.pv168.easyfood.model.IngredientWithAmount;
+import cz.fi.muni.pv168.easyfood.model.Recipe;
+import cz.fi.muni.pv168.easyfood.model.Unit;
 
 import java.util.List;
 import java.util.Random;
@@ -25,12 +26,13 @@ public class TestDataGenerator {
             new Ingredient("Bread", 1, Unit.PIECE),
             new Ingredient("Sausage", 1, Unit.GRAM)
     );
-    private static final List<String> RECIPE_NAMES = List.of("Hot dog", "Steak", "Scrambled eggs", "Sandwich");
+    private static final List<String> RECIPE_NAMES = List.of("Hot dog", "Steak", "Scrambled eggs", "Sandwich",
+            "Hamburger", "Schnitzel", "Tofu", "Ramen");
     private static final List<List<String>> RECIPE_INGREDIENTS = List.of(
             List.of()
     );
 
-    private final Random random = new Random(129867358486L);
+    private final Random random = new Random();
 
     public Ingredient createTestIngredient() {
         Ingredient ingredient = selectRandom(INGREDIENTS);
@@ -38,8 +40,8 @@ public class TestDataGenerator {
                 (random.nextInt(1000) + 1) / 10.0, ingredient.getUnit());
     }
 
-    public IngredientAndAmount createTestIngredientAndAmount() {
-        return new IngredientAndAmount(createTestIngredient(), random.nextInt(100) / 10.);
+    public IngredientWithAmount createTestIngredientWithAmount() {
+        return new IngredientWithAmount(createTestIngredient(), random.nextInt(100) / 10.);
     }
 
     public List<Ingredient> createTestIngredients(int count) {
@@ -51,9 +53,9 @@ public class TestDataGenerator {
 
     public Recipe createTestRecipe() {
         String name = selectRandom(RECIPE_NAMES);
-        List<IngredientAndAmount> ingredients = Stream.generate(this::createTestIngredientAndAmount).limit(5).collect(Collectors.toList());
-        String directions = "In a medium bowl, beat together egg whites, 1/4 cup butter and 1/4 teaspoon salt";
-        return new Recipe(name, ingredients, directions, random.nextInt(20), random.nextInt(5) + 1);
+        List<IngredientWithAmount> ingredients = Stream.generate(this::createTestIngredientWithAmount).limit(5).collect(Collectors.toList());
+        String description = "In a medium bowl, beat together egg whites, 1/4 cup butter and 1/4 teaspoon salt";
+        return new Recipe(name, ingredients, description, random.nextInt(1, 20), random.nextInt(5) + 1);
     }
 
     public List<Recipe> createTestRecipes(int count) {
