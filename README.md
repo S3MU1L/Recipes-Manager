@@ -1,33 +1,47 @@
-# PV168 Project: {{ PROJECT NAME }}
+# PV168 Project: Easy food
 
-<!--- FIXME: fill in the PROJECT NAME above and include short description of what the project is about -->
-{{ PROJECT DESCRIPTION }}
+
+## Introduction
+
+Welcome to Easy Food, a user-friendly desktop application designed to simplify the process of creating, managing, and editing your own recipes. Whether you're a seasoned chef or a novice cook, Easy Food makes it easy to organize your culinary ideas, customize ingredients, and experiment with new flavors.
+
+### With Easy Food, you can:
+
+- Create and store your own recipes.
+- Edit and refine recipes as your cooking skills evolve.
+- Customize ingredients and measurements to suit your preferences.
+- Keep track of your favorite dishes and culinary creations.
+
+### Features
+
+- Recipe Creation: Easily create and save your own recipes with step-by-step instructions.
+
+- Recipe Editing: Modify your recipes whenever you like, adjusting ingredients, quantities, and instructions.
+
+- Ingredient Customization: Define custom ingredients, including name, category, and measurement units.
+
+- Search and Sort: Quickly find recipes by name, category, or ingredients.
+
+- Export and Share: Share your recipes with friends or export them in various formats.
 
 ## Team Information
 
 | Seminar Group | Team |
 |-------------- | ---- |
-| PV168/0X      | Y    | <!--- FIXME: fill in the seminar group and team identification -->
+| PV168/02      | 4    |
 
 ### Members
 
 | Role           | Person               |
 |----------------|----------------------|
-|Team Lead       | [Name Surname](https://is.muni.cz/auth/osoba/UCO) | <!--- FIXME: fill in the name and UCO -->
-|Member          | [Name Surname](https://is.muni.cz/auth/osoba/UCO) | <!--- FIXME: fill in the name and UCO -->
-|Member          | [Name Surname](https://is.muni.cz/auth/osoba/UCO) | <!--- FIXME: fill in the name and UCO -->
-|Member          | [Name Surname](https://is.muni.cz/auth/osoba/UCO) | <!--- FIXME: fill in the name and UCO -->
+|Team Lead       | [Samuel Sabo](https://is.muni.cz/auth/osoba/536333) |
+|Member          | [Samuel Malec](https://is.muni.cz/auth/osoba/536542) |
+|Member          | [Tibor Pelegrin](https://is.muni.cz/auth/osoba/536556) |
+|Member          | [Filip Timko](https://is.muni.cz/auth/osoba/536297) |
 
 ### Evaluators
 
 | Role           | Person               |
 |----------------|----------------------|
-|PM              | [Name Surname](https://is.muni.cz/auth/osoba/UCO) | <!--- FIXME: fill in the name and UCO -->
-|Technical Coach | [Name Surname](https://is.muni.cz/auth/osoba/UCO) | <!--- FIXME: fill in the name and UCO -->
-
-## TODO
-
-- Update the [`README.md`](#) - fill in the project and team details (resolve all the `FIXME` comments and remove them).
-- Update the [`pom.xml`](pom.xml) - fill in the project and team details (resolve all the `FIXME` comments and remove them).
-- Start with [`Main.java`](src/main/java/cz/muni/fi/pv168/project/Main.java) as the _main class_ for your application.
-- Get rid of this TODO section. 😉
+|PM              | [Michael Koudela](https://is.muni.cz/auth/osoba/485441) |
+|Technical Coach | [Vilém Obrátil](https://is.muni.cz/auth/osoba/408073) |
