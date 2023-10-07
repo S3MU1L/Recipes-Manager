@@ -1,9 +1,8 @@
-package cz.fi.muni.pv168.dietaryAssistantApp.model;
+package cz.fi.muni.pv168.easyfood.model;
 
 import java.util.Objects;
 
 public class Ingredient {
-    private Long ID;
     private String name;
     private double calories;
     private Unit unit;
@@ -12,14 +11,6 @@ public class Ingredient {
         this.name = name;
         this.calories = calories;
         this.unit = unit;
-    }
-
-    public Long getID() {
-        return ID;
-    }
-
-    public void setID(Long ID) {
-        this.ID = ID;
     }
 
     public String getName() {
@@ -34,14 +25,6 @@ public class Ingredient {
         return calories;
     }
 
-    public String getFormattedCalories() {
-        int multiplier = 1;
-        if (calories < 10) {
-            multiplier = (int) Math.pow(10, 1 - Math.floor(Math.log10(calories)));
-        }
-        return Math.round(calories * multiplier) + " kJ (" + multiplier + " " + unit + ")";
-    }
-
     public void setCalories(double calories) {
         this.calories = calories;
     }
@@ -50,39 +33,19 @@ public class Ingredient {
         return unit;
     }
 
-    public String getFormattedIngredient() {
-        return name + ": " + unit + " (" + calories + " kJ/" + unit +")";
-    }
-
     public void setUnit(Unit unit) {
         this.unit = unit;
-    }
-
-    public Ingredient getCopy() {
-        Ingredient copy = new Ingredient(name, calories, unit);
-        copy.setID(getID());
-        return copy;
-    }
-
-    @Override
-    public String toString() {
-        return "Ingredient:" +
-                "ID=" + ID +
-                ", name='" + name + '\'' +
-                ", calories=" + calories +
-                ", unit=" + unit;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Ingredient that = (Ingredient) o;
-        return Objects.equals(ID, that.ID);
+        if (!(o instanceof Ingredient that)) return false;
+        return Double.compare(calories, that.calories) == 0 && Objects.equals(name, that.name) && unit == that.unit;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(ID);
+        return Objects.hash(name, calories, unit);
     }
 }

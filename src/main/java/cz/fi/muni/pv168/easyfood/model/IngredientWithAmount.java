@@ -2,19 +2,18 @@ package cz.fi.muni.pv168.easyfood.model;
 
 import java.util.Objects;
 
-public class IngredientAndAmount{
+public class IngredientWithAmount {
     private Ingredient ingredient;
     private double amount;
 
-    public IngredientAndAmount(String name, double calories, Unit unit, double amount) {
+    public IngredientWithAmount(String name, double calories, Unit unit, double amount) {
         this.ingredient = new Ingredient(name, calories, unit);
         this.amount = amount;
     }
 
-    public IngredientAndAmount(Ingredient ingredient, double amount) {
+    public IngredientWithAmount(Ingredient ingredient, double amount) {
         this.ingredient = new Ingredient(ingredient.getName(), ingredient.getCalories(), ingredient.getUnit());
         this.amount = amount;
-        this.ingredient.setID(ingredient.getID());
     }
 
     public String getName() {
@@ -33,10 +32,6 @@ public class IngredientAndAmount{
         return ingredient;
     }
 
-    public Long getID() {
-        return ingredient.getID();
-    }
-
     public String getFormattedCalories() {
         return getIngredient().getCalories() * amount + " kJ";
     }
@@ -49,21 +44,11 @@ public class IngredientAndAmount{
         this.ingredient = ingredient;
     }
 
-    public IngredientAndAmount getShallowCopy() { // ingredient is not copied
-        return new IngredientAndAmount(ingredient, amount);
-    }
-
-    @Override
-    public String toString() {
-         return super.toString() +
-                "amount=" + amount;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        IngredientAndAmount that = (IngredientAndAmount) o;
+        IngredientWithAmount that = (IngredientWithAmount) o;
         return ingredient.equals(that.ingredient);
     }
 

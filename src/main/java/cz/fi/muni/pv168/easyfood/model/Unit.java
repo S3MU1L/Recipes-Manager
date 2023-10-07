@@ -1,4 +1,4 @@
-package cz.fi.muni.pv168.dietaryAssistantApp.model;
+package cz.fi.muni.pv168.easyfood.model;
 
 public enum Unit {
     MILLILITER("ml"),
