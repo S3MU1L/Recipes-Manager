@@ -36,17 +36,18 @@ public class MainWindow {
     private final FilterAction filterAction;
     private final ExportAction exportAction;
     private final ImportAction importAction;
+    private Tab ingredientTab;
+    private Tab recipeTab;
     private final JTable ingredientTable;
     private final JTable recipeTable;
 
     public MainWindow() {
         frame = createFrame();
         var testDataGenerator = new TestDataGenerator();
-        recipeTable = createRecipeTable(testDataGenerator.createTestRecipes(10));
-        ingredientTable = createIngredientTable(testDataGenerator.createTestIngredients(10));
-
-        Tab<Ingredient> ingredientTab = new Tab<>("ingredients", ingredientTable);
-        Tab<Recipe> recipeTab = new Tab<>("recipes", recipeTable);
+        List<Recipe> recipes = testDataGenerator.createTestRecipes(10);
+        List<Ingredient> ingredients = testDataGenerator.createTestIngredients(10);
+        recipeTable = createRecipeTable(recipes);
+        ingredientTable = createIngredientTable(ingredients);
 
         TabContainer tabContainer = new TabContainer();
         tabContainer.addTab(recipeTab);
@@ -97,6 +98,7 @@ public class MainWindow {
         var table = new JTable(model);
         table.setAutoCreateRowSorter(true);
         table.getSelectionModel().addListSelectionListener(this::rowSelectionChanged);
+        recipeTab = new Tab("recipes", table, model);
         return table;
     }
 
@@ -105,6 +107,7 @@ public class MainWindow {
         var table = new JTable(model);
         table.setAutoCreateRowSorter(true);
         table.getSelectionModel().addListSelectionListener(this::rowSelectionChanged);
+        ingredientTab = new Tab("ingredients", table, model);
         return table;
     }
 
