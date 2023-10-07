@@ -1,4 +1,4 @@
-package cz.fi.muni.pv168.easyfood.ui.table.tablemodel;
+package cz.fi.muni.pv168.easyfood.ui.tablemodel;
 
 import cz.fi.muni.pv168.easyfood.ui.column.Column;
 
@@ -29,6 +29,8 @@ public abstract class EntityTableModel<E> extends AbstractTableModel {
     protected abstract E getEntity(int rowIndex);
 
     protected abstract void updateEntity(E entity);
+
+    protected abstract void deleteRow(int rowIndex);
 
     @Override
     public String getColumnName(int columnIndex) {
