@@ -4,7 +4,7 @@ package cz.fi.muni.pv168.easyfood.ui.action;
 import cz.fi.muni.pv168.easyfood.data.TestDataGenerator;
 import cz.fi.muni.pv168.easyfood.ui.Icons;
 import cz.fi.muni.pv168.easyfood.ui.dialog.RecipeDialog;
-import cz.fi.muni.pv168.easyfood.ui.model.RecipeTableModel;
+import cz.fi.muni.pv168.easyfood.ui.tablemodel.RecipeTableModel;
 
 import javax.swing.AbstractAction;
 import javax.swing.JTable;
