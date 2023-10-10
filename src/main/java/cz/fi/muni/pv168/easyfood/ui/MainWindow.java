@@ -2,6 +2,7 @@ package cz.fi.muni.pv168.easyfood.ui;
 
 
 import cz.fi.muni.pv168.easyfood.data.TestDataGenerator;
+import cz.fi.muni.pv168.easyfood.model.Category;
 import cz.fi.muni.pv168.easyfood.model.Ingredient;
 import cz.fi.muni.pv168.easyfood.model.Recipe;
 import cz.fi.muni.pv168.easyfood.ui.action.AddIngredientAction;
@@ -15,6 +16,7 @@ import cz.fi.muni.pv168.easyfood.ui.action.QuitAction;
 import cz.fi.muni.pv168.easyfood.ui.action.ShowAction;
 import cz.fi.muni.pv168.easyfood.ui.tab.Tab;
 import cz.fi.muni.pv168.easyfood.ui.tab.TabContainer;
+import cz.fi.muni.pv168.easyfood.ui.tablemodel.CategoryTableModel;
 import cz.fi.muni.pv168.easyfood.ui.tablemodel.IngredientTableModel;
 import cz.fi.muni.pv168.easyfood.ui.tablemodel.RecipeTableModel;
 
@@ -38,20 +40,25 @@ public class MainWindow {
     private final ImportAction importAction;
     private Tab ingredientTab;
     private Tab recipeTab;
+    private Tab categoryTab;
     private final JTable ingredientTable;
     private final JTable recipeTable;
+    private final JTable categoryTable;
 
     public MainWindow() {
         frame = createFrame();
         var testDataGenerator = new TestDataGenerator();
         List<Recipe> recipes = testDataGenerator.createTestRecipes(10);
         List<Ingredient> ingredients = testDataGenerator.createTestIngredients(10);
+        List<Category> categories = testDataGenerator.createTestCategories(10);
         recipeTable = createRecipeTable(recipes);
         ingredientTable = createIngredientTable(ingredients);
+        categoryTable = createCategoryTable(categories);
 
         TabContainer tabContainer = new TabContainer();
         tabContainer.addTab(recipeTab);
         tabContainer.addTab(ingredientTab);
+        tabContainer.addTab(categoryTab);
         tabContainer.addChangeListener(this::tabChangeListener);
 
         addRecipeAction = new AddRecipeAction(recipeTable, testDataGenerator);
@@ -76,6 +83,7 @@ public class MainWindow {
         currentTabIndex = tabbedPane.getSelectedIndex();
         ingredientTable.clearSelection();
         recipeTable.clearSelection();
+        categoryTable.clearSelection();
     }
 
     public void show() {
@@ -108,6 +116,14 @@ public class MainWindow {
         table.setAutoCreateRowSorter(true);
         table.getSelectionModel().addListSelectionListener(this::rowSelectionChanged);
         ingredientTab = new Tab("ingredients", table, model);
+        return table;
+    }
+    private JTable createCategoryTable(List<Category> categories) {
+        var model = new CategoryTableModel(categories);
+        var table = new JTable(model);
+        table.setAutoCreateRowSorter(true);
+        table.getSelectionModel().addListSelectionListener(this::rowSelectionChanged);
+        categoryTab = new Tab("categories", table, model);
         return table;
     }
 

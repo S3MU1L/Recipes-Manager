@@ -10,13 +10,23 @@ public class Recipe {
     private String description;
     private int preparationTime;
     private int portions;
+    private Category category;
 
-    public Recipe(String name, List<IngredientWithAmount> ingredients, String description, int preparationTime, int portions) {
+    public Recipe(String name, List<IngredientWithAmount> ingredients, String description, int preparationTime, int portions, Category category) {
         this.name = name;
         this.ingredients = ingredients;
         this.description = description;
         this.preparationTime = preparationTime;
         this.portions = portions;
+        this.category = category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public Category getCategory() {
+        return category;
     }
 
     public String getName() {
