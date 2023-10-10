@@ -5,6 +5,7 @@ import cz.fi.muni.pv168.easyfood.data.TestDataGenerator;
 import cz.fi.muni.pv168.easyfood.model.Category;
 import cz.fi.muni.pv168.easyfood.model.Ingredient;
 import cz.fi.muni.pv168.easyfood.model.Recipe;
+import cz.fi.muni.pv168.easyfood.ui.action.AddCategoryAction;
 import cz.fi.muni.pv168.easyfood.ui.action.AddIngredientAction;
 import cz.fi.muni.pv168.easyfood.ui.action.AddRecipeAction;
 import cz.fi.muni.pv168.easyfood.ui.action.DeleteAction;
@@ -32,6 +33,7 @@ public class MainWindow {
     private final QuitAction quitAction = new QuitAction();
     private final AddRecipeAction addRecipeAction;
     private final AddIngredientAction addIngredientAction;
+    private final AddCategoryAction addCategoryAction;
     private final ShowAction showAction;
     private final DeleteAction deleteRecipeAction;
     private final EditAction editAction;
@@ -64,6 +66,7 @@ public class MainWindow {
         addRecipeAction = new AddRecipeAction(recipeTable, testDataGenerator);
 
         addIngredientAction = new AddIngredientAction(tabContainer.getSelectedTab().getTable());
+        addCategoryAction = new AddCategoryAction(categoryTable);
         deleteRecipeAction = new DeleteAction(tabContainer);
         editAction = new EditAction(tabContainer.getSelectedTab().getTable());
         showAction = new ShowAction(tabContainer.getSelectedTab().getTable());
@@ -142,6 +145,7 @@ public class MainWindow {
         optionsMenu.setMnemonic('o');
         optionsMenu.add(addRecipeAction);
         optionsMenu.add(addIngredientAction);
+        optionsMenu.add(addCategoryAction);
         optionsMenu.addSeparator();
         optionsMenu.add(deleteRecipeAction);
         optionsMenu.add(editAction);
@@ -158,6 +162,8 @@ public class MainWindow {
         toolbar.add(addRecipeAction);
         toolbar.addSeparator();
         toolbar.add(addIngredientAction);
+        toolbar.addSeparator();
+        toolbar.add(addCategoryAction);
         toolbar.addSeparator();
         toolbar.add(editAction);
         toolbar.add(deleteRecipeAction);
