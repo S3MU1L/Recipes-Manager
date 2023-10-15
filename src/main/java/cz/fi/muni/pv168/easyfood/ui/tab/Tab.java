@@ -1,9 +1,9 @@
 package cz.fi.muni.pv168.easyfood.ui.tab;
 
+import cz.fi.muni.pv168.easyfood.ui.dialog.EntityDialog;
 import cz.fi.muni.pv168.easyfood.ui.tablemodel.EntityTableModel;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 
 public class Tab<E extends EntityTableModel> {
     private JComponent component;
@@ -11,10 +11,13 @@ public class Tab<E extends EntityTableModel> {
     private JTable table;
     private final E model;
 
-    public Tab(String title, JTable table, E model) {
+    private final EntityDialog dialog;
+
+    public Tab(String title, JTable table, E model, EntityDialog dialog) {
         this.title = title;
         this.table = table;
         this.model = model;
+        this.dialog = dialog;
         this.component = new JScrollPane(table);
     }
 
@@ -44,6 +47,10 @@ public class Tab<E extends EntityTableModel> {
 
     public E getModel() {
         return model;
+    }
+
+    public EntityDialog getDialog() {
+        return dialog;
     }
 
     public void delete() {
