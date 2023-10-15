@@ -5,8 +5,13 @@ package cz.fi.muni.pv168.easyfood.model;
  */
 public class Category {
     private String name;
-    public Category(String name){
+
+    public Category(String name) {
         this.name = name;
+    }
+
+    public static Category createEmptyCategory() {
+        return new Category("");
     }
 
     public String getName() {
