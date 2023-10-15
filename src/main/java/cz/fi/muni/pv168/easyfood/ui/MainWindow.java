@@ -5,6 +5,7 @@ import cz.fi.muni.pv168.easyfood.data.TestDataGenerator;
 import cz.fi.muni.pv168.easyfood.model.Category;
 import cz.fi.muni.pv168.easyfood.model.Ingredient;
 import cz.fi.muni.pv168.easyfood.model.Recipe;
+import cz.fi.muni.pv168.easyfood.model.Unit;
 import cz.fi.muni.pv168.easyfood.ui.action.AddCategoryAction;
 import cz.fi.muni.pv168.easyfood.ui.action.AddIngredientAction;
 import cz.fi.muni.pv168.easyfood.ui.action.AddRecipeAction;
@@ -15,6 +16,7 @@ import cz.fi.muni.pv168.easyfood.ui.action.FilterAction;
 import cz.fi.muni.pv168.easyfood.ui.action.ImportAction;
 import cz.fi.muni.pv168.easyfood.ui.action.QuitAction;
 import cz.fi.muni.pv168.easyfood.ui.action.ShowAction;
+import cz.fi.muni.pv168.easyfood.ui.tablemodel.UnitListModel;
 import cz.fi.muni.pv168.easyfood.ui.tab.Tab;
 import cz.fi.muni.pv168.easyfood.ui.tab.TabContainer;
 import cz.fi.muni.pv168.easyfood.ui.tablemodel.CategoryTableModel;
@@ -50,6 +52,7 @@ public class MainWindow {
     public MainWindow() {
         frame = createFrame();
         var testDataGenerator = new TestDataGenerator();
+        var unitListModel = new UnitListModel(List.of(Unit.PIECE, Unit.GRAM, Unit.MILLILITER));
         List<Recipe> recipes = testDataGenerator.createTestRecipes(10);
         List<Ingredient> ingredients = testDataGenerator.createTestIngredients(10);
         List<Category> categories = testDataGenerator.createTestCategories(10);
@@ -64,8 +67,7 @@ public class MainWindow {
         tabContainer.addChangeListener(this::tabChangeListener);
 
         addRecipeAction = new AddRecipeAction(recipeTable, testDataGenerator);
-
-        addIngredientAction = new AddIngredientAction(tabContainer.getSelectedTab().getTable());
+        addIngredientAction = new AddIngredientAction(ingredientTable, testDataGenerator, unitListModel);
         addCategoryAction = new AddCategoryAction(categoryTable);
         deleteRecipeAction = new DeleteAction(tabContainer);
         editAction = new EditAction(tabContainer.getSelectedTab().getTable());

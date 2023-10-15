@@ -18,7 +18,7 @@ public final class AddRecipeAction extends AbstractAction {
     private final TestDataGenerator testDataGenerator;
 
     public AddRecipeAction(JTable recipeTable, TestDataGenerator testDataGenerator) {
-        super("Add", Icons.ADD_RECIPE_ICON);
+        super("Add Recipe", Icons.ADD_RECIPE_ICON);
         this.recipeTable = recipeTable;
         this.testDataGenerator = testDataGenerator;
         putValue(SHORT_DESCRIPTION, "Adds new recipe");
