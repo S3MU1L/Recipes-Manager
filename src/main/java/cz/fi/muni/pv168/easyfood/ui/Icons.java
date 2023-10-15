@@ -1,6 +1,6 @@
 package cz.fi.muni.pv168.easyfood.ui;
 
-import cz.fi.muni.pv168.easyfood.ui.action.AddIngredientAction;
+import cz.fi.muni.pv168.easyfood.ui.action.AddAction;
 
 import javax.swing.*;
 import java.awt.*;
@@ -34,7 +34,7 @@ public final class Icons {
     }
 
     private static ImageIcon createIcon(String name) {
-        ImageIcon imageIcon = new ImageIcon(AddIngredientAction.class.getResource(name));
+        ImageIcon imageIcon = new ImageIcon(AddAction.class.getResource(name));
         Image image = imageIcon.getImage();
         return new ImageIcon(image.getScaledInstance(ICON_WIDTH, ICON_HEIGHT, java.awt.Image.SCALE_SMOOTH));
     }
