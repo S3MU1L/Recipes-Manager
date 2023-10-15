@@ -5,7 +5,7 @@ import cz.fi.muni.pv168.easyfood.data.TestDataGenerator;
 import cz.fi.muni.pv168.easyfood.model.Category;
 import cz.fi.muni.pv168.easyfood.model.Ingredient;
 import cz.fi.muni.pv168.easyfood.model.Recipe;
-import cz.fi.muni.pv168.easyfood.ui.action.AddRecipeAction;
+import cz.fi.muni.pv168.easyfood.ui.action.AddAction;
 import cz.fi.muni.pv168.easyfood.ui.action.DeleteAction;
 import cz.fi.muni.pv168.easyfood.ui.action.EditAction;
 import cz.fi.muni.pv168.easyfood.ui.action.ExportAction;
@@ -13,6 +13,9 @@ import cz.fi.muni.pv168.easyfood.ui.action.FilterAction;
 import cz.fi.muni.pv168.easyfood.ui.action.ImportAction;
 import cz.fi.muni.pv168.easyfood.ui.action.QuitAction;
 import cz.fi.muni.pv168.easyfood.ui.action.ShowAction;
+import cz.fi.muni.pv168.easyfood.ui.dialog.CategoryDialog;
+import cz.fi.muni.pv168.easyfood.ui.dialog.IngredientDialog;
+import cz.fi.muni.pv168.easyfood.ui.dialog.RecipeDialog;
 import cz.fi.muni.pv168.easyfood.ui.tab.Tab;
 import cz.fi.muni.pv168.easyfood.ui.tab.TabContainer;
 import cz.fi.muni.pv168.easyfood.ui.tablemodel.CategoryTableModel;
@@ -29,7 +32,7 @@ public class MainWindow {
     int currentTabIndex = 0;
     private final JFrame frame;
     private final QuitAction quitAction = new QuitAction();
-    private final AddRecipeAction addAction;
+    private final AddAction addAction;
     private final ShowAction showAction;
     private final DeleteAction deleteAction;
     private final EditAction editAction;
@@ -59,7 +62,7 @@ public class MainWindow {
         tabContainer.addTab(categoryTab);
         tabContainer.addChangeListener(this::tabChangeListener);
 
-        addAction = new AddRecipeAction(recipeTable, testDataGenerator);
+        addAction = new AddAction(tabContainer);
         deleteAction = new DeleteAction(tabContainer);
         editAction = new EditAction(tabContainer.getSelectedTab().getTable());
         showAction = new ShowAction(tabContainer.getSelectedTab().getTable());
@@ -102,7 +105,7 @@ public class MainWindow {
         var table = new JTable(model);
         table.setAutoCreateRowSorter(true);
         table.getSelectionModel().addListSelectionListener(this::rowSelectionChanged);
-        recipeTab = new Tab("recipes", table, model);
+        recipeTab = new Tab("recipes", table, model, new RecipeDialog());
         return table;
     }
 
@@ -111,7 +114,7 @@ public class MainWindow {
         var table = new JTable(model);
         table.setAutoCreateRowSorter(true);
         table.getSelectionModel().addListSelectionListener(this::rowSelectionChanged);
-        ingredientTab = new Tab("ingredients", table, model);
+        ingredientTab = new Tab("ingredients", table, model, new IngredientDialog());
         return table;
     }
     private JTable createCategoryTable(List<Category> categories) {
@@ -119,7 +122,7 @@ public class MainWindow {
         var table = new JTable(model);
         table.setAutoCreateRowSorter(true);
         table.getSelectionModel().addListSelectionListener(this::rowSelectionChanged);
-        categoryTab = new Tab("categories", table, model);
+        categoryTab = new Tab("categories", table, model, new CategoryDialog());
         return table;
     }
 
