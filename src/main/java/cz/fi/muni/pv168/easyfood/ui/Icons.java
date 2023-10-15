@@ -12,8 +12,8 @@ public final class Icons {
 
     public static final Icon DELETE_ICON = createIcon("icons/cancel.png");
     public static final Icon EDIT_ICON = createIcon("icons/edit.png");
-    public static final Icon ADD_INGREDIENT_ICON = createIcon("icons/add_ingredient.png");
-    public static final Icon ADD_RECIPE_ICON = createIcon("icons/add_recipe.png");
+    public static final Icon ADD_INGREDIENT_ICON = createIcon("icons/add.png");
+    public static final Icon ADD_RECIPE_ICON = createIcon("icons/add.png");
     public static final Icon QUIT_ICON = createIcon("icons/exit.png");
     public static final Icon SHOW_ICON = createIcon("icons/show.png");
 
