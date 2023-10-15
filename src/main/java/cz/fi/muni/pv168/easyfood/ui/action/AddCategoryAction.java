@@ -11,7 +11,7 @@ import java.awt.event.KeyEvent;
  */
 public class AddCategoryAction extends AbstractAction {
     public AddCategoryAction(JTable categoryTable) {
-        super("Add Category", Icons.ADD_INGREDIENT_ICON);
+        super("Add Category", Icons.ADD_ICON);
         putValue(SHORT_DESCRIPTION, "Adds new category");
         putValue(MNEMONIC_KEY, KeyEvent.VK_C);
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke("ctrl C"));

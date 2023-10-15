@@ -10,7 +10,7 @@ import java.awt.event.KeyEvent;
 public class AddIngredientAction extends AbstractAction {
 
     public AddIngredientAction(JTable ingredientTable) {
-        super("Add Ingredient", Icons.ADD_INGREDIENT_ICON);
+        super("Add Ingredient", Icons.ADD_ICON);
         putValue(SHORT_DESCRIPTION, "Adds new ingredient");
         putValue(MNEMONIC_KEY, KeyEvent.VK_I);
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke("ctrl I"));
