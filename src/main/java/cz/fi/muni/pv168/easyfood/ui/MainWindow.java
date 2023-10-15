@@ -68,7 +68,7 @@ public class MainWindow {
 
         addRecipeAction = new AddRecipeAction(recipeTable, testDataGenerator);
         addIngredientAction = new AddIngredientAction(ingredientTable, testDataGenerator, unitListModel);
-        addCategoryAction = new AddCategoryAction(categoryTable);
+        addCategoryAction = new AddCategoryAction(categoryTable, testDataGenerator);
         deleteRecipeAction = new DeleteAction(tabContainer);
         editAction = new EditAction(tabContainer.getSelectedTab().getTable());
         showAction = new ShowAction(tabContainer.getSelectedTab().getTable());
