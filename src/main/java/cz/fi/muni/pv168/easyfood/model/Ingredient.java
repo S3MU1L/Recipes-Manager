@@ -13,6 +13,10 @@ public class Ingredient {
         this.unit = unit;
     }
 
+    public static Ingredient createEmptyIngredient() {
+        return new Ingredient("", 0, Unit.EMPTY_UNIT);
+    }
+
     public String getName() {
         return name;
     }
@@ -60,4 +64,5 @@ public class Ingredient {
     public int hashCode() {
         return Objects.hash(name, calories, unit);
     }
+
 }

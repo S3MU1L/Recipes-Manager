@@ -1,5 +1,6 @@
 package cz.fi.muni.pv168.easyfood.model;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -10,13 +11,27 @@ public class Recipe {
     private String description;
     private int preparationTime;
     private int portions;
+    private Category category;
 
-    public Recipe(String name, List<IngredientWithAmount> ingredients, String description, int preparationTime, int portions) {
+    public Recipe(String name, List<IngredientWithAmount> ingredients, String description, int preparationTime, int portions, Category category) {
         this.name = name;
         this.ingredients = ingredients;
         this.description = description;
         this.preparationTime = preparationTime;
         this.portions = portions;
+        this.category = category;
+    }
+
+    public static Recipe createEmptyRecipe() {
+        return new Recipe("", new ArrayList<>(), "", 0, 0, null);
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public Category getCategory() {
+        return category;
     }
 
     public String getName() {
@@ -83,7 +98,17 @@ public class Recipe {
     }
 
     public String getFormattedCalories() {
+        if (getCalories() == 0) {
+            return "";
+        }
         return Double.valueOf(getCalories()).intValue() + " kJ";
+    }
+
+    public void addIngredient(IngredientWithAmount ingredientWithAmount) {
+        ingredients.add(ingredientWithAmount);
+    }
+    public void addIngredient(Ingredient ingredient, int amount) {
+        addIngredient(new IngredientWithAmount(ingredient, amount));
     }
 
     @Override

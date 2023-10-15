@@ -1,6 +1,7 @@
 package cz.fi.muni.pv168.easyfood.data;
 
 
+import cz.fi.muni.pv168.easyfood.model.Category;
 import cz.fi.muni.pv168.easyfood.model.Ingredient;
 import cz.fi.muni.pv168.easyfood.model.IngredientWithAmount;
 import cz.fi.muni.pv168.easyfood.model.Recipe;
@@ -13,7 +14,18 @@ import java.util.stream.Stream;
 
 
 public class TestDataGenerator {
-
+    private static final List<Category> CATEGORY = List.of(
+            new Category("Soups"),
+            new Category("Vegetarian"),
+            new Category("Seafood"),
+            new Category("Sweet"),
+            new Category("Snack"),
+            new Category("Dessert"),
+            new Category("Grilled"),
+            new Category("Vegan"),
+            new Category("Salad"),
+            new Category("Brunch")
+    );
     private static final List<Ingredient> INGREDIENTS = List.of(
             new Ingredient("Water", 1, Unit.MILLILITER),
             new Ingredient("Meat", 1, Unit.GRAM),
@@ -33,6 +45,17 @@ public class TestDataGenerator {
     );
 
     private final Random random = new Random();
+
+    public Category createTestCategory(){
+        Category category = selectRandom(CATEGORY);
+        return new Category(category.getName());
+    }
+    public List<Category> createTestCategories(int count){
+        return Stream
+                .generate(this::createTestCategory)
+                .limit(count)
+                .collect(Collectors.toList());
+    }
 
     public Ingredient createTestIngredient() {
         Ingredient ingredient = selectRandom(INGREDIENTS);
@@ -55,7 +78,7 @@ public class TestDataGenerator {
         String name = selectRandom(RECIPE_NAMES);
         List<IngredientWithAmount> ingredients = Stream.generate(this::createTestIngredientWithAmount).limit(5).collect(Collectors.toList());
         String description = "In a medium bowl, beat together egg whites, 1/4 cup butter and 1/4 teaspoon salt";
-        return new Recipe(name, ingredients, description, random.nextInt(1, 20), random.nextInt(5) + 1);
+        return new Recipe(name, ingredients, description, random.nextInt(1, 20), random.nextInt(5) + 1, createTestCategory());
     }
 
     public List<Recipe> createTestRecipes(int count) {

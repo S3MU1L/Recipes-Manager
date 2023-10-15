@@ -3,15 +3,11 @@ package cz.fi.muni.pv168.easyfood.ui.action;
 
 import cz.fi.muni.pv168.easyfood.ui.Icons;
 import cz.fi.muni.pv168.easyfood.ui.tab.TabContainer;
-import cz.fi.muni.pv168.easyfood.ui.tablemodel.IngredientTableModel;
-import cz.fi.muni.pv168.easyfood.ui.tablemodel.RecipeTableModel;
 
 import javax.swing.AbstractAction;
 import javax.swing.KeyStroke;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.util.Arrays;
-import java.util.Comparator;
 
 public final class DeleteAction extends AbstractAction {
     private final TabContainer tabContainer;
