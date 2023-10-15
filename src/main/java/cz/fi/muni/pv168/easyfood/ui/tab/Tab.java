@@ -5,15 +5,15 @@ import cz.fi.muni.pv168.easyfood.ui.tablemodel.EntityTableModel;
 
 import javax.swing.*;
 
-public class Tab<E extends EntityTableModel> {
+public class Tab<E extends EntityTableModel<E>> {
     private JComponent component;
     private String title;
     private JTable table;
     private final E model;
 
-    private final EntityDialog dialog;
+    private final EntityDialog<E> dialog;
 
-    public Tab(String title, JTable table, E model, EntityDialog dialog) {
+    public Tab(String title, JTable table, E model, EntityDialog<E> dialog) {
         this.title = title;
         this.table = table;
         this.model = model;
@@ -49,12 +49,12 @@ public class Tab<E extends EntityTableModel> {
         return model;
     }
 
-    public EntityDialog getDialog() {
+    public EntityDialog<E> getDialog() {
         return dialog;
     }
 
     public void delete() {
-        int rows[] = table.getSelectedRows();
+        int[] rows = table.getSelectedRows();
         for (int i = rows.length - 1; i >= 0; i--) {
             int modelRow = table.convertRowIndexToModel(rows[i]);
             model.deleteRow(modelRow);
