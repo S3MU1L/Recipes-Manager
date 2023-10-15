@@ -7,7 +7,7 @@ import cz.fi.muni.pv168.easyfood.ui.Utility;
 
 import javax.swing.*;
 
-public final class RecipeDialog extends EntityDialog<Recipe> {
+public final class  RecipeDialog extends EntityDialog<Recipe> {
 
     private final JTextField nameField = new JTextField();
     private final JTextField caloriesField = new JTextField();
@@ -36,13 +36,23 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
     }
 
     @Override
-    Recipe getEntity() {
+    public Recipe getEntity() {
         recipe.setName(nameField.getText());
         recipe.setPreparationTime(Utility.parseIntFromString(prepareTimeField.getText()));
         // only temporary solution, so that we can see calories we entered, will have to refactor this
         double calories = Utility.parseDoubleFromString(caloriesField.getText());
         recipe.addIngredient(new Ingredient("nahodna", calories, Unit.GRAM), 1);
         return recipe;
+    }
+
+    @Override
+    public EntityDialog<Recipe> createNewDialog() {
+        return new RecipeDialog();
+    }
+
+    @Override
+    public EntityDialog<Recipe> createNewDialog(Recipe entity) {
+        return new RecipeDialog(entity);
     }
 
 }

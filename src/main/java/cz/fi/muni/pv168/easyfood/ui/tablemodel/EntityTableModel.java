@@ -27,7 +27,7 @@ public abstract class EntityTableModel<E> extends AbstractTableModel {
         return getColumn(columnIndex).getValue(getEntity(rowIndex));
     }
 
-    protected abstract E getEntity(int rowIndex);
+    public abstract E getEntity(int rowIndex);
 
     protected abstract void updateEntity(E entity);
 

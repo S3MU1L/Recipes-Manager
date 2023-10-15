@@ -22,7 +22,7 @@ public final class AddAction extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        var dialog = tabContainer.getSelectedTab().getDialog();
+        var dialog = tabContainer.getSelectedTab().getDialog().createNewDialog();
         var model = tabContainer.getSelectedTab().getModel();
         StringBuilder title = new StringBuilder("Add ").append(tabContainer.getSelectedTab().getTitle());
         title.deleteCharAt(title.length() - 1);
