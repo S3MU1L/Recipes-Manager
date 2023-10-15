@@ -28,6 +28,8 @@ public abstract class EntityDialog<E> {
 
     public abstract E getEntity();
 
+    public abstract EntityDialog<?> createNewDialog(Object entity);
+
     public abstract EntityDialog<?> createNewDialog();
 
     public Optional<E> show(JComponent parentComponent, String title) {

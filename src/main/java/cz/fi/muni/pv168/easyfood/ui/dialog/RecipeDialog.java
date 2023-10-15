@@ -46,8 +46,14 @@ public final class  RecipeDialog extends EntityDialog<Recipe> {
     }
 
     @Override
-    public EntityDialog<Recipe> createNewDialog() {
-        return new RecipeDialog();
+    public EntityDialog<Recipe> createNewDialog(Object entity) {
+        return new RecipeDialog((Recipe) entity);
     }
+
+    @Override
+    public EntityDialog<Recipe> createNewDialog() {
+        return createNewDialog(Recipe.createEmptyRecipe());
+    }
+
 
 }

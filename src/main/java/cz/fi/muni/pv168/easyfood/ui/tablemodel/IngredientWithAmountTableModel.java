@@ -31,6 +31,12 @@ public class IngredientWithAmountTableModel extends EntityTableModel<IngredientW
         fireTableRowsInserted(newRowIndex, newRowIndex);
     }
 
+    @Override
+    public void updateRow(IngredientWithAmount ingredientWithAmount) {
+        int rowIndex = ingredients.indexOf(ingredientWithAmount);
+        fireTableRowsUpdated(rowIndex, rowIndex);
+    }
+
     public void updateRow(Ingredient ingredient) {
         int rowIndex = ingredients.indexOf(ingredient);
         fireTableRowsUpdated(rowIndex, rowIndex);
@@ -40,10 +46,6 @@ public class IngredientWithAmountTableModel extends EntityTableModel<IngredientW
         return ingredients.get(rowIndex);
     }
 
-    @Override
-    protected void updateEntity(IngredientWithAmount entity) {
-
-    }
 
     @Override
     public void deleteRow(int rowIndex) {

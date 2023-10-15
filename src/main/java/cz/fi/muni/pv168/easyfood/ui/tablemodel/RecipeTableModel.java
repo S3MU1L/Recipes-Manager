@@ -38,11 +38,6 @@ public class RecipeTableModel extends EntityTableModel<Recipe> {
     }
 
     @Override
-    protected void updateEntity(Recipe entity) {
-
-    }
-
-    @Override
     public void deleteRow(int rowIndex) {
         recipes.remove(rowIndex);
         fireTableRowsDeleted(rowIndex, rowIndex);

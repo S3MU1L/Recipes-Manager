@@ -28,11 +28,17 @@ public class CategoryDialog extends EntityDialog<Category> {
 
     @Override
     public Category getEntity() {
-        return new Category(nameField.getText());
+        category.setName(nameField.getText());
+        return category;
     }
 
     @Override
-    public EntityDialog<?> createNewDialog() {
-        return new CategoryDialog();
+    public EntityDialog<Category> createNewDialog(Object entity) {
+        return new CategoryDialog((Category) entity);
+    }
+
+    @Override
+    public EntityDialog<Category> createNewDialog() {
+        return createNewDialog(Category.createEmptyCategory());
     }
 }

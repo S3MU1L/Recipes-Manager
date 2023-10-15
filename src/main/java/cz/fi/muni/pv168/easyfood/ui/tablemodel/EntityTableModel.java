@@ -1,6 +1,5 @@
 package cz.fi.muni.pv168.easyfood.ui.tablemodel;
 
-import cz.fi.muni.pv168.easyfood.model.Recipe;
 import cz.fi.muni.pv168.easyfood.ui.column.Column;
 
 import javax.swing.table.AbstractTableModel;
@@ -27,9 +26,9 @@ public abstract class EntityTableModel<E> extends AbstractTableModel {
         return getColumn(columnIndex).getValue(getEntity(rowIndex));
     }
 
-    protected abstract E getEntity(int rowIndex);
+    public abstract E getEntity(int rowIndex);
 
-    protected abstract void updateEntity(E entity);
+//    public abstract void updateEntity(E entity);
 
     public void deleteRow(int rowIndex) {
         columns.remove(rowIndex);
@@ -37,6 +36,8 @@ public abstract class EntityTableModel<E> extends AbstractTableModel {
     }
 
     public abstract void addRow(E entity);
+
+    public abstract void updateRow(E entity);
 
     @Override
     public String getColumnName(int columnIndex) {
@@ -53,12 +54,12 @@ public abstract class EntityTableModel<E> extends AbstractTableModel {
         return getColumn(columnIndex).isEditable();
     }
 
-    @Override
-    public void setValueAt(Object value, int rowIndex, int columnIndex) {
-        E entity = getEntity(rowIndex);
-        getColumn(columnIndex).setValue(value, entity);
-        updateEntity(entity);
-    }
+//    @Override
+//    public void setValueAt(Object value, int rowIndex, int columnIndex) {
+//        E entity = getEntity(rowIndex);
+//        getColumn(columnIndex).setValue(value, entity);
+//        updateEntity(entity);
+//    }
 
     private Column<?, E> getColumn(int columnIndex) {
         return columns.get(columnIndex);

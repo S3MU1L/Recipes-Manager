@@ -38,11 +38,6 @@ public class IngredientTableModel extends EntityTableModel<Ingredient> {
     }
 
     @Override
-    protected void updateEntity(Ingredient entity) {
-
-    }
-
-    @Override
     public void deleteRow(int rowIndex) {
         ingredients.remove(rowIndex);
         fireTableRowsDeleted(rowIndex, rowIndex);

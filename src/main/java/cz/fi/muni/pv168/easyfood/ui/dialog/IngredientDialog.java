@@ -42,11 +42,19 @@ public class IngredientDialog extends EntityDialog<Ingredient> {
 
     @Override
     public Ingredient getEntity() {
-        return new Ingredient(nameField.getText(), Utility.parseDoubleFromString(caloriesField.getText()), (Unit) unitJComboBox.getSelectedItem());
+        ingredient.setName(nameField.getText());
+        ingredient.setCalories(Double.parseDouble(caloriesField.getText()));
+        ingredient.setUnit((Unit) unitJComboBox.getSelectedItem());
+        return ingredient;
     }
 
     @Override
-    public EntityDialog<?> createNewDialog() {
-        return new IngredientDialog();
+    public EntityDialog<Ingredient> createNewDialog(Object entity) {
+        return new IngredientDialog((Ingredient) entity);
+    }
+
+    @Override
+    public EntityDialog<Ingredient> createNewDialog() {
+        return createNewDialog(Ingredient.createEmptyIngredient());
     }
 }

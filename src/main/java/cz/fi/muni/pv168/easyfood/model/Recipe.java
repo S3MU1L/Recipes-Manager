@@ -85,14 +85,14 @@ public class Recipe {
     public String getFormattedPreparationTime() {
         StringBuilder result = new StringBuilder();
         if (preparationTime >= 60) {
-            result.append(preparationTime / 60).append(" h");
+            result.append(preparationTime / 60);
             preparationTime %= 60;
         }
         if (preparationTime % 60 != 0) {
             if (!result.isEmpty()) {
                 result.append(" ");
             }
-            result.append(preparationTime % 60).append(" m");
+            result.append(preparationTime % 60);
         }
         return result.toString();
     }
@@ -101,7 +101,7 @@ public class Recipe {
         if (getCalories() == 0) {
             return "";
         }
-        return Double.valueOf(getCalories()).intValue() + " kJ";
+        return Double.valueOf(getCalories()).intValue() + "";
     }
 
     public void addIngredient(IngredientWithAmount ingredientWithAmount) {

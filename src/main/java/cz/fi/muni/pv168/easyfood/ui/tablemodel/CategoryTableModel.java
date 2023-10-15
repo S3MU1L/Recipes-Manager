@@ -40,11 +40,6 @@ public class CategoryTableModel extends EntityTableModel<Category>{
     }
 
     @Override
-    protected void updateEntity(Category entity) {
-
-    }
-
-    @Override
     public void deleteRow(int rowIndex) {
         categories.remove(rowIndex);
         fireTableRowsDeleted(rowIndex, rowIndex);
