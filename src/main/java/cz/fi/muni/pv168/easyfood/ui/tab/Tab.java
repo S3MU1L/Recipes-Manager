@@ -10,8 +10,7 @@ public class Tab<E extends EntityTableModel> {
     private String title;
     private JTable table;
     private final E model;
-
-    private final EntityDialog dialog;
+    private EntityDialog dialog;
 
     public Tab(String title, JTable table, E model, EntityDialog dialog) {
         this.title = title;
@@ -51,6 +50,10 @@ public class Tab<E extends EntityTableModel> {
 
     public EntityDialog getDialog() {
         return dialog;
+    }
+
+    public void setDialog(EntityDialog dialog) {
+        this.dialog = dialog;
     }
 
     public void delete() {

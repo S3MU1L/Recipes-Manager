@@ -20,13 +20,15 @@ public abstract class EntityDialog<E> {
         panel.setLayout(new MigLayout("wrap 2"));
     }
 
-    void add(String labelText, JComponent component) {
+    public void add(String labelText, JComponent component) {
         var label = new JLabel(labelText);
         panel.add(label);
         panel.add(component, "wmin 250lp, grow");
     }
 
-    abstract E getEntity();
+    public abstract E getEntity();
+
+    public abstract EntityDialog<?> createNewDialog();
 
     public Optional<E> show(JComponent parentComponent, String title) {
         int result = JOptionPane.showOptionDialog(parentComponent, panel, title,
