@@ -3,7 +3,6 @@ package cz.fi.muni.pv168.easyfood.ui.action;
 
 import cz.fi.muni.pv168.easyfood.ui.Icons;
 import cz.fi.muni.pv168.easyfood.ui.tab.TabContainer;
-import cz.fi.muni.pv168.easyfood.ui.tablemodel.EntityTableModel;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -23,7 +22,6 @@ public final class AddAction extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        var table = tabContainer.getSelectedTab().getTable();
         var dialog = tabContainer.getSelectedTab().getDialog();
         var model = tabContainer.getSelectedTab().getModel();
         StringBuilder title = new StringBuilder("Add ").append(tabContainer.getSelectedTab().getTitle());
