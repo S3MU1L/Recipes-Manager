@@ -5,10 +5,7 @@ import cz.fi.muni.pv168.easyfood.data.TestDataGenerator;
 import cz.fi.muni.pv168.easyfood.model.Category;
 import cz.fi.muni.pv168.easyfood.model.Ingredient;
 import cz.fi.muni.pv168.easyfood.model.Recipe;
-import cz.fi.muni.pv168.easyfood.model.Unit;
-import cz.fi.muni.pv168.easyfood.ui.action.AddCategoryAction;
-import cz.fi.muni.pv168.easyfood.ui.action.AddIngredientAction;
-import cz.fi.muni.pv168.easyfood.ui.action.AddRecipeAction;
+import cz.fi.muni.pv168.easyfood.ui.action.AddAction;
 import cz.fi.muni.pv168.easyfood.ui.action.DeleteAction;
 import cz.fi.muni.pv168.easyfood.ui.action.EditAction;
 import cz.fi.muni.pv168.easyfood.ui.action.ExportAction;
@@ -16,7 +13,9 @@ import cz.fi.muni.pv168.easyfood.ui.action.FilterAction;
 import cz.fi.muni.pv168.easyfood.ui.action.ImportAction;
 import cz.fi.muni.pv168.easyfood.ui.action.QuitAction;
 import cz.fi.muni.pv168.easyfood.ui.action.ShowAction;
-import cz.fi.muni.pv168.easyfood.ui.tablemodel.UnitListModel;
+import cz.fi.muni.pv168.easyfood.ui.dialog.CategoryDialog;
+import cz.fi.muni.pv168.easyfood.ui.dialog.IngredientDialog;
+import cz.fi.muni.pv168.easyfood.ui.dialog.RecipeDialog;
 import cz.fi.muni.pv168.easyfood.ui.tab.Tab;
 import cz.fi.muni.pv168.easyfood.ui.tab.TabContainer;
 import cz.fi.muni.pv168.easyfood.ui.tablemodel.CategoryTableModel;
@@ -33,11 +32,9 @@ public class MainWindow {
     int currentTabIndex = 0;
     private final JFrame frame;
     private final QuitAction quitAction = new QuitAction();
-    private final AddRecipeAction addRecipeAction;
-    private final AddIngredientAction addIngredientAction;
-    private final AddCategoryAction addCategoryAction;
+    private final AddAction addAction;
     private final ShowAction showAction;
-    private final DeleteAction deleteRecipeAction;
+    private final DeleteAction deleteAction;
     private final EditAction editAction;
     private final FilterAction filterAction;
     private final ExportAction exportAction;
@@ -52,7 +49,6 @@ public class MainWindow {
     public MainWindow() {
         frame = createFrame();
         var testDataGenerator = new TestDataGenerator();
-        var unitListModel = new UnitListModel(List.of(Unit.PIECE, Unit.GRAM, Unit.MILLILITER));
         List<Recipe> recipes = testDataGenerator.createTestRecipes(10);
         List<Ingredient> ingredients = testDataGenerator.createTestIngredients(10);
         List<Category> categories = testDataGenerator.createTestCategories(10);
@@ -66,10 +62,8 @@ public class MainWindow {
         tabContainer.addTab(categoryTab);
         tabContainer.addChangeListener(this::tabChangeListener);
 
-        addRecipeAction = new AddRecipeAction(recipeTable, testDataGenerator);
-        addIngredientAction = new AddIngredientAction(ingredientTable, testDataGenerator, unitListModel);
-        addCategoryAction = new AddCategoryAction(categoryTable, testDataGenerator);
-        deleteRecipeAction = new DeleteAction(tabContainer);
+        addAction = new AddAction(tabContainer);
+        deleteAction = new DeleteAction(tabContainer);
         editAction = new EditAction(tabContainer.getSelectedTab().getTable());
         showAction = new ShowAction(tabContainer.getSelectedTab().getTable());
         filterAction = new FilterAction();
@@ -111,7 +105,7 @@ public class MainWindow {
         var table = new JTable(model);
         table.setAutoCreateRowSorter(true);
         table.getSelectionModel().addListSelectionListener(this::rowSelectionChanged);
-        recipeTab = new Tab("recipes", table, model);
+        recipeTab = new Tab("recipes", table, model, new RecipeDialog());
         return table;
     }
 
@@ -120,7 +114,7 @@ public class MainWindow {
         var table = new JTable(model);
         table.setAutoCreateRowSorter(true);
         table.getSelectionModel().addListSelectionListener(this::rowSelectionChanged);
-        ingredientTab = new Tab("ingredients", table, model);
+        ingredientTab = new Tab("ingredients", table, model, new IngredientDialog());
         return table;
     }
     private JTable createCategoryTable(List<Category> categories) {
@@ -128,15 +122,15 @@ public class MainWindow {
         var table = new JTable(model);
         table.setAutoCreateRowSorter(true);
         table.getSelectionModel().addListSelectionListener(this::rowSelectionChanged);
-        categoryTab = new Tab("categories", table, model);
+        categoryTab = new Tab("categories", table, model, new CategoryDialog());
         return table;
     }
 
     private JPopupMenu createRecipeTablePopupMenu() {
         var menu = new JPopupMenu();
-        menu.add(deleteRecipeAction);
+        menu.add(deleteAction);
         menu.add(editAction);
-        menu.add(addRecipeAction);
+        menu.add(addAction);
         menu.add(showAction);
         return menu;
     }
@@ -145,11 +139,8 @@ public class MainWindow {
         var menuBar = new JMenuBar();
         var optionsMenu = new JMenu("Options");
         optionsMenu.setMnemonic('o');
-        optionsMenu.add(addRecipeAction);
-        optionsMenu.add(addIngredientAction);
-        optionsMenu.add(addCategoryAction);
-        optionsMenu.addSeparator();
-        optionsMenu.add(deleteRecipeAction);
+        optionsMenu.add(addAction);
+        optionsMenu.add(deleteAction);
         optionsMenu.add(editAction);
         optionsMenu.add(filterAction);
         optionsMenu.add(importAction);
@@ -161,14 +152,10 @@ public class MainWindow {
 
     private JToolBar createToolbar() {
         var toolbar = new JToolBar();
-        toolbar.add(addRecipeAction);
-        toolbar.addSeparator();
-        toolbar.add(addIngredientAction);
-        toolbar.addSeparator();
-        toolbar.add(addCategoryAction);
+        toolbar.add(addAction);
         toolbar.addSeparator();
         toolbar.add(editAction);
-        toolbar.add(deleteRecipeAction);
+        toolbar.add(deleteAction);
         toolbar.add(showAction);
         toolbar.add(filterAction);
         toolbar.add(importAction);
@@ -179,7 +166,7 @@ public class MainWindow {
     private void rowSelectionChanged(ListSelectionEvent listSelectionEvent) {
         var selectionModel = (ListSelectionModel) listSelectionEvent.getSource();
         editAction.setEnabled(selectionModel.getSelectedItemsCount() == 1);
-        deleteRecipeAction.setEnabled(selectionModel.getSelectedItemsCount() >= 1);
+        deleteAction.setEnabled(selectionModel.getSelectedItemsCount() >= 1);
     }
 
 }

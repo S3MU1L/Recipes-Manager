@@ -31,5 +31,13 @@ public final class EditAction extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        int[] selectedRows = table.getSelectedRows();
+        if (selectedRows.length != 1) {
+            throw new IllegalStateException("Invalid selected rows count (must be 1): " + selectedRows.length);
+        }
+        if (table.isEditing()) {
+            table.getCellEditor().cancelCellEditing();
+        }
+
     }
 }

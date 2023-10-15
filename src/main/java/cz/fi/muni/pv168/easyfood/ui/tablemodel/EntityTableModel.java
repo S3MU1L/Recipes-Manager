@@ -1,5 +1,6 @@
 package cz.fi.muni.pv168.easyfood.ui.tablemodel;
 
+import cz.fi.muni.pv168.easyfood.model.Recipe;
 import cz.fi.muni.pv168.easyfood.ui.column.Column;
 
 import javax.swing.table.AbstractTableModel;
@@ -34,6 +35,8 @@ public abstract class EntityTableModel<E> extends AbstractTableModel {
         columns.remove(rowIndex);
         fireTableRowsDeleted(rowIndex, rowIndex);
     }
+
+    public abstract void addRow(E entity);
 
     @Override
     public String getColumnName(int columnIndex) {

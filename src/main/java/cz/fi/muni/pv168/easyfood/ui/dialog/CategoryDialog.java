@@ -16,11 +16,15 @@ public class CategoryDialog extends EntityDialog<Category> implements ActionList
     private final Category category;
     private Color color = Color.WHITE;
 
-    public CategoryDialog(Category ingredient) {
-        this.category = ingredient;
+    public CategoryDialog(Category category) {
+        this.category = category;
         this.colorButton = new JButton("Choose Color");
         setValues();
         addFields();
+    }
+
+    public CategoryDialog() {
+        this(Category.createEmptyCategory());
     }
 
     private void setValues() {
@@ -35,9 +39,7 @@ public class CategoryDialog extends EntityDialog<Category> implements ActionList
 
     @Override
     Category getEntity() {
-        category.setName(nameField.getText());
-        category.setColor(color);
-        return category;
+        return new Category(nameField.getText(), color);
     }
 
     @Override

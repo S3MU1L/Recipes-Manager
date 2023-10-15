@@ -7,6 +7,7 @@ import cz.fi.muni.pv168.easyfood.model.IngredientWithAmount;
 import cz.fi.muni.pv168.easyfood.model.Recipe;
 import cz.fi.muni.pv168.easyfood.model.Unit;
 
+import java.awt.*;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -15,16 +16,16 @@ import java.util.stream.Stream;
 
 public class TestDataGenerator {
     private static final List<Category> CATEGORY = List.of(
-            new Category("Soups"),
-            new Category("Vegetarian"),
-            new Category("Seafood"),
-            new Category("Sweet"),
-            new Category("Snack"),
-            new Category("Dessert"),
-            new Category("Grilled"),
-            new Category("Vegan"),
-            new Category("Salad"),
-            new Category("Brunch")
+            new Category("Soups", Color.WHITE),
+            new Category("Vegetarian", Color.WHITE),
+            new Category("Seafood", Color.WHITE),
+            new Category("Sweet", Color.WHITE),
+            new Category("Snack", Color.WHITE),
+            new Category("Dessert", Color.WHITE),
+            new Category("Grilled", Color.WHITE),
+            new Category("Vegan", Color.WHITE),
+            new Category("Salad", Color.WHITE),
+            new Category("Brunch", Color.WHITE)
     );
     private static final List<Ingredient> INGREDIENTS = List.of(
             new Ingredient("Water", 1, Unit.MILLILITER),
@@ -48,7 +49,7 @@ public class TestDataGenerator {
 
     public Category createTestCategory(){
         Category category = selectRandom(CATEGORY);
-        return new Category(category.getName());
+        return new Category(category.getName(), Color.WHITE);
     }
     public List<Category> createTestCategories(int count){
         return Stream

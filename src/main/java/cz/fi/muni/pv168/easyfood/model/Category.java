@@ -9,8 +9,13 @@ public class Category {
     private String name;
     private Color color;
 
-    public Category(String name) {
+    public Category(String name, Color color) {
         this.name = name;
+        this.color = color;
+    }
+
+    public static Category createEmptyCategory() {
+        return new Category("", Color.WHITE);
     }
 
     public String getName() {
