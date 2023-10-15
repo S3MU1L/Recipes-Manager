@@ -2,14 +2,12 @@ package cz.fi.muni.pv168.easyfood.ui.action;
 
 import cz.fi.muni.pv168.easyfood.data.TestDataGenerator;
 import cz.fi.muni.pv168.easyfood.ui.Icons;
-import cz.fi.muni.pv168.easyfood.ui.dialog.IngredientDialog;
+import cz.fi.muni.pv168.easyfood.ui.dialog.CategoryDialog;
 import cz.fi.muni.pv168.easyfood.ui.tablemodel.CategoryTableModel;
-import cz.fi.muni.pv168.easyfood.ui.tablemodel.IngredientTableModel;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.util.List;
 
 /**
  * @author Tibor Pelegrin
@@ -30,7 +28,7 @@ public class AddCategoryAction extends AbstractAction {
     @Override
     public void actionPerformed(ActionEvent e) {
         var categoryTableModel = (CategoryTableModel) categoryTable.getModel();
-        var dialog = new categoryDialog(testDataGenerator.createTestCategory());
+        var dialog = new CategoryDialog(testDataGenerator.createTestCategory());
         dialog.show(categoryTable, "Add Category").ifPresent(categoryTableModel::addRow);
     }
 }

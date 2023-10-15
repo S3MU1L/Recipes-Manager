@@ -1,11 +1,15 @@
 package cz.fi.muni.pv168.easyfood.model;
 
+import java.awt.*;
+
 /**
  * @author Tibor Pelegrin
  */
 public class Category {
     private String name;
-    public Category(String name){
+    private Color color;
+
+    public Category(String name) {
         this.name = name;
     }
 
@@ -13,7 +17,15 @@ public class Category {
         return name;
     }
 
+    public Color getColor() {
+        return color;
+    }
+
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
     }
 }

@@ -1,44 +1,47 @@
 package cz.fi.muni.pv168.easyfood.ui.dialog;
 
 import cz.fi.muni.pv168.easyfood.model.Category;
-import cz.fi.muni.pv168.easyfood.model.Ingredient;
-import cz.fi.muni.pv168.easyfood.model.Unit;
-import cz.fi.muni.pv168.easyfood.ui.tablemodel.ComboBoxModelAdapter;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * @author Samuel Sabo
  */
-public class CategoryDialog extends EntityDialog<Category {
+public class CategoryDialog extends EntityDialog<Category> implements ActionListener {
     private final JTextField nameField = new JTextField();
-    private final JTextField caloriesField = new JTextField();
-    private final ComboBoxModel<Color> colorModel;
+    private final JButton colorButton;
     private final Category category;
-    public CategoryDialog(Category ingredient, ListModel<Unit> unitModel) {
+    private Color color = Color.WHITE;
+
+    public CategoryDialog(Category ingredient) {
         this.category = ingredient;
-        this.unitModel = new ComboBoxModelAdapter<>(unitModel);
+        this.colorButton = new JButton("Choose Color");
         setValues();
         addFields();
     }
 
     private void setValues() {
         nameField.setText(category.getName());
-        caloriesField.setText(category.getFormattedCalories());
-        unitModel.setSelectedItem(category.getUnit());
+        colorButton.addActionListener(this);
     }
 
     private void addFields() {
         add("Name:", nameField);
-        add("Calories (kJ): ", caloriesField);
-        add("Measured in: ", new JComboBox<>(unitModel));
+        add("", colorButton);
     }
 
     @Override
     Category getEntity() {
         category.setName(nameField.getText());
-        category.setCalories(Integer.parseInt(caloriesField.getText()));
-        category.setUnit((Unit) unitModel.getSelectedItem());
+        category.setColor(color);
         return category;
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        color = JColorChooser.showDialog(colorButton, "Choose", color);
     }
 }
