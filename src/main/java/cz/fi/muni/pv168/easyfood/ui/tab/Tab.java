@@ -5,15 +5,15 @@ import cz.fi.muni.pv168.easyfood.ui.tablemodel.EntityTableModel;
 
 import javax.swing.*;
 
-public class Tab<E extends EntityTableModel<E>> {
+public class Tab<E extends EntityTableModel> {
     private JComponent component;
     private String title;
     private JTable table;
     private final E model;
 
-    private final EntityDialog<E> dialog;
+    private final EntityDialog dialog;
 
-    public Tab(String title, JTable table, E model, EntityDialog<E> dialog) {
+    public Tab(String title, JTable table, E model, EntityDialog dialog) {
         this.title = title;
         this.table = table;
         this.model = model;
@@ -49,7 +49,7 @@ public class Tab<E extends EntityTableModel<E>> {
         return model;
     }
 
-    public EntityDialog<E> getDialog() {
+    public EntityDialog getDialog() {
         return dialog;
     }
 

@@ -26,6 +26,6 @@ public final class AddAction extends AbstractAction {
         var model = tabContainer.getSelectedTab().getModel();
         StringBuilder title = new StringBuilder("Add ").append(tabContainer.getSelectedTab().getTitle());
         title.deleteCharAt(title.length() - 1);
-        dialog.show(null, title.toString()).ifPresent(model::addRow);
+        dialog.show(tabContainer.getSelectedTab().getTable(), title.toString()).ifPresent(model::addRow);
     }
 }
