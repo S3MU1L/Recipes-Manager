@@ -1,26 +1,21 @@
 package cz.fi.muni.pv168.easyfood.ui.action;
 
 
-import cz.fi.muni.pv168.easyfood.data.TestDataGenerator;
 import cz.fi.muni.pv168.easyfood.ui.Icons;
-import cz.fi.muni.pv168.easyfood.ui.dialog.RecipeDialog;
-import cz.fi.muni.pv168.easyfood.ui.tablemodel.RecipeTableModel;
+import cz.fi.muni.pv168.easyfood.ui.tab.TabContainer;
+import cz.fi.muni.pv168.easyfood.ui.tablemodel.EntityTableModel;
 
-import javax.swing.AbstractAction;
-import javax.swing.JTable;
-import javax.swing.KeyStroke;
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
-public final class AddRecipeAction extends AbstractAction {
+public final class AddAction extends AbstractAction {
 
-    private final JTable recipeTable;
-    private final TestDataGenerator testDataGenerator;
+    private final TabContainer tabContainer;
 
-    public AddRecipeAction(JTable recipeTable, TestDataGenerator testDataGenerator) {
+    public AddAction(TabContainer tabContainer) {
         super("Add", Icons.ADD_ICON);
-        this.recipeTable = recipeTable;
-        this.testDataGenerator = testDataGenerator;
+        this.tabContainer = tabContainer;
         putValue(SHORT_DESCRIPTION, "Adds new recipe");
         putValue(MNEMONIC_KEY, KeyEvent.VK_A);
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke("ctrl N"));
@@ -28,8 +23,11 @@ public final class AddRecipeAction extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        var recipeTableModel = (RecipeTableModel) recipeTable.getModel();
-        var dialog = new RecipeDialog(testDataGenerator.createTestRecipe());
-        dialog.show(recipeTable, "Add recipe").ifPresent(recipeTableModel::addRow);
+        var table = tabContainer.getSelectedTab().getTable();
+        var dialog = tabContainer.getSelectedTab().getDialog();
+        var model = tabContainer.getSelectedTab().getModel();
+        StringBuilder title = new StringBuilder("Add ").append(tabContainer.getSelectedTab().getTitle());
+        title.deleteCharAt(title.length() - 1);
+        dialog.show(null, title.toString()).ifPresent(model::addRow);
     }
 }
