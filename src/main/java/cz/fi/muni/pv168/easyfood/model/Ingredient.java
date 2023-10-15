@@ -30,6 +30,9 @@ public class Ingredient {
     }
 
     public String getFormattedCalories() {
+        if (calories == 0.0) {
+            return "";
+        }
         int multiplier = 1;
         if (calories < 10) {
             double log10Calories = Math.log10(calories);

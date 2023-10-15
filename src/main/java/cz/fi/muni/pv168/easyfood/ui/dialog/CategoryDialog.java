@@ -1,7 +1,6 @@
 package cz.fi.muni.pv168.easyfood.ui.dialog;
 
 import cz.fi.muni.pv168.easyfood.model.Category;
-import cz.fi.muni.pv168.easyfood.model.Recipe;
 
 import javax.swing.*;
 
@@ -28,7 +27,12 @@ public class CategoryDialog extends EntityDialog<Category> {
     }
 
     @Override
-    Category getEntity() {
+    public Category getEntity() {
         return new Category(nameField.getText());
+    }
+
+    @Override
+    public EntityDialog<?> createNewDialog() {
+        return new CategoryDialog();
     }
 }
