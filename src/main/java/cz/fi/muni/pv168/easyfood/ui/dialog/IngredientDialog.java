@@ -37,7 +37,7 @@ public class IngredientDialog extends EntityDialog<Ingredient> {
     private void addFields() {
         add("Name:", nameField);
         add("Calories (kJ): ", caloriesField);
-        add("Unit ", unitJComboBox);
+        add("Unit: ", unitJComboBox);
     }
 
     @Override
