@@ -3,8 +3,7 @@ package cz.fi.muni.pv168.easyfood.model;
 public enum Unit {
     MILLILITER("ml"),
     GRAM("g"),
-    PIECE("pc."),
-    EMPTY_UNIT("");
+    PIECE("pc.");
 
     private final String symbol;
     Unit(String symbol) {
