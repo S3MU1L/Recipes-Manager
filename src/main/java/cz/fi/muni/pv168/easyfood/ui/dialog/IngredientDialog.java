@@ -6,9 +6,7 @@ import cz.fi.muni.pv168.easyfood.ui.Utility;
 
 import javax.swing.*;
 
-/**
- * @author Samuel Sabo
- */
+
 public class IngredientDialog extends EntityDialog<Ingredient> {
     private final JTextField nameField = new JTextField();
     private final JTextField caloriesField = new JTextField();
@@ -38,8 +36,8 @@ public class IngredientDialog extends EntityDialog<Ingredient> {
 
     private void addFields() {
         add("Name:", nameField);
-        add("Calories(kJ): ", caloriesField);
-        add("Unit: ", unitJComboBox);
+        add("Calories (kJ): ", caloriesField);
+        add("Unit ", unitJComboBox);
     }
 
     @Override

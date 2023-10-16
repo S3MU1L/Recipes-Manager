@@ -64,7 +64,7 @@ public class MainWindow {
 
         addAction = new AddAction(tabContainer);
         deleteAction = new DeleteAction(tabContainer);
-        editAction = new EditAction(tabContainer);
+        editAction = new EditAction(tabContainer.getSelectedTab().getTable());
         showAction = new ShowAction(tabContainer.getSelectedTab().getTable());
         filterAction = new FilterAction();
         importAction = new ImportAction();
@@ -105,7 +105,7 @@ public class MainWindow {
         var table = new JTable(model);
         table.setAutoCreateRowSorter(true);
         table.getSelectionModel().addListSelectionListener(this::rowSelectionChanged);
-        recipeTab = new Tab<RecipeTableModel>("recipes", table, model, new RecipeDialog());
+        recipeTab = new Tab("recipes", table, model, new RecipeDialog());
         return table;
     }
 

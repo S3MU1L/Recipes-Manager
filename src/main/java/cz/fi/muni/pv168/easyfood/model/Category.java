@@ -18,6 +18,10 @@ public class Category {
         return new Category("", Color.WHITE);
     }
 
+    public static Category createEmptyCategory() {
+        return new Category("");
+    }
+
     public String getName() {
         return name;
     }
