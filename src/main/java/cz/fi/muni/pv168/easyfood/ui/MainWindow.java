@@ -64,7 +64,7 @@ public class MainWindow {
 
         addAction = new AddAction(tabContainer);
         deleteAction = new DeleteAction(tabContainer);
-        editAction = new EditAction(tabContainer.getSelectedTab().getTable());
+        editAction = new EditAction(tabContainer);
         showAction = new ShowAction(tabContainer.getSelectedTab().getTable());
         filterAction = new FilterAction();
         importAction = new ImportAction();

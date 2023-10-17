@@ -13,8 +13,13 @@ public class Ingredient {
         this.unit = unit;
     }
 
+    public Ingredient(String name, double calories) {
+        this.name = name;
+        this.calories = calories;
+    }
+
     public static Ingredient createEmptyIngredient() {
-        return new Ingredient("", 0, Unit.EMPTY_UNIT);
+        return new Ingredient("", 0);
     }
 
     public String getName() {

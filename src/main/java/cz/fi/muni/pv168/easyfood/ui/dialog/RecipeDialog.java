@@ -7,6 +7,8 @@ import cz.fi.muni.pv168.easyfood.ui.Utility;
 
 import javax.swing.*;
 
+import static java.lang.Math.round;
+
 public final class  RecipeDialog extends EntityDialog<Recipe> {
 
     private final JTextField nameField = new JTextField();
@@ -25,8 +27,8 @@ public final class  RecipeDialog extends EntityDialog<Recipe> {
     }
     private void setValues() {
         nameField.setText(recipe.getName());
-        caloriesField.setText(recipe.getFormattedCalories());
-        prepareTimeField.setText(recipe.getFormattedPreparationTime());
+        caloriesField.setText(String.valueOf(round(recipe.getCalories())));
+        prepareTimeField.setText(String.valueOf(recipe.getPreparationTime()));
     }
 
     private void addFields() {
@@ -48,6 +50,11 @@ public final class  RecipeDialog extends EntityDialog<Recipe> {
     @Override
     public EntityDialog<Recipe> createNewDialog() {
         return new RecipeDialog();
+    }
+
+    @Override
+    public EntityDialog<Recipe> createNewDialog(Recipe entity) {
+        return new RecipeDialog(entity);
     }
 
 }

@@ -57,7 +57,7 @@ public class Tab<E extends EntityTableModel> {
     }
 
     public void delete() {
-        int rows[] = table.getSelectedRows();
+        int[] rows = table.getSelectedRows();
         for (int i = rows.length - 1; i >= 0; i--) {
             int modelRow = table.convertRowIndexToModel(rows[i]);
             model.deleteRow(modelRow);

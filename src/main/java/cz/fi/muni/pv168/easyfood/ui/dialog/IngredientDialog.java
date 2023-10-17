@@ -26,7 +26,7 @@ public class IngredientDialog extends EntityDialog<Ingredient> {
 
     private void setValues() {
         nameField.setText(ingredient.getName());
-        caloriesField.setText(ingredient.getFormattedCalories());
+        caloriesField.setText(String.valueOf(ingredient.getCalories()));
 
         unitJComboBox.removeAllItems();
         for (Unit unit : Unit.values()) {
@@ -37,7 +37,7 @@ public class IngredientDialog extends EntityDialog<Ingredient> {
     private void addFields() {
         add("Name:", nameField);
         add("Calories (kJ): ", caloriesField);
-        add("Unit ", unitJComboBox);
+        add("Unit: ", unitJComboBox);
     }
 
     @Override
@@ -48,5 +48,10 @@ public class IngredientDialog extends EntityDialog<Ingredient> {
     @Override
     public EntityDialog<?> createNewDialog() {
         return new IngredientDialog();
+    }
+
+    @Override
+    public EntityDialog<Ingredient> createNewDialog(Ingredient entity) {
+        return new IngredientDialog(entity);
     }
 }
