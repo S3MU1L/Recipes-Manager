@@ -1,10 +1,13 @@
 package cz.fi.muni.pv168.easyfood.ui.tablemodel;
 
 import cz.fi.muni.pv168.easyfood.model.Category;
+import cz.fi.muni.pv168.easyfood.model.Recipe;
+import cz.fi.muni.pv168.easyfood.services.StatisticsService;
 import cz.fi.muni.pv168.easyfood.ui.column.Column;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Tibor Pelegrin
@@ -12,9 +15,10 @@ import java.util.List;
 public class CategoryTableModel extends EntityTableModel<Category>{
     private final List<Category> categories;
 
-    public CategoryTableModel(List<Category> categories) {
+    public CategoryTableModel(List<Category> categories, List<Recipe> recipes) {
         super(List.of(
-                Column.readOnly("Name", String.class, Category::getName)
+                Column.readOnly("Name", String.class, Category::getName),
+                Column.readOnly("Statistics", Long.class, category -> StatisticsService.calculateCategoryStatistics(category, recipes))
         ));
         this.categories = new ArrayList<>(categories);
     }
