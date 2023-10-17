@@ -52,8 +52,7 @@ public class TestDataGenerator {
         return new Category(category.getName(), Color.WHITE);
     }
     public List<Category> createTestCategories(int count){
-        return Stream
-                .generate(this::createTestCategory)
+        return CATEGORY.stream()
                 .limit(count)
                 .collect(Collectors.toList());
     }
