@@ -14,6 +14,7 @@ import cz.fi.muni.pv168.easyfood.ui.action.ImportAction;
 import cz.fi.muni.pv168.easyfood.ui.action.QuitAction;
 import cz.fi.muni.pv168.easyfood.ui.action.ShowAction;
 import cz.fi.muni.pv168.easyfood.ui.dialog.CategoryDialog;
+import cz.fi.muni.pv168.easyfood.ui.dialog.FilterDialog;
 import cz.fi.muni.pv168.easyfood.ui.dialog.IngredientDialog;
 import cz.fi.muni.pv168.easyfood.ui.dialog.RecipeDialog;
 import cz.fi.muni.pv168.easyfood.ui.tab.Tab;
@@ -62,11 +63,17 @@ public class MainWindow {
         tabContainer.addTab(categoryTab);
         tabContainer.addChangeListener(this::tabChangeListener);
 
+        TabContainer filterContainer = new TabContainer();
+        var model = new RecipeTableModel(recipes);
+        var table = new JTable(model);
+        Tab filterTab = new Tab("Filter", table, model, new FilterDialog(categories, ingredients));
+        filterContainer.addTab(filterTab);
+
         addAction = new AddAction(tabContainer);
         deleteAction = new DeleteAction(tabContainer);
         editAction = new EditAction(tabContainer);
         showAction = new ShowAction(tabContainer.getSelectedTab().getTable());
-        filterAction = new FilterAction();
+        filterAction = new FilterAction(filterContainer);
         importAction = new ImportAction();
         exportAction = new ExportAction();
 
