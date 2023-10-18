@@ -48,12 +48,10 @@ public class TestDataGenerator {
     private final Random random = new Random();
 
     public Category createTestCategory(){
-        Category category = selectRandom(CATEGORY);
-        return new Category(category.getName(), Color.WHITE);
+        return selectRandom(CATEGORY);
     }
     public List<Category> createTestCategories(int count){
-        return Stream
-                .generate(this::createTestCategory)
+        return CATEGORY.stream()
                 .limit(count)
                 .collect(Collectors.toList());
     }

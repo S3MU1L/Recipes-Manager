@@ -55,7 +55,7 @@ public class MainWindow {
         List<Category> categories = testDataGenerator.createTestCategories(10);
         recipeTable = createRecipeTable(recipes);
         ingredientTable = createIngredientTable(ingredients);
-        categoryTable = createCategoryTable(categories);
+        categoryTable = createCategoryTable(categories, recipes);
 
         TabContainer tabContainer = new TabContainer();
         tabContainer.addTab(recipeTab);
@@ -124,8 +124,8 @@ public class MainWindow {
         ingredientTab = new Tab("ingredients", table, model, new IngredientDialog());
         return table;
     }
-    private JTable createCategoryTable(List<Category> categories) {
-        var model = new CategoryTableModel(categories);
+    private JTable createCategoryTable(List<Category> categories, List<Recipe> recipes) {
+        var model = new CategoryTableModel(categories, recipes);
         var table = new JTable(model);
         table.setAutoCreateRowSorter(true);
         table.getSelectionModel().addListSelectionListener(this::rowSelectionChanged);
