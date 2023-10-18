@@ -5,6 +5,7 @@ import cz.fi.muni.pv168.easyfood.model.Filter;
 import cz.fi.muni.pv168.easyfood.model.Ingredient;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.List;
 
 public class FilterDialog extends EntityDialog<Filter> {
@@ -58,6 +59,10 @@ public class FilterDialog extends EntityDialog<Filter> {
 
     private void setValues() {
         nameField.setText("");
+
+        Dimension dimension = new Dimension(150, 100);
+        categoriesField.setMaximumSize(dimension);
+        ingredientsField.setMaximumSize(dimension);
 
         for (Category category : categories) {
             categoriesBox.add(new JCheckBox(category.getName()));
