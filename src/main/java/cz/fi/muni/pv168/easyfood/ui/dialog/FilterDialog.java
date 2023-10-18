@@ -12,8 +12,10 @@ public class FilterDialog extends EntityDialog<Filter> {
     private final List<Category> categories;
     private final List<Ingredient> ingredients;
     private final JTextField nameField = new JTextField();
-    private final JList<String> categoriesField;
-    private final JComboBox<String> ingredientField;
+    private final Box categoriesBox = Box.createVerticalBox();
+    private final JScrollPane categoriesField = new JScrollPane(categoriesBox);
+    private final Box ingredientsBox = Box.createVerticalBox();
+    private final JScrollPane ingredientsField = new JScrollPane(ingredientsBox);
     private final JSlider timeField = new JSlider();
     private final JTextField nutritionalValueField = new JTextField();
     private final JSlider portionsField = new JSlider();
@@ -22,8 +24,6 @@ public class FilterDialog extends EntityDialog<Filter> {
         this.filter = filter;
         this.categories = categories;
         this.ingredients = ingredients;
-        this.categoriesField = new JList<>(categories.stream().map(Category::getName).toArray(String[]::new));
-        this.ingredientField = new JComboBox<>(ingredients.stream().map(Ingredient::getName).toArray(String[]::new));
         addFields();
         setValues();
     }
@@ -50,7 +50,7 @@ public class FilterDialog extends EntityDialog<Filter> {
     private void addFields() {
         add("Name:", nameField);
         add("Category:", categoriesField);
-        add("Ingredients:", ingredientField);
+        add("Ingredients:", ingredientsField);
         add("Preparation time:", timeField);
         add("Max nutritional value:", nutritionalValueField);
         add("Portions:", portionsField);
@@ -58,6 +58,14 @@ public class FilterDialog extends EntityDialog<Filter> {
 
     private void setValues() {
         nameField.setText("");
+
+        for (Category category : categories) {
+            categoriesBox.add(new JCheckBox(category.getName()));
+        }
+
+        for (Ingredient ingredient : ingredients) {
+            ingredientsBox.add(new JCheckBox(ingredient.getName()));
+        }
 
         timeField.setMinimum(0);
         timeField.setMaximum(12);
