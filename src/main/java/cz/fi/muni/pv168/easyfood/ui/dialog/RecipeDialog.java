@@ -64,7 +64,7 @@ public final class  RecipeDialog extends EntityDialog<Recipe> {
         recipe.setPreparationTime(Utility.parseIntFromString(prepareTimeField.getText()));
         // only temporary solution, so that we can see calories we entered, will have to refactor this
         double calories = Utility.parseDoubleFromString(caloriesField.getText());
-        recipe.addIngredient(new Ingredient("nahodna", calories, Unit.GRAM), 1);
+        recipe.addIngredient(new Ingredient("nahodna", calories, Unit.createEmptyUnit()), 1);
         return recipe;
     }
 

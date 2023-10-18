@@ -1,6 +1,7 @@
 package cz.fi.muni.pv168.easyfood.data;
 
 
+import cz.fi.muni.pv168.easyfood.model.BaseUnit;
 import cz.fi.muni.pv168.easyfood.model.Category;
 import cz.fi.muni.pv168.easyfood.model.Ingredient;
 import cz.fi.muni.pv168.easyfood.model.IngredientWithAmount;
@@ -27,17 +28,22 @@ public class TestDataGenerator {
             new Category("Salad", Color.WHITE),
             new Category("Brunch", Color.WHITE)
     );
+    private static final List<Unit> UNITS = List.of(
+            new Unit("Gram", BaseUnit.GRAM, 1),
+            new Unit("Milliliter", BaseUnit.MILLILITER, 1),
+            new Unit("Piece", BaseUnit.PIECE, 1)
+    );
     private static final List<Ingredient> INGREDIENTS = List.of(
-            new Ingredient("Water", 1, Unit.MILLILITER),
-            new Ingredient("Meat", 1, Unit.GRAM),
-            new Ingredient("Milk", 1, Unit.MILLILITER),
-            new Ingredient("Egg", 1, Unit.PIECE),
-            new Ingredient("Sugar", 1, Unit.GRAM),
-            new Ingredient("Oil", 1, Unit.MILLILITER),
-            new Ingredient("Salt", 1, Unit.GRAM),
-            new Ingredient("Butter", 1, Unit.GRAM),
-            new Ingredient("Bread", 1, Unit.PIECE),
-            new Ingredient("Sausage", 1, Unit.GRAM)
+            new Ingredient("Water", 1, UNITS.get(1)),
+            new Ingredient("Meat", 1, UNITS.get(0)),
+            new Ingredient("Milk", 1, UNITS.get(1)),
+            new Ingredient("Egg", 1, UNITS.get(2)),
+            new Ingredient("Sugar", 1, UNITS.get(0)),
+            new Ingredient("Oil", 1, UNITS.get(1)),
+            new Ingredient("Salt", 1, UNITS.get(0)),
+            new Ingredient("Butter", 1, UNITS.get(0)),
+            new Ingredient("Bread", 1, UNITS.get(2)),
+            new Ingredient("Sausage", 1, UNITS.get(0))
     );
     private static final List<String> RECIPE_NAMES = List.of("Hot dog", "Steak", "Scrambled eggs", "Sandwich",
             "Hamburger", "Schnitzel", "Tofu", "Ramen");
@@ -47,10 +53,21 @@ public class TestDataGenerator {
 
     private final Random random = new Random();
 
-    public Category createTestCategory(){
+    public Unit createTestUnit() {
+        return selectRandom(UNITS);
+    }
+
+    public List<Unit> createTestUnits(int count) {
+        return UNITS.stream()
+                .limit(count)
+                .collect(Collectors.toList());
+    }
+
+    public Category createTestCategory() {
         return selectRandom(CATEGORY);
     }
-    public List<Category> createTestCategories(int count){
+
+    public List<Category> createTestCategories(int count) {
         return CATEGORY.stream()
                 .limit(count)
                 .collect(Collectors.toList());
@@ -75,9 +92,11 @@ public class TestDataGenerator {
 
     public Recipe createTestRecipe() {
         String name = selectRandom(RECIPE_NAMES);
-        List<IngredientWithAmount> ingredients = Stream.generate(this::createTestIngredientWithAmount).limit(5).collect(Collectors.toList());
+        List<IngredientWithAmount> ingredients =
+                Stream.generate(this::createTestIngredientWithAmount).limit(5).collect(Collectors.toList());
         String description = "In a medium bowl, beat together egg whites, 1/4 cup butter and 1/4 teaspoon salt";
-        return new Recipe(name, ingredients, description, random.nextInt(1, 20), random.nextInt(5) + 1, createTestCategory());
+        return new Recipe(name, ingredients, description, random.nextInt(1, 20),
+                random.nextInt(5) + 1, createTestCategory());
     }
 
     public List<Recipe> createTestRecipes(int count) {
