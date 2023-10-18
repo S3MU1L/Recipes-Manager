@@ -1,11 +1,14 @@
 package cz.fi.muni.pv168.easyfood.ui.dialog;
 
 import cz.fi.muni.pv168.easyfood.model.Category;
+import cz.fi.muni.pv168.easyfood.model.Ingredient;
+import cz.fi.muni.pv168.easyfood.model.Unit;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 /**
  * @author Samuel Sabo
@@ -43,12 +46,13 @@ public class CategoryDialog extends EntityDialog<Category> implements ActionList
     }
 
     @Override
-    public EntityDialog<?> createNewDialog() {
+    public EntityDialog<?> createNewDialog(List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
         return new CategoryDialog();
     }
 
+
     @Override
-    public EntityDialog<Category> createNewDialog(Category entity) {
+    public EntityDialog<Category> createNewDialog(Category entity, List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
         return new CategoryDialog(entity);
     }
 

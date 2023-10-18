@@ -5,6 +5,7 @@ import cz.fi.muni.pv168.easyfood.data.TestDataGenerator;
 import cz.fi.muni.pv168.easyfood.model.Category;
 import cz.fi.muni.pv168.easyfood.model.Ingredient;
 import cz.fi.muni.pv168.easyfood.model.Recipe;
+import cz.fi.muni.pv168.easyfood.model.Unit;
 import cz.fi.muni.pv168.easyfood.ui.action.AddAction;
 import cz.fi.muni.pv168.easyfood.ui.action.DeleteAction;
 import cz.fi.muni.pv168.easyfood.ui.action.EditAction;
@@ -53,7 +54,8 @@ public class MainWindow {
         List<Recipe> recipes = testDataGenerator.createTestRecipes(10);
         List<Ingredient> ingredients = testDataGenerator.createTestIngredients(10);
         List<Category> categories = testDataGenerator.createTestCategories(10);
-        recipeTable = createRecipeTable(recipes);
+        List<Unit> units = List.of(Unit.GRAM, Unit.PIECE, Unit.MILLILITER);
+        recipeTable = createRecipeTable(recipes, ingredients, categories);
         ingredientTable = createIngredientTable(ingredients);
         categoryTable = createCategoryTable(categories, recipes);
 
@@ -69,11 +71,11 @@ public class MainWindow {
         Tab filterTab = new Tab("Filter", table, model, new FilterDialog(categories, ingredients));
         filterContainer.addTab(filterTab);
 
-        addAction = new AddAction(tabContainer);
+        addAction = new AddAction(tabContainer, ingredients, categories, units);
         deleteAction = new DeleteAction(tabContainer);
-        editAction = new EditAction(tabContainer);
+        editAction = new EditAction(tabContainer, ingredients, categories, units);
         showAction = new ShowAction(tabContainer.getSelectedTab().getTable());
-        filterAction = new FilterAction(filterContainer);
+        filterAction = new FilterAction(filterContainer, ingredients, categories, units);
         importAction = new ImportAction();
         exportAction = new ExportAction();
 
@@ -107,12 +109,12 @@ public class MainWindow {
         return frame;
     }
 
-    private JTable createRecipeTable(List<Recipe> recipes) {
+    private JTable createRecipeTable(List<Recipe> recipes, List<Ingredient> ingredients, List<Category> categories) {
         var model = new RecipeTableModel(recipes);
         var table = new JTable(model);
         table.setAutoCreateRowSorter(true);
         table.getSelectionModel().addListSelectionListener(this::rowSelectionChanged);
-        recipeTab = new Tab("recipes", table, model, new RecipeDialog());
+        recipeTab = new Tab("recipes", table, model, new RecipeDialog(Recipe.createEmptyRecipe(), ingredients, categories));
         return table;
     }
 

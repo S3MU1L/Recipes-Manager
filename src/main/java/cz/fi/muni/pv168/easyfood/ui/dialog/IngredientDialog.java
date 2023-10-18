@@ -1,10 +1,12 @@
 package cz.fi.muni.pv168.easyfood.ui.dialog;
 
+import cz.fi.muni.pv168.easyfood.model.Category;
 import cz.fi.muni.pv168.easyfood.model.Ingredient;
 import cz.fi.muni.pv168.easyfood.model.Unit;
 import cz.fi.muni.pv168.easyfood.ui.Utility;
 
 import javax.swing.*;
+import java.util.List;
 
 
 public class IngredientDialog extends EntityDialog<Ingredient> {
@@ -46,12 +48,13 @@ public class IngredientDialog extends EntityDialog<Ingredient> {
     }
 
     @Override
-    public EntityDialog<?> createNewDialog() {
+    public EntityDialog<?> createNewDialog(List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
         return new IngredientDialog();
     }
 
+
     @Override
-    public EntityDialog<Ingredient> createNewDialog(Ingredient entity) {
+    public EntityDialog<Ingredient> createNewDialog(Ingredient entity, List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
         return new IngredientDialog(entity);
     }
 }

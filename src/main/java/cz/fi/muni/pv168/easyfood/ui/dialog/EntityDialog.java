@@ -1,12 +1,15 @@
 package cz.fi.muni.pv168.easyfood.ui.dialog;
 
+import cz.fi.muni.pv168.easyfood.model.Category;
+import cz.fi.muni.pv168.easyfood.model.Ingredient;
+import cz.fi.muni.pv168.easyfood.model.Unit;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.text.html.parser.Entity;
+import java.util.List;
 import java.util.Optional;
 
 import static javax.swing.JOptionPane.OK_CANCEL_OPTION;
@@ -28,9 +31,8 @@ public abstract class EntityDialog<E> {
     }
 
     public abstract E getEntity();
-
-    public abstract EntityDialog<?> createNewDialog();
-    public abstract EntityDialog<E> createNewDialog(E entity);
+    public abstract EntityDialog<?> createNewDialog(List<Ingredient> ingredients, List<Category> categories, List<Unit> units);
+    public abstract EntityDialog<E> createNewDialog(E entity, List<Ingredient> ingredients, List<Category> categories, List<Unit> units);
 
     public Optional<E> show(JComponent parentComponent, String title) {
         int result = JOptionPane.showOptionDialog(parentComponent, panel, title,
