@@ -1,17 +1,17 @@
 package cz.fi.muni.pv168.easyfood.ui.action;
-
 import cz.fi.muni.pv168.easyfood.ui.Icons;
-
+import cz.fi.muni.pv168.easyfood.ui.dialog.ShowDialog;
+import cz.fi.muni.pv168.easyfood.ui.tab.TabContainer;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
 public class ShowAction extends AbstractAction {
-    private JTable table;
+    private final TabContainer tabContainer;
 
-    public ShowAction(JTable table) {
+    public ShowAction(TabContainer tabContainer) {
         super("Show", Icons.SHOW_ICON);
-        this.table = table;
+        this.tabContainer = tabContainer;
         putValue(SHORT_DESCRIPTION, "Show the details of a recipe");
         putValue(MNEMONIC_KEY, KeyEvent.VK_S);
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke("ctrl S"));
@@ -19,14 +19,17 @@ public class ShowAction extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        var table = tabContainer.getSelectedTab().getTable();
+        int[] selectedRows = table.getSelectedRows();
+        if (selectedRows.length != 1) {
+            throw new IllegalStateException("Invalid selected rows count (must be 1): " + selectedRows.length);
+        }
+        if (table.isEditing()) {
+            table.getCellEditor().cancelCellEditing();
+        }
 
-    }
-
-    public JTable getTable() {
-        return table;
-    }
-
-    public void setTable(JTable table) {
-        this.table = table;
+        int modelRow = table.convertRowIndexToModel(selectedRows[0]);
+        var dialog = new ShowDialog(tabContainer.getSelectedTab().getModel().getEntity(modelRow));
+        dialog.show(tabContainer.getComponent(), "Show");
     }
 }

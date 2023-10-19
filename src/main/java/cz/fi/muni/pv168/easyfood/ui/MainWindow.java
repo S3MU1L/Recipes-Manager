@@ -80,7 +80,7 @@ public class MainWindow {
         addAction = new AddAction(tabContainer, ingredients, categories, units);
         deleteAction = new DeleteAction(tabContainer);
         editAction = new EditAction(tabContainer, ingredients, categories, units);
-        showAction = new ShowAction(tabContainer.getSelectedTab().getTable());
+        showAction = new ShowAction(tabContainer);
         filterAction = new FilterAction(filterContainer, ingredients, categories, units);
         importAction = new ImportAction();
         exportAction = new ExportAction();
