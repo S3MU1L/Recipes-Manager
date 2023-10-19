@@ -10,11 +10,12 @@ import javax.swing.*;
 
 import java.awt.*;
 import java.util.List;
+import java.util.Optional;
 
 import static java.lang.Math.round;
+import static javax.swing.JOptionPane.*;
 
 public final class  RecipeDialog extends EntityDialog<Recipe> {
-
     private final JTextField nameField = new JTextField();
     private final JTextField caloriesField = new JTextField();
     private final JTextField prepareTimeField = new JTextField();
@@ -78,4 +79,15 @@ public final class  RecipeDialog extends EntityDialog<Recipe> {
         return new RecipeDialog(entity, ingredients, categories);
     }
 
+    @Override
+    public Optional<Recipe> show(JComponent parentComponent, String title) {
+        int result = JOptionPane.showOptionDialog(parentComponent, super.getPanel(), title,
+                OK_CANCEL_OPTION, PLAIN_MESSAGE, null, null, null);
+        if (result == OK_OPTION) {
+            new IngredientWithAmountDialog(recipe, ingredients).show(null, "Add amount to ingredients");
+            return Optional.of(getEntity());
+        } else {
+            return Optional.empty();
+        }
+    }
 }

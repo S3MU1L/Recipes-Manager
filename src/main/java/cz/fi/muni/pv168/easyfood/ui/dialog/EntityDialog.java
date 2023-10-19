@@ -19,7 +19,9 @@ import static javax.swing.JOptionPane.PLAIN_MESSAGE;
 public abstract class EntityDialog<E> {
 
     private final JPanel panel = new JPanel();
-
+    public JPanel getPanel() {
+        return panel;
+    }
     EntityDialog() {
         panel.setLayout(new MigLayout("wrap 2"));
     }
