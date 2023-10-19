@@ -46,7 +46,7 @@ public class Ingredient {
         }
 
         int formattedCalories = (int) Math.round(calories * multiplier);
-        return formattedCalories + " kJ (" + multiplier + " " + unit + ")";
+        return formattedCalories + " kJ (" + multiplier + " " + unit.getName() + ")";
     }
 
     public void setCalories(double calories) {

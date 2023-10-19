@@ -2,51 +2,51 @@ package cz.fi.muni.pv168.easyfood.ui.dialog;
 
 import cz.fi.muni.pv168.easyfood.model.Category;
 import cz.fi.muni.pv168.easyfood.model.Ingredient;
+import cz.fi.muni.pv168.easyfood.model.IngredientWithAmount;
 import cz.fi.muni.pv168.easyfood.model.Recipe;
 import cz.fi.muni.pv168.easyfood.model.Unit;
 import cz.fi.muni.pv168.easyfood.ui.Utility;
 
 import javax.swing.*;
-
 import java.awt.*;
 import java.util.List;
-import java.util.Optional;
 
 import static java.lang.Math.round;
-import static javax.swing.JOptionPane.*;
 
-public final class  RecipeDialog extends EntityDialog<Recipe> {
+/**
+ * @author Samuel Sabo
+ */
+public class ShowDialog extends EntityDialog<Recipe> {
     private final JTextField nameField = new JTextField();
     private final JTextField caloriesField = new JTextField();
     private final JTextField prepareTimeField = new JTextField();
     private final Recipe recipe;
-    private final List<Ingredient> ingredients;
-    private final JScrollPane categoriesField = new JScrollPane();
+    private final List<IngredientWithAmount> ingredients;
+    private final JTextField categoriesField = new JTextField();
     private final Box ingredientsBox = Box.createVerticalBox();
     private final JScrollPane ingredientsField = new JScrollPane(ingredientsBox);
 
-    public RecipeDialog(List<Ingredient> ingredients, List<Category> categories) {
-        this(Recipe.createEmptyRecipe(), ingredients, categories);
+    public ShowDialog() {
+        this(Recipe.createEmptyRecipe());
     }
 
-    public RecipeDialog(Recipe recipe, List<Ingredient> ingredients, List<Category> categories) {
-        this.recipe = recipe;
-        this.ingredients = ingredients;
-        JList<String> categoriesList = new JList<>(categories.stream().map(Category::getName).toArray(String[]::new));
-        categoriesField.setViewportView(categoriesList);
+    public ShowDialog(Object object) {
+        this.recipe = (Recipe) object;
+        ingredients = recipe.getIngredients();
         setValues();
         addFields();
     }
+
     private void setValues() {
         nameField.setText(recipe.getName());
         caloriesField.setText(String.valueOf(round(recipe.getCalories())));
         prepareTimeField.setText(String.valueOf(recipe.getPreparationTime()));
+        categoriesField.setText(recipe.getCategory().getName());
 
         Dimension dimension = new Dimension(150, 100);
-        categoriesField.setMaximumSize(dimension);
         ingredientsField.setMaximumSize(dimension);
 
-        for (Ingredient ingredient : ingredients) {
+        for (IngredientWithAmount ingredient : ingredients) {
             ingredientsBox.add(new JCheckBox(ingredient.getName()));
         }
     }
@@ -71,23 +71,11 @@ public final class  RecipeDialog extends EntityDialog<Recipe> {
 
     @Override
     public EntityDialog<?> createNewDialog(List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
-        return new RecipeDialog(ingredients, categories);
+        return new ShowDialog();
     }
 
     @Override
-    public EntityDialog<Recipe> createNewDialog(Recipe entity, List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
-        return new RecipeDialog(entity, ingredients, categories);
-    }
-
-    @Override
-    public Optional<Recipe> show(JComponent parentComponent, String title) {
-        int result = JOptionPane.showOptionDialog(parentComponent, super.getPanel(), title,
-                OK_CANCEL_OPTION, PLAIN_MESSAGE, null, null, null);
-        if (result == OK_OPTION) {
-            new IngredientWithAmountDialog(recipe, ingredients).show(null, "Add amount to ingredients");
-            return Optional.of(getEntity());
-        } else {
-            return Optional.empty();
-        }
+    public EntityDialog<Recipe> createNewDialog(Recipe recipe, List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
+        return new ShowDialog(recipe);
     }
 }
