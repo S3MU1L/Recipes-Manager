@@ -153,10 +153,11 @@ public class MainWindow {
 
     private JPopupMenu createRecipeTablePopupMenu() {
         var menu = new JPopupMenu();
+        menu.add(addAction);
         menu.add(deleteAction);
         menu.add(editAction);
-        menu.add(addAction);
         menu.add(showAction);
+        menu.add(filterAction);
         return menu;
     }
 
