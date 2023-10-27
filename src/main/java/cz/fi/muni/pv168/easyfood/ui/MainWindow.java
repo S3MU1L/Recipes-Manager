@@ -85,7 +85,11 @@ public class MainWindow {
         importAction = new ImportAction();
         exportAction = new ExportAction();
 
-        recipeTable.setComponentPopupMenu(createRecipeTablePopupMenu());
+        recipeTable.setComponentPopupMenu(createExtendedTablePopupMenu());
+        ingredientTable.setComponentPopupMenu(createBasicTablePopupMenu());
+        categoryTable.setComponentPopupMenu(createBasicTablePopupMenu());
+        unitTable.setComponentPopupMenu(createBasicTablePopupMenu());
+
         frame.add(tabContainer.getComponent(), BorderLayout.CENTER);
         frame.add(createToolbar(), BorderLayout.BEFORE_FIRST_LINE);
         frame.setJMenuBar(createMenuBar());
@@ -133,6 +137,7 @@ public class MainWindow {
         ingredientTab = new Tab("ingredients", table, model, new IngredientDialog(units));
         return table;
     }
+
     private JTable createCategoryTable(List<Category> categories, List<Recipe> recipes) {
         var model = new CategoryTableModel(categories, recipes);
         var table = new JTable(model);
@@ -142,7 +147,7 @@ public class MainWindow {
         return table;
     }
 
-    private JTable createUnitTable(List<Unit> units){
+    private JTable createUnitTable(List<Unit> units) {
         var model = new UnitTableModel(units);
         var table = new JTable(model);
         table.setAutoCreateRowSorter(true);
@@ -151,12 +156,18 @@ public class MainWindow {
         return table;
     }
 
-    private JPopupMenu createRecipeTablePopupMenu() {
+    private JPopupMenu createExtendedTablePopupMenu() {
+        var menu = createBasicTablePopupMenu();
+        menu.add(showAction);
+        menu.add(filterAction);
+        return menu;
+    }
+
+    private JPopupMenu createBasicTablePopupMenu() {
         var menu = new JPopupMenu();
+        menu.add(addAction);
         menu.add(deleteAction);
         menu.add(editAction);
-        menu.add(addAction);
-        menu.add(showAction);
         return menu;
     }
 
@@ -183,8 +194,6 @@ public class MainWindow {
         toolbar.add(deleteAction);
         toolbar.add(showAction);
         toolbar.add(filterAction);
-        toolbar.add(importAction);
-        toolbar.add(exportAction);
         return toolbar;
     }
 
