@@ -18,7 +18,7 @@ public class CategoryTableModel extends EntityTableModel<Category>{
     public CategoryTableModel(List<Category> categories, List<Recipe> recipes) {
         super(List.of(
                 Column.readOnly("Name", String.class, Category::getName),
-                Column.readOnly("Statistics", Long.class, category -> StatisticsService.calculateCategoryStatistics(category, recipes))
+                Column.readOnly("Statistics", String.class, category -> StatisticsService.calculateCategoryStatistics(category, recipes).toString())
         ));
         this.categories = new ArrayList<>(categories);
     }
