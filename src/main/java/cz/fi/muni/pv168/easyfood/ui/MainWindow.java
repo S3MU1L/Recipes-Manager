@@ -183,8 +183,6 @@ public class MainWindow {
         toolbar.add(deleteAction);
         toolbar.add(showAction);
         toolbar.add(filterAction);
-        toolbar.add(importAction);
-        toolbar.add(exportAction);
         return toolbar;
     }
 
