@@ -6,17 +6,18 @@ import cz.fi.muni.pv168.easyfood.model.IngredientWithAmount;
 import cz.fi.muni.pv168.easyfood.model.Recipe;
 import cz.fi.muni.pv168.easyfood.model.Unit;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.Box;
+import javax.swing.JComponent;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import java.awt.Dimension;
 import java.util.List;
 import java.util.Optional;
 
 import static java.lang.Math.round;
 import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
 
-/**
- * @author Samuel Sabo
- */
 public class ShowDialog extends EntityDialog<Recipe> {
     private final JTextField nameField = new JTextField();
     private final JTextField caloriesField = new JTextField();

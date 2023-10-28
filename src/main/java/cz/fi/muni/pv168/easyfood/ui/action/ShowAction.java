@@ -5,7 +5,8 @@ import cz.fi.muni.pv168.easyfood.ui.Icons;
 import cz.fi.muni.pv168.easyfood.ui.dialog.ShowDialog;
 import cz.fi.muni.pv168.easyfood.ui.tab.TabContainer;
 
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.KeyStroke;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 

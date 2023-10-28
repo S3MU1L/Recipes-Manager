@@ -1,6 +1,5 @@
 package cz.fi.muni.pv168.easyfood.ui.tablemodel;
 
-import cz.fi.muni.pv168.easyfood.model.Recipe;
 import cz.fi.muni.pv168.easyfood.ui.column.Column;
 
 import javax.swing.table.AbstractTableModel;
@@ -12,8 +11,7 @@ public abstract class EntityTableModel<E> extends AbstractTableModel {
     private final List<Column<?, E>> columns;
 
     public EntityTableModel(List<Column<?, E>> columns) {
-        List<Column<?, E>> cols = new ArrayList<>();
-        cols.addAll(columns);
+        List<Column<?, E>> cols = new ArrayList<>(columns);
         this.columns = Collections.unmodifiableList(cols);
     }
 

@@ -1,10 +1,7 @@
 package cz.fi.muni.pv168.easyfood.model;
 
-import java.awt.*;
+import java.awt.Color;
 
-/**
- * @author Tibor Pelegrin
- */
 public class Category {
     private String name;
     private Color color;

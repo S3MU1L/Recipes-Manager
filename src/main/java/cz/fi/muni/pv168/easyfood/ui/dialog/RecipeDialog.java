@@ -6,9 +6,14 @@ import cz.fi.muni.pv168.easyfood.model.Recipe;
 import cz.fi.muni.pv168.easyfood.model.Unit;
 import cz.fi.muni.pv168.easyfood.ui.Utility;
 
-import javax.swing.*;
-
-import java.awt.*;
+import javax.swing.Box;
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import java.awt.Dimension;
 import java.util.List;
 import java.util.Optional;
 

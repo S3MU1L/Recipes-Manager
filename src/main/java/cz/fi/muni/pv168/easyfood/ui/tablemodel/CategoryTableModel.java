@@ -7,11 +7,8 @@ import cz.fi.muni.pv168.easyfood.ui.column.Column;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-/**
- * @author Tibor Pelegrin
- */
+
 public class CategoryTableModel extends EntityTableModel<Category>{
     private final List<Category> categories;
 
