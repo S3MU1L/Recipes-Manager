@@ -204,8 +204,10 @@ public class MainWindow {
         toolbar.addSeparator();
 
         toolbar.add(Box.createHorizontalGlue());
+        recipeCountLabel.setHorizontalAlignment(SwingConstants.CENTER);
         updateRecipeCountLabel(recipeCountLabel);
         toolbar.add(recipeCountLabel);
+        toolbar.add(Box.createHorizontalGlue());
 
         return toolbar;
     }
