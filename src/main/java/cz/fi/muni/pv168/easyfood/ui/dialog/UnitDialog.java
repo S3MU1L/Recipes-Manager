@@ -5,12 +5,10 @@ import cz.fi.muni.pv168.easyfood.model.Category;
 import cz.fi.muni.pv168.easyfood.model.Ingredient;
 import cz.fi.muni.pv168.easyfood.model.Unit;
 
-import javax.swing.*;
+import javax.swing.JComboBox;
+import javax.swing.JTextField;
 import java.util.List;
 
-/**
- * @author Samuel Sabo
- */
 public class UnitDialog  extends EntityDialog<Unit>{
     private final JTextField nameField = new JTextField();
     private final JComboBox<BaseUnit> baseUnitField = new JComboBox<>();

@@ -4,15 +4,14 @@ import cz.fi.muni.pv168.easyfood.model.Category;
 import cz.fi.muni.pv168.easyfood.model.Ingredient;
 import cz.fi.muni.pv168.easyfood.model.Unit;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JButton;
+import javax.swing.JColorChooser;
+import javax.swing.JTextField;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
-/**
- * @author Samuel Sabo
- */
 public class CategoryDialog extends EntityDialog<Category> implements ActionListener {
     private final JTextField nameField = new JTextField();
     private final JButton colorButton;

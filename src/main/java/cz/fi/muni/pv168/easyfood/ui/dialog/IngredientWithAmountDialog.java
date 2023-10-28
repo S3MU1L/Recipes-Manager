@@ -8,9 +8,6 @@ import cz.fi.muni.pv168.easyfood.model.Unit;
 import javax.swing.*;
 import java.util.List;
 
-/**
- * @author Samuel Sabo
- */
 public class IngredientWithAmountDialog extends EntityDialog<Recipe> {
     private final Recipe recipe;
     private final List<Ingredient> ingredients;

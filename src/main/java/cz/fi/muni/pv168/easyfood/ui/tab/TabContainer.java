@@ -1,8 +1,9 @@
 package cz.fi.muni.pv168.easyfood.ui.tab;
 
-import javax.swing.*;
+import javax.swing.JComponent;
+import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeListener;
-import java.awt.*;
+import java.awt.Component;
 import java.util.IdentityHashMap;
 import java.util.Map;
 

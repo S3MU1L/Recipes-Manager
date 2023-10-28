@@ -1,8 +1,5 @@
 package cz.fi.muni.pv168.easyfood.model;
 
-/**
- * @author Samuel Sabo
- */
 public class Unit {
     public String getName() {
         return name;

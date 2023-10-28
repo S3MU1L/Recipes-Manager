@@ -3,7 +3,9 @@ package cz.fi.muni.pv168.easyfood.ui.tab;
 import cz.fi.muni.pv168.easyfood.ui.dialog.EntityDialog;
 import cz.fi.muni.pv168.easyfood.ui.tablemodel.EntityTableModel;
 
-import javax.swing.*;
+import javax.swing.JComponent;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 
 public class Tab<E extends EntityTableModel> {
     private JComponent component;
