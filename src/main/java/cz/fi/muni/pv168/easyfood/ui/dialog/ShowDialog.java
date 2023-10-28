@@ -9,8 +9,10 @@ import cz.fi.muni.pv168.easyfood.model.Unit;
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
+import java.util.Optional;
 
 import static java.lang.Math.round;
+import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
 
 /**
  * @author Samuel Sabo
@@ -77,5 +79,11 @@ public class ShowDialog extends EntityDialog<Recipe> {
     @Override
     public EntityDialog<Recipe> createNewDialog(Recipe recipe, List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
         return new ShowDialog(recipe);
+    }
+
+    @Override
+    public Optional<Recipe> show(JComponent parentComponent, String title) {
+        JOptionPane.showMessageDialog(parentComponent, super.getPanel(), "Show", INFORMATION_MESSAGE, null);
+        return Optional.ofNullable(recipe);
     }
 }
