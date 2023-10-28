@@ -5,7 +5,6 @@ import cz.fi.muni.pv168.easyfood.model.Ingredient;
 import cz.fi.muni.pv168.easyfood.model.IngredientWithAmount;
 import cz.fi.muni.pv168.easyfood.model.Recipe;
 import cz.fi.muni.pv168.easyfood.model.Unit;
-import cz.fi.muni.pv168.easyfood.ui.Utility;
 
 import javax.swing.*;
 import java.awt.*;
@@ -30,8 +29,8 @@ public class ShowDialog extends EntityDialog<Recipe> {
         this(Recipe.createEmptyRecipe());
     }
 
-    public ShowDialog(Object object) {
-        this.recipe = (Recipe) object;
+    public ShowDialog(Recipe recipe) {
+        this.recipe = recipe;
         ingredients = recipe.getIngredients();
         setValues();
         addFields();
@@ -39,15 +38,21 @@ public class ShowDialog extends EntityDialog<Recipe> {
 
     private void setValues() {
         nameField.setText(recipe.getName());
+        nameField.setEditable(false);
         caloriesField.setText(String.valueOf(round(recipe.getCalories())));
+        caloriesField.setEditable(false);
         prepareTimeField.setText(String.valueOf(recipe.getPreparationTime()));
+        prepareTimeField.setEditable(false);
         categoriesField.setText(recipe.getCategory().getName());
+        categoriesField.setEditable(false);
 
         Dimension dimension = new Dimension(150, 100);
         ingredientsField.setMaximumSize(dimension);
 
         for (IngredientWithAmount ingredient : ingredients) {
-            ingredientsBox.add(new JCheckBox(ingredient.getName()));
+            JTextField jTextField = new JTextField(ingredient.getName());
+            jTextField.setEditable(false);
+            ingredientsBox.add(jTextField);
         }
     }
 
@@ -61,11 +66,6 @@ public class ShowDialog extends EntityDialog<Recipe> {
 
     @Override
     public Recipe getEntity() {
-        recipe.setName(nameField.getText());
-        recipe.setPreparationTime(Utility.parseIntFromString(prepareTimeField.getText()));
-        // only temporary solution, so that we can see calories we entered, will have to refactor this
-        double calories = Utility.parseDoubleFromString(caloriesField.getText());
-        recipe.addIngredient(new Ingredient("nahodna", calories, Unit.createEmptyUnit()), 1);
         return recipe;
     }
 
