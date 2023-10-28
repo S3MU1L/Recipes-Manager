@@ -5,35 +5,39 @@ import cz.fi.muni.pv168.easyfood.model.Ingredient;
 import cz.fi.muni.pv168.easyfood.model.IngredientWithAmount;
 import cz.fi.muni.pv168.easyfood.model.Recipe;
 import cz.fi.muni.pv168.easyfood.model.Unit;
+import cz.fi.muni.pv168.easyfood.ui.tablemodel.IngredientWithAmountTableModel;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JComponent;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import java.awt.Dimension;
 import java.util.List;
 import java.util.Optional;
 
 import static java.lang.Math.round;
 import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
 
-/**
- * @author Samuel Sabo
- */
 public class ShowDialog extends EntityDialog<Recipe> {
     private final JTextField nameField = new JTextField();
     private final JTextField caloriesField = new JTextField();
     private final JTextField prepareTimeField = new JTextField();
     private final Recipe recipe;
-    private final List<IngredientWithAmount> ingredients;
     private final JTextField categoriesField = new JTextField();
-    private final Box ingredientsBox = Box.createVerticalBox();
-    private final JScrollPane ingredientsField = new JScrollPane(ingredientsBox);
-
+    private final JScrollPane ingredientsTable;
     public ShowDialog() {
         this(Recipe.createEmptyRecipe());
     }
 
     public ShowDialog(Recipe recipe) {
         this.recipe = recipe;
-        ingredients = recipe.getIngredients();
+        List<IngredientWithAmount> ingredients = recipe.getIngredients();
+        var model = new IngredientWithAmountTableModel(ingredients);
+         var table = new JTable(model);
+        table.setAutoCreateRowSorter(true);
+        table.setCellSelectionEnabled(false);
+        ingredientsTable = new JScrollPane(table);
         setValues();
         addFields();
     }
@@ -48,14 +52,8 @@ public class ShowDialog extends EntityDialog<Recipe> {
         categoriesField.setText(recipe.getCategory().getName());
         categoriesField.setEditable(false);
 
-        Dimension dimension = new Dimension(150, 100);
-        ingredientsField.setMaximumSize(dimension);
-
-        for (IngredientWithAmount ingredient : ingredients) {
-            JTextField jTextField = new JTextField(ingredient.getName());
-            jTextField.setEditable(false);
-            ingredientsBox.add(jTextField);
-        }
+        Dimension dimension = new Dimension(250, 100);
+        ingredientsTable.setMaximumSize(dimension);
     }
 
     private void addFields() {
@@ -63,7 +61,7 @@ public class ShowDialog extends EntityDialog<Recipe> {
         add("Calories (kJ): ", caloriesField);
         add("Time to prepare (minutes): ", prepareTimeField);
         add("Category:", categoriesField);
-        add("Ingredients:", ingredientsField);
+        add("Ingredients:", ingredientsTable);
     }
 
     @Override
