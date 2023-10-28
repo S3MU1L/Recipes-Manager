@@ -43,6 +43,7 @@ public class MainWindow {
     private final FilterAction filterAction;
     private final ExportAction exportAction;
     private final ImportAction importAction;
+    private final TabContainer tabContainer;
     private Tab ingredientTab;
     private Tab recipeTab;
     private Tab categoryTab;
@@ -51,6 +52,7 @@ public class MainWindow {
     private final JTable recipeTable;
     private final JTable categoryTable;
     private final JTable unitTable;
+    private final JLabel recipeCountLabel = new JLabel();
 
     public MainWindow() {
         frame = createFrame();
@@ -64,7 +66,7 @@ public class MainWindow {
         categoryTable = createCategoryTable(categories, recipes);
         unitTable = createUnitTable(units);
 
-        TabContainer tabContainer = new TabContainer();
+        tabContainer = new TabContainer();
         tabContainer.addTab(recipeTab);
         tabContainer.addTab(ingredientTab);
         tabContainer.addTab(categoryTab);
@@ -103,6 +105,7 @@ public class MainWindow {
         recipeTable.clearSelection();
         categoryTable.clearSelection();
         unitTable.clearSelection();
+        filterAction.setEnabled(tabContainer.getSelectedTab().getModel().getClass().equals(RecipeTableModel.class));
     }
 
     public void show() {
@@ -198,6 +201,12 @@ public class MainWindow {
         toolbar.add(deleteAction);
         toolbar.add(showAction);
         toolbar.add(filterAction);
+        toolbar.addSeparator();
+
+        toolbar.add(Box.createHorizontalGlue());
+        updateRecipeCountLabel(recipeCountLabel);
+        toolbar.add(recipeCountLabel);
+
         return toolbar;
     }
 
@@ -206,6 +215,12 @@ public class MainWindow {
         editAction.setEnabled(selectionModel.getSelectedItemsCount() == 1);
         deleteAction.setEnabled(selectionModel.getSelectedItemsCount() >= 1);
         showAction.setEnabled(selectionModel.getSelectedItemsCount() == 1);
+        updateRecipeCountLabel(recipeCountLabel);
     }
 
+    private void updateRecipeCountLabel(JLabel recipeCountLabel) {
+        int recipeCount = recipeTable.getModel().getRowCount();
+        recipeCountLabel.setText("Amount of recipes: " + recipeCount);
+
+    }
 }
