@@ -11,8 +11,8 @@ public class TabContainer {
     private final JTabbedPane tabbedPane = new JTabbedPane();
     private final Map<Component, Tab> tabs = new IdentityHashMap<>();
 
-    public void addChangeListener(ChangeListener l) {
-        tabbedPane.addChangeListener(l);
+    public void addChangeListener(ChangeListener listener) {
+        tabbedPane.addChangeListener(listener);
     }
 
     public JComponent getComponent() {
