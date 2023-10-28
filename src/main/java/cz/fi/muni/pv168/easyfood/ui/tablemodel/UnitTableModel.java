@@ -11,8 +11,8 @@ public class UnitTableModel extends EntityTableModel<Unit> {
     public UnitTableModel(List<Unit> units) {
         super(List.of(
                 Column.readOnly("Name", String.class, Unit::getName),
-                Column.readOnly("Base Unit", String.class, Unit::getFormattedBaseUnit),
-                Column.readOnly("Conversion ratio", String.class, Unit::getFormattedConversionRatio)
+                Column.readOnly("Abbreviation", String.class, Unit::getAbbreviation),
+                Column.readOnly("In Base Unit", String.class, Unit::getFormattedBaseUnit)
         ));
         this.units = units;
     }

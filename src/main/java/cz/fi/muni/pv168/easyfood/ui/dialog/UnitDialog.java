@@ -8,9 +8,12 @@ import cz.fi.muni.pv168.easyfood.model.Unit;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
 import java.util.List;
+import java.util.Objects;
 
 public class UnitDialog  extends EntityDialog<Unit>{
     private final JTextField nameField = new JTextField();
+    private final JTextField abbreviationField = new JTextField();
+    private final JTextField conversionRatio = new JTextField();
     private final JComboBox<BaseUnit> baseUnitField = new JComboBox<>();
     private final Unit unit;
 
@@ -26,6 +29,8 @@ public class UnitDialog  extends EntityDialog<Unit>{
 
     private void setValues() {
         nameField.setText(unit.getName());
+        abbreviationField.setText(unit.getAbbreviation());
+        conversionRatio.setText(unit.getFormattedConversionRatio());
 
         baseUnitField.removeAllItems();
         for (BaseUnit baseUnit : BaseUnit.values()) {
@@ -35,11 +40,17 @@ public class UnitDialog  extends EntityDialog<Unit>{
 
     private void addFields() {
         add("Name:", nameField);
+        add("Abbreviation", abbreviationField);
         add("Base Unit: ", baseUnitField);
+        add("Amount in Base Unit", conversionRatio);
     }
     @Override
     public Unit getEntity() {
-        return null;
+        unit.setName(nameField.getText());
+        unit.setAbbreviation(abbreviationField.getText());
+        unit.setBaseUnit(BaseUnit.getBaseUnitFormSymbol(Objects.requireNonNull(baseUnitField.getSelectedItem()).toString()));
+        unit.setConversion(Float.parseFloat(conversionRatio.getText()));
+        return unit;
     }
 
     @Override
