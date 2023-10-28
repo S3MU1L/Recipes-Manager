@@ -14,7 +14,6 @@ public class IngredientWithAmountTableModel extends EntityTableModel<IngredientW
     public IngredientWithAmountTableModel(List<IngredientWithAmount> ingredients) {
         super(List.of(
                 Column.readOnly("Name", String.class, IngredientWithAmount::getName),
-                Column.readOnly("Calories", String.class, IngredientWithAmount::getFormattedCalories),
                 Column.readOnly("Amount", String.class, IngredientWithAmount::getFormattedAmount)
         ));
         this.ingredients = new ArrayList<>(ingredients);
@@ -33,11 +32,6 @@ public class IngredientWithAmountTableModel extends EntityTableModel<IngredientW
 
     @Override
     public void updateRow(IngredientWithAmount ingredient) {
-        int rowIndex = ingredients.indexOf(ingredient);
-        fireTableRowsUpdated(rowIndex, rowIndex);
-    }
-
-    public void updateRow(Ingredient ingredient) {
         int rowIndex = ingredients.indexOf(ingredient);
         fireTableRowsUpdated(rowIndex, rowIndex);
     }
