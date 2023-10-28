@@ -179,10 +179,13 @@ public class MainWindow {
         optionsMenu.add(deleteAction);
         optionsMenu.add(editAction);
         optionsMenu.add(filterAction);
-        optionsMenu.add(importAction);
-        optionsMenu.add(exportAction);
         optionsMenu.add(quitAction);
+        var fileMenu = new JMenu("File");
+        fileMenu.setMnemonic('f');
+        fileMenu.add(importAction);
+        fileMenu.add(exportAction);
         menuBar.add(optionsMenu);
+        menuBar.add(fileMenu);
         return menuBar;
     }
 
