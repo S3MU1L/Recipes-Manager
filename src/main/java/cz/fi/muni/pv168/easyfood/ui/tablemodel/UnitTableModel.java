@@ -5,9 +5,6 @@ import cz.fi.muni.pv168.easyfood.ui.column.Column;
 
 import java.util.List;
 
-/**
- * @author Samuel Sabo
- */
 public class UnitTableModel extends EntityTableModel<Unit> {
     private final List<Unit> units;
 
