@@ -9,6 +9,7 @@ import cz.fi.muni.pv168.easyfood.model.Recipe;
 import cz.fi.muni.pv168.easyfood.model.Unit;
 
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -29,9 +30,9 @@ public class TestDataGenerator {
             new Category("Brunch", Color.WHITE)
     );
     private static final List<Unit> UNITS = List.of(
-            new Unit("Gram", BaseUnit.GRAM, 1),
-            new Unit("Milliliter", BaseUnit.MILLILITER, 1),
-            new Unit("Piece", BaseUnit.PIECE, 1)
+            new Unit("Gram", "g",  BaseUnit.GRAM, 1),
+            new Unit("Milliliter", "ml", BaseUnit.MILLILITER, 1),
+            new Unit("Piece", "pc", BaseUnit.PIECE, 1)
     );
     private static final List<Ingredient> INGREDIENTS = List.of(
             new Ingredient("Water", 1, UNITS.get(1)),
@@ -58,9 +59,13 @@ public class TestDataGenerator {
     }
 
     public List<Unit> createTestUnits(int count) {
-        return UNITS.stream()
-                .limit(count)
-                .collect(Collectors.toList());
+        List<Unit> units = new ArrayList<>();
+        while (units.size() != count){
+            units.addAll(UNITS.stream()
+                    .limit(count - units.size())
+                    .toList());
+        }
+        return units;
     }
 
     public Category createTestCategory() {

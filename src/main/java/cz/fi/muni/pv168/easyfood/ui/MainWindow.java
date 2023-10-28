@@ -2,6 +2,7 @@ package cz.fi.muni.pv168.easyfood.ui;
 
 
 import cz.fi.muni.pv168.easyfood.data.TestDataGenerator;
+import cz.fi.muni.pv168.easyfood.model.BaseUnit;
 import cz.fi.muni.pv168.easyfood.model.Category;
 import cz.fi.muni.pv168.easyfood.model.Ingredient;
 import cz.fi.muni.pv168.easyfood.model.Recipe;
@@ -21,15 +22,19 @@ import cz.fi.muni.pv168.easyfood.ui.dialog.RecipeDialog;
 import cz.fi.muni.pv168.easyfood.ui.dialog.UnitDialog;
 import cz.fi.muni.pv168.easyfood.ui.tab.Tab;
 import cz.fi.muni.pv168.easyfood.ui.tab.TabContainer;
+import cz.fi.muni.pv168.easyfood.ui.tablemodel.BaseUnitModel;
 import cz.fi.muni.pv168.easyfood.ui.tablemodel.CategoryTableModel;
 import cz.fi.muni.pv168.easyfood.ui.tablemodel.IngredientTableModel;
 import cz.fi.muni.pv168.easyfood.ui.tablemodel.RecipeTableModel;
 import cz.fi.muni.pv168.easyfood.ui.tablemodel.UnitTableModel;
 
+import javax.swing.Box;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JToolBar;
@@ -159,12 +164,24 @@ public class MainWindow {
     }
 
     private JTable createUnitTable(List<Unit> units) {
-        var model = new UnitTableModel(units);
-        var table = new JTable(model);
-        table.setAutoCreateRowSorter(true);
-        table.getSelectionModel().addListSelectionListener(this::rowSelectionChanged);
-        unitTab = new Tab("units", table, model, new UnitDialog());
-        return table;
+        var unitModel = new UnitTableModel(units);
+        var unitTable = new JTable(unitModel);
+        unitTable.setAutoCreateRowSorter(true);
+        unitTable.getSelectionModel().addListSelectionListener(this::rowSelectionChanged);
+        unitTab = new Tab("units", null, unitModel, new UnitDialog());
+
+        var baseUnitModel = new BaseUnitModel(List.of(BaseUnit.GRAM, BaseUnit.MILLILITER, BaseUnit.PIECE));
+        var baseUnitTable = new JTable(baseUnitModel);
+
+        Box tables = Box.createVerticalBox();
+        tables.add(baseUnitTable.getTableHeader());
+        tables.add(baseUnitTable);
+        tables.add(new JLabel(" "));
+        tables.add((unitTable.getTableHeader()));
+        tables.add(unitTable);
+
+        unitTab.setComponent(new JScrollPane(tables));
+        return unitTable;
     }
 
     private JPopupMenu createExtendedTablePopupMenu() {
