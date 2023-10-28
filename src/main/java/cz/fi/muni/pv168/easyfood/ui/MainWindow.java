@@ -176,8 +176,9 @@ public class MainWindow {
         var optionsMenu = new JMenu("Options");
         optionsMenu.setMnemonic('o');
         optionsMenu.add(addAction);
-        optionsMenu.add(deleteAction);
         optionsMenu.add(editAction);
+        optionsMenu.add(deleteAction);
+        optionsMenu.add(showAction);
         optionsMenu.add(filterAction);
         optionsMenu.add(quitAction);
         var fileMenu = new JMenu("File");
@@ -204,6 +205,7 @@ public class MainWindow {
         var selectionModel = (ListSelectionModel) listSelectionEvent.getSource();
         editAction.setEnabled(selectionModel.getSelectedItemsCount() == 1);
         deleteAction.setEnabled(selectionModel.getSelectedItemsCount() >= 1);
+        showAction.setEnabled(selectionModel.getSelectedItemsCount() == 1);
     }
 
 }

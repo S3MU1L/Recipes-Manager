@@ -26,6 +26,7 @@ public final class EditAction extends AbstractAction {
         this.ingredients = ingredients;
         this.categories = categories;
         this.units = units;
+        setEnabled(false);
         putValue(SHORT_DESCRIPTION, "Edits selected row");
         putValue(MNEMONIC_KEY, KeyEvent.VK_E);
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke("ctrl E"));
