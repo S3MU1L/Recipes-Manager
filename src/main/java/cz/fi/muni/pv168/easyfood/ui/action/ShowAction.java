@@ -1,7 +1,10 @@
 package cz.fi.muni.pv168.easyfood.ui.action;
+
+import cz.fi.muni.pv168.easyfood.model.Recipe;
 import cz.fi.muni.pv168.easyfood.ui.Icons;
 import cz.fi.muni.pv168.easyfood.ui.dialog.ShowDialog;
 import cz.fi.muni.pv168.easyfood.ui.tab.TabContainer;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -29,7 +32,7 @@ public class ShowAction extends AbstractAction {
         }
 
         int modelRow = table.convertRowIndexToModel(selectedRows[0]);
-        var dialog = new ShowDialog(tabContainer.getSelectedTab().getModel().getEntity(modelRow));
+        var dialog = new ShowDialog((Recipe) tabContainer.getSelectedTab().getModel().getEntity(modelRow));
         dialog.show(tabContainer.getComponent(), "Show");
     }
 }
