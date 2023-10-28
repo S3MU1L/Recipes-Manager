@@ -94,6 +94,7 @@ public class MainWindow {
 
         frame.add(tabContainer.getComponent(), BorderLayout.CENTER);
         frame.add(createToolbar(), BorderLayout.BEFORE_FIRST_LINE);
+        frame.add(createFooter(), BorderLayout.AFTER_LINE_ENDS);
         frame.setJMenuBar(createMenuBar());
         frame.pack();
     }
@@ -123,6 +124,17 @@ public class MainWindow {
         return frame;
     }
 
+    private JPanel createFooter() {
+        var footerPanel = new JPanel();
+        footerPanel.setLayout(new BorderLayout());
+         recipeCountLabel.setFont(new Font("Arial", Font.PLAIN, 32));
+
+        updateRecipeCountLabel(recipeCountLabel);
+        recipeCountLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        footerPanel.add(recipeCountLabel, BorderLayout.CENTER);
+        footerPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        return footerPanel;
+    }
     private JTable createRecipeTable(List<Recipe> recipes, List<Ingredient> ingredients, List<Category> categories) {
         var model = new RecipeTableModel(recipes);
         var table = new JTable(model);
@@ -201,14 +213,6 @@ public class MainWindow {
         toolbar.add(deleteAction);
         toolbar.add(showAction);
         toolbar.add(filterAction);
-        toolbar.addSeparator();
-
-        toolbar.add(Box.createHorizontalGlue());
-        recipeCountLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        updateRecipeCountLabel(recipeCountLabel);
-        toolbar.add(recipeCountLabel);
-        toolbar.add(Box.createHorizontalGlue());
-
         return toolbar;
     }
 
