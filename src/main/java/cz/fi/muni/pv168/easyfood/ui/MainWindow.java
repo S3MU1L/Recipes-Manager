@@ -28,23 +28,10 @@ import cz.fi.muni.pv168.easyfood.ui.tablemodel.IngredientTableModel;
 import cz.fi.muni.pv168.easyfood.ui.tablemodel.RecipeTableModel;
 import cz.fi.muni.pv168.easyfood.ui.tablemodel.UnitTableModel;
 
-import javax.swing.Box;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTable;
-import javax.swing.JToolBar;
-import javax.swing.ListSelectionModel;
-import javax.swing.WindowConstants;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListSelectionEvent;
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.util.List;
 
 public class MainWindow {
@@ -109,7 +96,7 @@ public class MainWindow {
 
         frame.add(tabContainer.getComponent(), BorderLayout.CENTER);
         frame.add(createToolbar(), BorderLayout.BEFORE_FIRST_LINE);
-        frame.add(createFooter(), BorderLayout.AFTER_LINE_ENDS);
+        frame.add(createFooter(), BorderLayout.AFTER_LAST_LINE);
         frame.setJMenuBar(createMenuBar());
         frame.pack();
     }
