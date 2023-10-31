@@ -6,7 +6,6 @@ import java.awt.*;
 
 public class CategoryCellRenderer extends DefaultTableCellRenderer {
     private final CategoryTableModel model;
-
     public CategoryCellRenderer(CategoryTableModel model) {
         this.model = model;
     }
@@ -17,7 +16,7 @@ public class CategoryCellRenderer extends DefaultTableCellRenderer {
             cell.setBackground(model.getEntity(row).getColor());
         }
         cell.setForeground(Color.BLACK);
+        table.setRowHeight(30);
         return cell;
     }
-
 }

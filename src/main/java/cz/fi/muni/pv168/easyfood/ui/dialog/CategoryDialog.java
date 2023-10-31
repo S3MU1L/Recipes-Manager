@@ -44,6 +44,7 @@ public class CategoryDialog extends EntityDialog<Category> implements ActionList
 
     @Override
     public Category getEntity() {
+        category.setColor(color);
         return new Category(nameField.getText(), color);
     }
 
@@ -61,7 +62,6 @@ public class CategoryDialog extends EntityDialog<Category> implements ActionList
     @Override
     public void actionPerformed(ActionEvent e) {
         color = JColorChooser.showDialog(colorButton, "Choose", color);
-        category.setColor(color);
         colorButton.setBackground(color);
     }
 }
