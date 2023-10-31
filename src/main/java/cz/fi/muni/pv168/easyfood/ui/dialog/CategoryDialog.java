@@ -7,7 +7,6 @@ import cz.fi.muni.pv168.easyfood.model.Unit;
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
 import javax.swing.JTextField;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -52,7 +51,6 @@ public class CategoryDialog extends EntityDialog<Category> implements ActionList
     public EntityDialog<?> createNewDialog(List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
         return new CategoryDialog();
     }
-
 
     @Override
     public EntityDialog<Category> createNewDialog(Category entity, List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {

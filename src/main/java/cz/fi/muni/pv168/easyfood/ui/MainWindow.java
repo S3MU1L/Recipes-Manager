@@ -125,7 +125,7 @@ public class MainWindow {
     private JPanel createFooter() {
         var footerPanel = new JPanel();
         footerPanel.setLayout(new BorderLayout());
-         recipeCountLabel.setFont(new Font("Arial", Font.PLAIN, 32));
+        recipeCountLabel.setFont(new Font("Arial", Font.PLAIN, 24));
 
         updateRecipeCountLabel(recipeCountLabel);
         recipeCountLabel.setHorizontalAlignment(SwingConstants.CENTER);
