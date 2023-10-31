@@ -22,11 +22,7 @@ import cz.fi.muni.pv168.easyfood.ui.dialog.RecipeDialog;
 import cz.fi.muni.pv168.easyfood.ui.dialog.UnitDialog;
 import cz.fi.muni.pv168.easyfood.ui.tab.Tab;
 import cz.fi.muni.pv168.easyfood.ui.tab.TabContainer;
-import cz.fi.muni.pv168.easyfood.ui.tablemodel.BaseUnitModel;
-import cz.fi.muni.pv168.easyfood.ui.tablemodel.CategoryTableModel;
-import cz.fi.muni.pv168.easyfood.ui.tablemodel.IngredientTableModel;
-import cz.fi.muni.pv168.easyfood.ui.tablemodel.RecipeTableModel;
-import cz.fi.muni.pv168.easyfood.ui.tablemodel.UnitTableModel;
+import cz.fi.muni.pv168.easyfood.ui.tablemodel.*;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -160,6 +156,7 @@ public class MainWindow {
         var model = new CategoryTableModel(categories, recipes);
         var table = new JTable(model);
         table.setAutoCreateRowSorter(true);
+        table.setDefaultRenderer(Object.class, new CategoryCellRenderer(model));
         table.getSelectionModel().addListSelectionListener(this::rowSelectionChanged);
         categoryTab = new Tab("categories", table, model, new CategoryDialog());
         return table;

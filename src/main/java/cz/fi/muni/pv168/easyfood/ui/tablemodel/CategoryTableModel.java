@@ -25,14 +25,14 @@ public class CategoryTableModel extends EntityTableModel<Category>{
         return categories.size();
     }
 
-    public void addRow(Category ingredient) {
+    public void addRow(Category category) {
         int newRowIndex = categories.size();
-        categories.add(ingredient);
+        categories.add(category);
         fireTableRowsInserted(newRowIndex, newRowIndex);
     }
 
-    public void updateRow(Category ingredient) {
-        int rowIndex = categories.indexOf(ingredient);
+    public void updateRow(Category category) {
+        int rowIndex = categories.indexOf(category);
         fireTableRowsUpdated(rowIndex, rowIndex);
     }
 
