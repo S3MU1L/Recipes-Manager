@@ -7,6 +7,7 @@ import cz.fi.muni.pv168.easyfood.model.Unit;
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
 import javax.swing.JTextField;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -33,11 +34,12 @@ public class CategoryDialog extends EntityDialog<Category> implements ActionList
     private void setValues() {
         nameField.setText(category.getName());
         colorButton.addActionListener(this);
+        colorButton.setBackground(color);
     }
 
     private void addFields() {
         add("Name:", nameField);
-        add("Color", colorButton);
+        getPanel().add(colorButton, "width 100px, left");
     }
 
     @Override
@@ -60,5 +62,6 @@ public class CategoryDialog extends EntityDialog<Category> implements ActionList
     public void actionPerformed(ActionEvent e) {
         color = JColorChooser.showDialog(colorButton, "Choose", color);
         category.setColor(color);
+        colorButton.setBackground(color);
     }
 }
