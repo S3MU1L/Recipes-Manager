@@ -8,6 +8,7 @@ import cz.fi.muni.pv168.easyfood.ui.Utility;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.text.Utilities;
 import java.awt.Dimension;
 import java.util.List;
 
@@ -39,6 +40,7 @@ public class IngredientDialog extends EntityDialog<Ingredient> {
 
         Dimension dimension = new Dimension(150, 100);
         unitsField.setMaximumSize(dimension);
+        unitsList.setSelectedIndex(units.indexOf(ingredient.getUnit()));
     }
 
     private void addFields() {
@@ -49,7 +51,10 @@ public class IngredientDialog extends EntityDialog<Ingredient> {
 
     @Override
     public Ingredient getEntity() {
-        return new Ingredient(nameField.getText(), Utility.parseDoubleFromString(caloriesField.getText()), units.get(unitsList.getSelectedIndex()));
+        ingredient.setName(nameField.getText());
+        ingredient.setCalories(Utility.parseDoubleFromString(caloriesField.getText()));
+        ingredient.setUnit(units.get(unitsList.getSelectedIndex()));
+        return ingredient;
     }
 
     @Override

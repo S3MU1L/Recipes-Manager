@@ -4,7 +4,7 @@ import cz.fi.muni.pv168.easyfood.ui.tablemodel.EntityTableModel;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
-import java.awt.Component;
+import java.awt.*;
 
 public class CustomTableCellRenderer<E> extends DefaultTableCellRenderer {
     private final EntityTableModel<E> model;
@@ -18,6 +18,8 @@ public class CustomTableCellRenderer<E> extends DefaultTableCellRenderer {
             cell.setBackground(table.getSelectionBackground());
             cell.setForeground(table.getSelectionForeground());
         }else{
+            cell.setBackground(Color.WHITE);
+            cell.setForeground(Color.BLACK);
             if (row >= 0) {
                 //general settings for every row
 
