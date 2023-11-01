@@ -3,6 +3,8 @@ package cz.fi.muni.pv168.easyfood.ui.tablemodel;
 import cz.fi.muni.pv168.easyfood.model.BaseUnit;
 import cz.fi.muni.pv168.easyfood.ui.column.Column;
 
+import javax.swing.*;
+import java.awt.*;
 import java.util.List;
 
 public class BaseUnitModel extends EntityTableModel<BaseUnit> {
@@ -36,6 +38,16 @@ public class BaseUnitModel extends EntityTableModel<BaseUnit> {
     public void updateRow(BaseUnit baseUnit) {
         int rowIndex = baseUnits.indexOf(baseUnit);
         fireTableRowsUpdated(rowIndex, rowIndex);
+    }
+
+    @Override
+    public void customizeTableCell(Component cell, int row) {
+
+    }
+
+    @Override
+    public void customizeTable(JTable table) {
+
     }
 
     @Override

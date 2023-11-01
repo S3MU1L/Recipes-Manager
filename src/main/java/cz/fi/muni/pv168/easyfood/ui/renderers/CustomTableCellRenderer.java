@@ -1,13 +1,14 @@
-package cz.fi.muni.pv168.easyfood.ui.tablemodel;
+package cz.fi.muni.pv168.easyfood.ui.renderers;
+
+import cz.fi.muni.pv168.easyfood.ui.tablemodel.EntityTableModel;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
-import java.awt.Color;
 import java.awt.Component;
 
-public class CategoryCellRenderer extends DefaultTableCellRenderer {
-    private final CategoryTableModel model;
-    public CategoryCellRenderer(CategoryTableModel model) {
+public class CustomTableCellRenderer<E> extends DefaultTableCellRenderer {
+    private final EntityTableModel<E> model;
+    public CustomTableCellRenderer(EntityTableModel<E> model) {
         this.model = model;
     }
 
@@ -18,11 +19,18 @@ public class CategoryCellRenderer extends DefaultTableCellRenderer {
             cell.setForeground(table.getSelectionForeground());
         }else{
             if (row >= 0) {
-                cell.setBackground(model.getEntity(row).getColor());
+                //general settings for every row
+
+                //custom settings for every row
+                model.customizeTableCell(cell, row);
             }
-            cell.setForeground(Color.BLACK);
+
         }
+        //general settings for table
         table.setRowHeight(30);
+
+        //custom setting for table for every tableModel
+        model.customizeTable(table);
         return cell;
     }
 }
