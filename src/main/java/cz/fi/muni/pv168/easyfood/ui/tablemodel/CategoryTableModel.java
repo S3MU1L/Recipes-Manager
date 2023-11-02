@@ -5,6 +5,8 @@ import cz.fi.muni.pv168.easyfood.model.Recipe;
 import cz.fi.muni.pv168.easyfood.services.StatisticsService;
 import cz.fi.muni.pv168.easyfood.ui.column.Column;
 
+import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +17,7 @@ public class CategoryTableModel extends EntityTableModel<Category>{
     public CategoryTableModel(List<Category> categories, List<Recipe> recipes) {
         super(List.of(
                 Column.readOnly("Name", String.class, Category::getName),
-                Column.readOnly("Statistics", String.class, category -> StatisticsService.calculateCategoryStatistics(category, recipes).toString())
+                Column.readOnly("Recipes per category", String.class, category -> StatisticsService.calculateCategoryStatistics(category, recipes).toString())
         ));
         this.categories = new ArrayList<>(categories);
     }
@@ -25,15 +27,26 @@ public class CategoryTableModel extends EntityTableModel<Category>{
         return categories.size();
     }
 
-    public void addRow(Category ingredient) {
+    public void addRow(Category category) {
         int newRowIndex = categories.size();
-        categories.add(ingredient);
+        categories.add(category);
         fireTableRowsInserted(newRowIndex, newRowIndex);
     }
 
-    public void updateRow(Category ingredient) {
-        int rowIndex = categories.indexOf(ingredient);
+    public void updateRow(Category category) {
+        int rowIndex = categories.indexOf(category);
         fireTableRowsUpdated(rowIndex, rowIndex);
+    }
+
+    @Override
+    public void customizeTableCell(Component cell, int row) {
+        cell.setBackground(getEntity(row).getColor());
+        cell.setForeground(Color.BLACK);
+    }
+
+    @Override
+    public void customizeTable(JTable table) {
+
     }
 
     public Category getEntity(int rowIndex) {
