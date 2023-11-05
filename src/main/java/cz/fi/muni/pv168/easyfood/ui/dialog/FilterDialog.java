@@ -25,16 +25,16 @@ public class FilterDialog extends EntityDialog<Filter> {
     private final Filter filter;
     private final List<Category> categories;
     private final List<Ingredient> ingredients;
-    private static final JTextField nameField = new JTextField();
-    private static final Box categoriesBox = Box.createVerticalBox();
-    private static final JScrollPane categoriesField = new JScrollPane(categoriesBox);
-    private static final Box ingredientsBox = Box.createVerticalBox();
-    private static final JScrollPane ingredientsField = new JScrollPane(ingredientsBox);
-    private static final JSpinner timeField = new JSpinner(new SpinnerNumberModel());
-    private static final JSpinner minNutritionalValueField = new JSpinner(new SpinnerNumberModel());
-    private static final JSpinner maxNutritionalValueField = new JSpinner(new SpinnerNumberModel());
-    private static final JSlider portionsField = new JSlider();
-    private static final JButton resetButton = new JButton();
+    private final JTextField nameField = new JTextField();
+    private final Box categoriesBox = Box.createVerticalBox();
+    private final JScrollPane categoriesField = new JScrollPane(categoriesBox);
+    private final Box ingredientsBox = Box.createVerticalBox();
+    private final JScrollPane ingredientsField = new JScrollPane(ingredientsBox);
+    private final JSpinner timeField = new JSpinner(new SpinnerNumberModel());
+    private final JSpinner minNutritionalValueField = new JSpinner(new SpinnerNumberModel());
+    private final JSpinner maxNutritionalValueField = new JSpinner(new SpinnerNumberModel());
+    private final JSlider portionsField = new JSlider();
+    private final JButton resetButton = new JButton();
     private final Set<JCheckBox> categoriesCheckboxes = new HashSet<>();
     private final Set<JCheckBox> ingredientsCheckboxes = new HashSet<>();
 
@@ -106,6 +106,7 @@ public class FilterDialog extends EntityDialog<Filter> {
         portionsField.setPaintLabels(true);
         portionsField.setPaintTicks(true);
         portionsField.setSnapToTicks(true);
+        portionsField.setValue(1);
 
         resetButton.setText("Reset");
         resetButton.addActionListener(e -> {
