@@ -50,6 +50,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Toolkit;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainWindow {
@@ -77,7 +78,7 @@ public class MainWindow {
     public MainWindow() {
         frame = createFrame();
         var testDataGenerator = new TestDataGenerator();
-        List<Recipe> recipes = testDataGenerator.createTestRecipes(10);
+        List<Recipe> recipes = new ArrayList<>();
         List<Ingredient> ingredients = testDataGenerator.createTestIngredients(10);
         List<Category> categories = testDataGenerator.createTestCategories(10);
         List<Unit> units = testDataGenerator.createTestUnits(10);
@@ -159,6 +160,10 @@ public class MainWindow {
     private JTable createRecipeTable(List<Recipe> recipes, List<Ingredient> ingredients, List<Category> categories) {
         var model = new RecipeTableModel(recipes);
         var table = new JTable(model);
+
+        var testDataGenerator = new TestDataGenerator();
+        testDataGenerator.createTestRecipes(10).forEach(model::addRow);
+
         table.setAutoCreateRowSorter(true);
         table.setDefaultRenderer(Object.class, new CustomTableCellRenderer<>(model));
         table.getSelectionModel().addListSelectionListener(this::rowSelectionChanged);
