@@ -20,6 +20,10 @@ public abstract class EntityDialog<E> {
 
     private final JPanel panel = new JPanel();
 
+    public JPanel getPanel() {
+        return panel;
+    }
+
     EntityDialog() {
         panel.setLayout(new MigLayout("wrap 2"));
     }
@@ -31,7 +35,9 @@ public abstract class EntityDialog<E> {
     }
 
     public abstract E getEntity();
+
     public abstract EntityDialog<?> createNewDialog(List<Ingredient> ingredients, List<Category> categories, List<Unit> units);
+
     public abstract EntityDialog<E> createNewDialog(E entity, List<Ingredient> ingredients, List<Category> categories, List<Unit> units);
 
     public Optional<E> show(JComponent parentComponent, String title) {

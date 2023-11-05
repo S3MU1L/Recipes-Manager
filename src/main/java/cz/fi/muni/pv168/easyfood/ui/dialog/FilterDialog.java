@@ -5,8 +5,12 @@ import cz.fi.muni.pv168.easyfood.model.Filter;
 import cz.fi.muni.pv168.easyfood.model.Ingredient;
 import cz.fi.muni.pv168.easyfood.model.Unit;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.Box;
+import javax.swing.JCheckBox;
+import javax.swing.JScrollPane;
+import javax.swing.JSlider;
+import javax.swing.JTextField;
+import java.awt.Dimension;
 import java.util.List;
 
 public class FilterDialog extends EntityDialog<Filter> {
