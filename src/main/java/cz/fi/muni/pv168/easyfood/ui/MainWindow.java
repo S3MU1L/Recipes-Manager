@@ -127,7 +127,8 @@ public class MainWindow {
         frame.add(createToolbar(), BorderLayout.BEFORE_FIRST_LINE);
         frame.add(createFooter(), BorderLayout.AFTER_LAST_LINE);
         frame.setJMenuBar(createMenuBar());
-        frame.pack();
+//        frame.pack();
+        frame.setSize(900, 600);
     }
 
     private void tabChangeListener(ChangeEvent changeEvent) {
