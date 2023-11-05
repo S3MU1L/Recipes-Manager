@@ -80,7 +80,7 @@ public class MainWindow {
         var testDataGenerator = new TestDataGenerator();
         List<Recipe> recipes = new ArrayList<>();
         List<Ingredient> ingredients = new ArrayList<>();
-        List<Category> categories = testDataGenerator.createTestCategories(10);
+        List<Category> categories = new ArrayList<>();
         List<Unit> units = testDataGenerator.createTestUnits(10);
         recipeTable = createRecipeTable(recipes, ingredients, categories);
         ingredientTable = createIngredientTable(ingredients, units);
@@ -189,6 +189,10 @@ public class MainWindow {
     private JTable createCategoryTable(List<Category> categories, List<Recipe> recipes) {
         var model = new CategoryTableModel(categories, recipes);
         var table = new JTable(model);
+
+        var testDataGenerator = new TestDataGenerator();
+        testDataGenerator.createTestCategories(10).forEach(model::addRow);
+
         table.setAutoCreateRowSorter(true);
         table.setDefaultRenderer(Object.class, new CustomTableCellRenderer<>(model));
         table.getSelectionModel().addListSelectionListener(this::rowSelectionChanged);
