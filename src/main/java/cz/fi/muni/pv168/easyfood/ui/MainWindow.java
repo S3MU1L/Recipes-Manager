@@ -15,6 +15,7 @@ import cz.fi.muni.pv168.easyfood.ui.action.FilterAction;
 import cz.fi.muni.pv168.easyfood.ui.action.ImportAction;
 import cz.fi.muni.pv168.easyfood.ui.action.QuitAction;
 import cz.fi.muni.pv168.easyfood.ui.action.ShowAction;
+import cz.fi.muni.pv168.easyfood.ui.renderers.CustomTableCellRenderer;
 import cz.fi.muni.pv168.easyfood.ui.dialog.CategoryDialog;
 import cz.fi.muni.pv168.easyfood.ui.dialog.FilterDialog;
 import cz.fi.muni.pv168.easyfood.ui.dialog.IngredientDialog;
@@ -22,29 +23,12 @@ import cz.fi.muni.pv168.easyfood.ui.dialog.RecipeDialog;
 import cz.fi.muni.pv168.easyfood.ui.dialog.UnitDialog;
 import cz.fi.muni.pv168.easyfood.ui.tab.Tab;
 import cz.fi.muni.pv168.easyfood.ui.tab.TabContainer;
-import cz.fi.muni.pv168.easyfood.ui.tablemodel.BaseUnitModel;
-import cz.fi.muni.pv168.easyfood.ui.tablemodel.CategoryTableModel;
-import cz.fi.muni.pv168.easyfood.ui.tablemodel.IngredientTableModel;
-import cz.fi.muni.pv168.easyfood.ui.tablemodel.RecipeTableModel;
-import cz.fi.muni.pv168.easyfood.ui.tablemodel.UnitTableModel;
+import cz.fi.muni.pv168.easyfood.ui.tablemodel.*;
 
-import javax.swing.Box;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTable;
-import javax.swing.JToolBar;
-import javax.swing.ListSelectionModel;
-import javax.swing.WindowConstants;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListSelectionEvent;
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.util.List;
 
 public class MainWindow {
@@ -58,6 +42,7 @@ public class MainWindow {
     private final FilterAction filterAction;
     private final ExportAction exportAction;
     private final ImportAction importAction;
+    private final TabContainer tabContainer;
     private Tab ingredientTab;
     private Tab recipeTab;
     private Tab categoryTab;
@@ -66,6 +51,7 @@ public class MainWindow {
     private final JTable recipeTable;
     private final JTable categoryTable;
     private final JTable unitTable;
+    private final JLabel recipeCountLabel = new JLabel();
 
     public MainWindow() {
         frame = createFrame();
@@ -79,7 +65,7 @@ public class MainWindow {
         categoryTable = createCategoryTable(categories, recipes);
         unitTable = createUnitTable(units);
 
-        TabContainer tabContainer = new TabContainer();
+        tabContainer = new TabContainer();
         tabContainer.addTab(recipeTab);
         tabContainer.addTab(ingredientTab);
         tabContainer.addTab(categoryTab);
@@ -107,6 +93,7 @@ public class MainWindow {
 
         frame.add(tabContainer.getComponent(), BorderLayout.CENTER);
         frame.add(createToolbar(), BorderLayout.BEFORE_FIRST_LINE);
+        frame.add(createFooter(), BorderLayout.AFTER_LAST_LINE);
         frame.setJMenuBar(createMenuBar());
         frame.pack();
     }
@@ -118,6 +105,7 @@ public class MainWindow {
         recipeTable.clearSelection();
         categoryTable.clearSelection();
         unitTable.clearSelection();
+        filterAction.setEnabled(tabContainer.getSelectedTab().getModel().getClass().equals(RecipeTableModel.class));
     }
 
     public void show() {
@@ -135,10 +123,22 @@ public class MainWindow {
         return frame;
     }
 
+    private JPanel createFooter() {
+        var footerPanel = new JPanel();
+        footerPanel.setLayout(new BorderLayout());
+        recipeCountLabel.setFont(new Font("Arial", Font.PLAIN, 24));
+
+        updateRecipeCountLabel(recipeCountLabel);
+        recipeCountLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        footerPanel.add(recipeCountLabel, BorderLayout.CENTER);
+        footerPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        return footerPanel;
+    }
     private JTable createRecipeTable(List<Recipe> recipes, List<Ingredient> ingredients, List<Category> categories) {
         var model = new RecipeTableModel(recipes);
         var table = new JTable(model);
         table.setAutoCreateRowSorter(true);
+        table.setDefaultRenderer(Object.class, new CustomTableCellRenderer<>(model));
         table.getSelectionModel().addListSelectionListener(this::rowSelectionChanged);
         recipeTab =
                 new Tab("recipes", table, model, new RecipeDialog(Recipe.createEmptyRecipe(), ingredients, categories));
@@ -149,6 +149,7 @@ public class MainWindow {
         var model = new IngredientTableModel(ingredients);
         var table = new JTable(model);
         table.setAutoCreateRowSorter(true);
+        table.setDefaultRenderer(Object.class, new CustomTableCellRenderer<>(model));
         table.getSelectionModel().addListSelectionListener(this::rowSelectionChanged);
         ingredientTab = new Tab("ingredients", table, model, new IngredientDialog(units));
         return table;
@@ -158,6 +159,7 @@ public class MainWindow {
         var model = new CategoryTableModel(categories, recipes);
         var table = new JTable(model);
         table.setAutoCreateRowSorter(true);
+        table.setDefaultRenderer(Object.class, new CustomTableCellRenderer<>(model));
         table.getSelectionModel().addListSelectionListener(this::rowSelectionChanged);
         categoryTab = new Tab("categories", table, model, new CategoryDialog());
         return table;
@@ -167,12 +169,13 @@ public class MainWindow {
         var unitModel = new UnitTableModel(units);
         var unitTable = new JTable(unitModel);
         unitTable.setAutoCreateRowSorter(true);
+        unitTable.setDefaultRenderer(Object.class, new CustomTableCellRenderer<>(unitModel));
         unitTable.getSelectionModel().addListSelectionListener(this::rowSelectionChanged);
         unitTab = new Tab("units", unitTable, unitModel, new UnitDialog());
 
         var baseUnitModel = new BaseUnitModel(List.of(BaseUnit.GRAM, BaseUnit.MILLILITER, BaseUnit.PIECE));
         var baseUnitTable = new JTable(baseUnitModel);
-        baseUnitTable.setCellSelectionEnabled(false);
+        baseUnitTable.setDefaultRenderer(Object.class, new CustomTableCellRenderer<>(baseUnitModel));
 
         Box tables = Box.createVerticalBox();
         tables.add(baseUnitTable.getTableHeader());
@@ -205,13 +208,17 @@ public class MainWindow {
         var optionsMenu = new JMenu("Options");
         optionsMenu.setMnemonic('o');
         optionsMenu.add(addAction);
-        optionsMenu.add(deleteAction);
         optionsMenu.add(editAction);
+        optionsMenu.add(deleteAction);
+        optionsMenu.add(showAction);
         optionsMenu.add(filterAction);
-        optionsMenu.add(importAction);
-        optionsMenu.add(exportAction);
         optionsMenu.add(quitAction);
+        var fileMenu = new JMenu("File");
+        fileMenu.setMnemonic('f');
+        fileMenu.add(importAction);
+        fileMenu.add(exportAction);
         menuBar.add(optionsMenu);
+        menuBar.add(fileMenu);
         return menuBar;
     }
 
@@ -230,6 +237,13 @@ public class MainWindow {
         var selectionModel = (ListSelectionModel) listSelectionEvent.getSource();
         editAction.setEnabled(selectionModel.getSelectedItemsCount() == 1);
         deleteAction.setEnabled(selectionModel.getSelectedItemsCount() >= 1);
+        showAction.setEnabled(selectionModel.getSelectedItemsCount() == 1);
+        updateRecipeCountLabel(recipeCountLabel);
     }
 
+    private void updateRecipeCountLabel(JLabel recipeCountLabel) {
+        int recipeCount = recipeTable.getModel().getRowCount();
+        recipeCountLabel.setText("Amount of recipes: " + recipeCount);
+
+    }
 }

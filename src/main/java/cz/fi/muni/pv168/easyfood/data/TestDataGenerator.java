@@ -18,15 +18,15 @@ import java.util.stream.Stream;
 
 public class TestDataGenerator {
     private static final List<Category> CATEGORY = List.of(
-            new Category("Soups", Color.WHITE),
-            new Category("Vegetarian", Color.WHITE),
-            new Category("Seafood", Color.WHITE),
+            new Category("Soups", Color.BLUE),
+            new Category("Vegetarian", Color.RED),
+            new Category("Seafood", Color.GREEN),
             new Category("Sweet", Color.WHITE),
-            new Category("Snack", Color.WHITE),
-            new Category("Dessert", Color.WHITE),
-            new Category("Grilled", Color.WHITE),
-            new Category("Vegan", Color.WHITE),
-            new Category("Salad", Color.WHITE),
+            new Category("Snack", Color.YELLOW),
+            new Category("Dessert", Color.CYAN),
+            new Category("Grilled", Color.GRAY),
+            new Category("Vegan", Color.ORANGE),
+            new Category("Salad", Color.DARK_GRAY),
             new Category("Brunch", Color.WHITE)
     );
     private static final List<Unit> UNITS = List.of(

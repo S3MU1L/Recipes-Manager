@@ -3,6 +3,8 @@ package cz.fi.muni.pv168.easyfood.ui.tablemodel;
 import cz.fi.muni.pv168.easyfood.model.Unit;
 import cz.fi.muni.pv168.easyfood.ui.column.Column;
 
+import javax.swing.*;
+import java.awt.*;
 import java.util.List;
 
 public class UnitTableModel extends EntityTableModel<Unit> {
@@ -38,6 +40,16 @@ public class UnitTableModel extends EntityTableModel<Unit> {
     public void updateRow(Unit unit) {
         int rowIndex = units.indexOf(unit);
         fireTableRowsUpdated(rowIndex, rowIndex);
+    }
+
+    @Override
+    public void customizeTableCell(Component cell, int row) {
+
+    }
+
+    @Override
+    public void customizeTable(JTable table) {
+
     }
 
     @Override

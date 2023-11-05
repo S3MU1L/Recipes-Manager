@@ -4,6 +4,8 @@ import cz.fi.muni.pv168.easyfood.model.Ingredient;
 import cz.fi.muni.pv168.easyfood.model.IngredientWithAmount;
 import cz.fi.muni.pv168.easyfood.ui.column.Column;
 
+import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 
 import java.util.List;
@@ -34,6 +36,16 @@ public class IngredientWithAmountTableModel extends EntityTableModel<IngredientW
     public void updateRow(IngredientWithAmount ingredient) {
         int rowIndex = ingredients.indexOf(ingredient);
         fireTableRowsUpdated(rowIndex, rowIndex);
+    }
+
+    @Override
+    public void customizeTableCell(Component cell, int row) {
+
+    }
+
+    @Override
+    public void customizeTable(JTable table) {
+
     }
 
     public IngredientWithAmount getEntity(int rowIndex) {

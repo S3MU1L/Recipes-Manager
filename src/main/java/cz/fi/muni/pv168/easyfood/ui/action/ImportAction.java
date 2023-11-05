@@ -10,7 +10,7 @@ import java.awt.event.KeyEvent;
 public final class ImportAction extends AbstractAction {
 
     public ImportAction() {
-        super("Filter", Icons.IMPORT_ICON);
+        super("Import", Icons.IMPORT_ICON);
         putValue(SHORT_DESCRIPTION, "Import recipes");
         putValue(MNEMONIC_KEY, KeyEvent.VK_M);
     }

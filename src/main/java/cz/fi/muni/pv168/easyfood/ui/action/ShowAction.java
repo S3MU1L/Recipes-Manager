@@ -16,6 +16,7 @@ public class ShowAction extends AbstractAction {
     public ShowAction(TabContainer tabContainer) {
         super("Show", Icons.SHOW_ICON);
         this.tabContainer = tabContainer;
+        setEnabled(false);
         putValue(SHORT_DESCRIPTION, "Show the details of a recipe");
         putValue(MNEMONIC_KEY, KeyEvent.VK_S);
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke("ctrl S"));
