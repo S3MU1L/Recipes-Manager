@@ -82,10 +82,20 @@ public class MainWindow {
         List<Ingredient> ingredients = new ArrayList<>();
         List<Category> categories = new ArrayList<>();
         List<Unit> units = new ArrayList<>();
-        recipeTable = createRecipeTable(recipes, ingredients, categories);
+
+        unitTable = createUnitTable(units);
         ingredientTable = createIngredientTable(ingredients, units);
         categoryTable = createCategoryTable(categories, recipes);
-        unitTable = createUnitTable(units);
+        recipeTable = createRecipeTable(recipes, ingredients, categories);
+
+        UnitTableModel unitModel = (UnitTableModel) unitTable.getModel();
+        testDataGenerator.createTestUnits(3).forEach(unitModel::addRow);
+        IngredientTableModel ingredientModel = (IngredientTableModel) ingredientTable.getModel();
+        testDataGenerator.createTestIngredients(5, units).forEach(ingredientModel::addRow);
+        CategoryTableModel categoryModel = (CategoryTableModel) categoryTable.getModel();
+        testDataGenerator.createTestCategories(10).forEach(categoryModel::addRow);
+        RecipeTableModel recipeModel = (RecipeTableModel) recipeTable.getModel();
+        testDataGenerator.createTestRecipes(5, ingredients, categories).forEach(recipeModel::addRow);
 
         tabContainer = new TabContainer();
         tabContainer.addTab(recipeTab);
@@ -160,10 +170,6 @@ public class MainWindow {
     private JTable createRecipeTable(List<Recipe> recipes, List<Ingredient> ingredients, List<Category> categories) {
         var model = new RecipeTableModel(recipes);
         var table = new JTable(model);
-
-        var testDataGenerator = new TestDataGenerator();
-        testDataGenerator.createTestRecipes(10).forEach(model::addRow);
-
         table.setAutoCreateRowSorter(true);
         table.setDefaultRenderer(Object.class, new CustomTableCellRenderer<>(model));
         table.getSelectionModel().addListSelectionListener(this::rowSelectionChanged);
@@ -175,10 +181,6 @@ public class MainWindow {
     private JTable createIngredientTable(List<Ingredient> ingredients, List<Unit> units) {
         var model = new IngredientTableModel(ingredients);
         var table = new JTable(model);
-
-        var testDataGenerator = new TestDataGenerator();
-        testDataGenerator.createTestIngredients(10).forEach(model::addRow);
-
         table.setAutoCreateRowSorter(true);
         table.setDefaultRenderer(Object.class, new CustomTableCellRenderer<>(model));
         table.getSelectionModel().addListSelectionListener(this::rowSelectionChanged);
@@ -189,10 +191,6 @@ public class MainWindow {
     private JTable createCategoryTable(List<Category> categories, List<Recipe> recipes) {
         var model = new CategoryTableModel(categories, recipes);
         var table = new JTable(model);
-
-        var testDataGenerator = new TestDataGenerator();
-        testDataGenerator.createTestCategories(10).forEach(model::addRow);
-
         table.setAutoCreateRowSorter(true);
         table.setDefaultRenderer(Object.class, new CustomTableCellRenderer<>(model));
         table.getSelectionModel().addListSelectionListener(this::rowSelectionChanged);
@@ -203,10 +201,6 @@ public class MainWindow {
     private JTable createUnitTable(List<Unit> units) {
         var unitModel = new UnitTableModel(units);
         var unitTable = new JTable(unitModel);
-
-        var testDataGenerator = new TestDataGenerator();
-        testDataGenerator.createTestUnits(10).forEach(unitModel::addRow);
-
         unitTable.setAutoCreateRowSorter(true);
         unitTable.setDefaultRenderer(Object.class, new CustomTableCellRenderer<>(unitModel));
         unitTable.getSelectionModel().addListSelectionListener(this::rowSelectionChanged);

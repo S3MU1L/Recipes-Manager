@@ -6,7 +6,6 @@ import cz.fi.muni.pv168.easyfood.ui.column.Column;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import java.awt.Component;
-import java.util.ArrayList;
 import java.util.List;
 
 import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
@@ -19,7 +18,7 @@ public class IngredientTableModel extends EntityTableModel<Ingredient> {
                 Column.readOnly("Name", String.class, Ingredient::getName),
                 Column.readOnly("Calories", String.class, Ingredient::getFormattedCalories)
         ));
-        this.ingredients = new ArrayList<>(ingredients);
+        this.ingredients = ingredients;
     }
 
     @Override
@@ -28,7 +27,8 @@ public class IngredientTableModel extends EntityTableModel<Ingredient> {
     }
 
     public void addRow(Ingredient ingredient) {
-        if (ingredients.stream().filter(ingredient1 -> ingredient1.getName().equals(ingredient.getName())).toList().size() != 0) {
+        if (ingredients.stream().filter(ingredient1 -> ingredient1.getName().equals(ingredient.getName())).toList().size() !=
+                0) {
             JOptionPane.showMessageDialog(null, "Unable to add Row -> Name duplicity", "Error", INFORMATION_MESSAGE, null);
             return;
         }
@@ -39,7 +39,8 @@ public class IngredientTableModel extends EntityTableModel<Ingredient> {
     }
 
     public void updateRow(Ingredient ingredient) {
-        if (ingredients.stream().filter(ingredient1 -> ingredient1.getName().equals(ingredient.getName())).toList().size() != 0) {
+        if (ingredients.stream().filter(ingredient1 -> ingredient1.getName().equals(ingredient.getName())).toList().size() !=
+                0) {
             JOptionPane.showMessageDialog(null, "Unable to edit Row -> Name duplicity", "Error", INFORMATION_MESSAGE, null);
             return;
         }

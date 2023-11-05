@@ -9,7 +9,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import java.awt.Color;
 import java.awt.Component;
-import java.util.ArrayList;
 import java.util.List;
 
 import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
@@ -23,7 +22,7 @@ public class CategoryTableModel extends EntityTableModel<Category> {
                 Column.readOnly("Name", String.class, Category::getName),
                 Column.readOnly("Recipes per category", String.class, category -> StatisticsService.calculateCategoryStatistics(category, recipes).toString())
         ));
-        this.categories = new ArrayList<>(categories);
+        this.categories = categories;
     }
 
     @Override
@@ -32,7 +31,8 @@ public class CategoryTableModel extends EntityTableModel<Category> {
     }
 
     public void addRow(Category category) {
-        if (categories.stream().filter(category1 -> category1.getName().equals(category.getName())).toList().size() != 0) {
+        if (categories.stream().filter(category1 -> category1.getName().equals(category.getName())).toList().size() !=
+                0) {
             JOptionPane.showMessageDialog(null, "Unable to add Row -> Name duplicity", "Error", INFORMATION_MESSAGE, null);
             return;
         }
@@ -43,7 +43,8 @@ public class CategoryTableModel extends EntityTableModel<Category> {
     }
 
     public void updateRow(Category category) {
-        if (categories.stream().filter(category1 -> category1.getName().equals(category.getName())).toList().size() != 0) {
+        if (categories.stream().filter(category1 -> category1.getName().equals(category.getName())).toList().size() !=
+                0) {
             JOptionPane.showMessageDialog(null, "Unable to edit Row -> Name duplicity", "Error", INFORMATION_MESSAGE, null);
             return;
         }
