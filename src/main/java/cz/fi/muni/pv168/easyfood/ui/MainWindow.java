@@ -176,6 +176,7 @@ public class MainWindow {
         var baseUnitModel = new BaseUnitModel(List.of(BaseUnit.GRAM, BaseUnit.MILLILITER, BaseUnit.PIECE));
         var baseUnitTable = new JTable(baseUnitModel);
         baseUnitTable.setDefaultRenderer(Object.class, new CustomTableCellRenderer<>(baseUnitModel));
+        baseUnitTable.setCellSelectionEnabled(false);
 
         Box tables = Box.createVerticalBox();
         tables.add(baseUnitTable.getTableHeader());
