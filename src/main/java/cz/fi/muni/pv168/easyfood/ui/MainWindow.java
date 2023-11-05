@@ -193,11 +193,12 @@ public class MainWindow {
         unitTable.setAutoCreateRowSorter(true);
         unitTable.setDefaultRenderer(Object.class, new CustomTableCellRenderer<>(unitModel));
         unitTable.getSelectionModel().addListSelectionListener(this::rowSelectionChanged);
-        unitTab = new Tab("units", null, unitModel, new UnitDialog());
+        unitTab = new Tab("units", unitTable, unitModel, new UnitDialog());
 
         var baseUnitModel = new BaseUnitModel(List.of(BaseUnit.GRAM, BaseUnit.MILLILITER, BaseUnit.PIECE));
         var baseUnitTable = new JTable(baseUnitModel);
         baseUnitTable.setDefaultRenderer(Object.class, new CustomTableCellRenderer<>(baseUnitModel));
+        baseUnitTable.setCellSelectionEnabled(false);
 
         Box tables = Box.createVerticalBox();
         tables.add(baseUnitTable.getTableHeader());
