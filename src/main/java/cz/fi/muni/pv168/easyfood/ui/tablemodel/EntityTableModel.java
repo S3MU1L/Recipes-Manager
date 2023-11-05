@@ -2,9 +2,9 @@ package cz.fi.muni.pv168.easyfood.ui.tablemodel;
 
 import cz.fi.muni.pv168.easyfood.ui.column.Column;
 
-import javax.swing.*;
+import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
-import java.awt.*;
+import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -37,9 +37,11 @@ public abstract class EntityTableModel<E> extends AbstractTableModel {
     }
 
     public abstract void addRow(E entity);
+
     public abstract void updateRow(E entity);
 
     public abstract void customizeTableCell(Component cell, int row);
+
     public abstract void customizeTable(JTable table);
 
     @Override

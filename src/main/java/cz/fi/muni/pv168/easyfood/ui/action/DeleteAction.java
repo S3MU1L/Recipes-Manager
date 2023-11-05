@@ -12,7 +12,9 @@ import javax.swing.KeyStroke;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
-import static javax.swing.JOptionPane.*;
+import static javax.swing.JOptionPane.OK_OPTION;
+import static javax.swing.JOptionPane.QUESTION_MESSAGE;
+import static javax.swing.JOptionPane.YES_NO_OPTION;
 
 public final class DeleteAction extends AbstractAction {
     private final TabContainer tabContainer;

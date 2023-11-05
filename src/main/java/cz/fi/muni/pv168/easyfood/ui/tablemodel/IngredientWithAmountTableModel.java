@@ -1,13 +1,11 @@
 package cz.fi.muni.pv168.easyfood.ui.tablemodel;
 
-import cz.fi.muni.pv168.easyfood.model.Ingredient;
 import cz.fi.muni.pv168.easyfood.model.IngredientWithAmount;
 import cz.fi.muni.pv168.easyfood.ui.column.Column;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JTable;
+import java.awt.Component;
 import java.util.ArrayList;
-
 import java.util.List;
 
 public class IngredientWithAmountTableModel extends EntityTableModel<IngredientWithAmount> {

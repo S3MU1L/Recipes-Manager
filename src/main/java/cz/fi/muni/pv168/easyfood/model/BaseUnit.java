@@ -6,12 +6,13 @@ public enum BaseUnit {
     PIECE("Piece");
 
     private final String symbol;
+
     BaseUnit(String symbol) {
         this.symbol = symbol;
     }
 
-    public static BaseUnit getBaseUnitFormSymbol(String symbol){
-        switch (symbol){
+    public static BaseUnit getBaseUnitFormSymbol(String symbol) {
+        switch (symbol) {
             case "Milliliter" -> {
                 return MILLILITER;
             }
@@ -25,8 +26,8 @@ public enum BaseUnit {
         }
     }
 
-    public static String getAbbreviation(BaseUnit baseUnit){
-        switch (baseUnit){
+    public static String getAbbreviation(BaseUnit baseUnit) {
+        switch (baseUnit) {
             case MILLILITER -> {
                 return "ml";
             }

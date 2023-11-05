@@ -7,7 +7,7 @@ import cz.fi.muni.pv168.easyfood.model.Unit;
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
 import javax.swing.JTextField;
-import java.awt.*;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;

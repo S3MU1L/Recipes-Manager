@@ -15,20 +15,41 @@ import cz.fi.muni.pv168.easyfood.ui.action.FilterAction;
 import cz.fi.muni.pv168.easyfood.ui.action.ImportAction;
 import cz.fi.muni.pv168.easyfood.ui.action.QuitAction;
 import cz.fi.muni.pv168.easyfood.ui.action.ShowAction;
-import cz.fi.muni.pv168.easyfood.ui.renderers.CustomTableCellRenderer;
 import cz.fi.muni.pv168.easyfood.ui.dialog.CategoryDialog;
 import cz.fi.muni.pv168.easyfood.ui.dialog.FilterDialog;
 import cz.fi.muni.pv168.easyfood.ui.dialog.IngredientDialog;
 import cz.fi.muni.pv168.easyfood.ui.dialog.RecipeDialog;
 import cz.fi.muni.pv168.easyfood.ui.dialog.UnitDialog;
+import cz.fi.muni.pv168.easyfood.ui.renderers.CustomTableCellRenderer;
 import cz.fi.muni.pv168.easyfood.ui.tab.Tab;
 import cz.fi.muni.pv168.easyfood.ui.tab.TabContainer;
-import cz.fi.muni.pv168.easyfood.ui.tablemodel.*;
+import cz.fi.muni.pv168.easyfood.ui.tablemodel.BaseUnitModel;
+import cz.fi.muni.pv168.easyfood.ui.tablemodel.CategoryTableModel;
+import cz.fi.muni.pv168.easyfood.ui.tablemodel.IngredientTableModel;
+import cz.fi.muni.pv168.easyfood.ui.tablemodel.RecipeTableModel;
+import cz.fi.muni.pv168.easyfood.ui.tablemodel.UnitTableModel;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
+import javax.swing.JToolBar;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListSelectionEvent;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Toolkit;
 import java.util.List;
 
 public class MainWindow {
@@ -134,6 +155,7 @@ public class MainWindow {
         footerPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         return footerPanel;
     }
+
     private JTable createRecipeTable(List<Recipe> recipes, List<Ingredient> ingredients, List<Category> categories) {
         var model = new RecipeTableModel(recipes);
         var table = new JTable(model);

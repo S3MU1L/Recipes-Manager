@@ -10,7 +10,7 @@ import javax.swing.JTextField;
 import java.util.List;
 import java.util.Objects;
 
-public class UnitDialog  extends EntityDialog<Unit>{
+public class UnitDialog extends EntityDialog<Unit> {
     private final JTextField nameField = new JTextField();
     private final JTextField abbreviationField = new JTextField();
     private final JTextField conversionRatio = new JTextField();
@@ -44,6 +44,7 @@ public class UnitDialog  extends EntityDialog<Unit>{
         add("Base Unit: ", baseUnitField);
         add("Amount in Base Unit", conversionRatio);
     }
+
     @Override
     public Unit getEntity() {
         unit.setName(nameField.getText());

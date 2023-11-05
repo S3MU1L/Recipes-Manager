@@ -2,22 +2,24 @@ package cz.fi.muni.pv168.easyfood.ui.renderers;
 
 import cz.fi.muni.pv168.easyfood.ui.tablemodel.EntityTableModel;
 
-import javax.swing.*;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
 
 public class CustomTableCellRenderer<E> extends DefaultTableCellRenderer {
     private final EntityTableModel<E> model;
+
     public CustomTableCellRenderer(EntityTableModel<E> model) {
         this.model = model;
     }
 
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         Component cell = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-        if(isSelected){
+        if (isSelected) {
             cell.setBackground(table.getSelectionBackground());
             cell.setForeground(table.getSelectionForeground());
-        }else{
+        } else {
             cell.setBackground(Color.WHITE);
             cell.setForeground(Color.BLACK);
             if (row >= 0) {

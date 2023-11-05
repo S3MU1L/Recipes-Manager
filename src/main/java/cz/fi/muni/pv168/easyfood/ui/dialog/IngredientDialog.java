@@ -8,7 +8,6 @@ import cz.fi.muni.pv168.easyfood.ui.Utility;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.text.Utilities;
 import java.awt.Dimension;
 import java.util.List;
 

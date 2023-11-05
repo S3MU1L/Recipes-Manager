@@ -24,7 +24,7 @@ public class Unit {
         this.conversion = conversion;
     }
 
-    public static Unit createEmptyUnit(){
+    public static Unit createEmptyUnit() {
         return new Unit("", "", BaseUnit.GRAM, 1);
     }
 
@@ -44,11 +44,11 @@ public class Unit {
         this.conversion = conversion;
     }
 
-    public String getFormattedBaseUnit(){
-        return  new DecimalFormat("#.##").format(conversion) + " " + BaseUnit.getAbbreviation(baseUnit);
+    public String getFormattedBaseUnit() {
+        return new DecimalFormat("#.##").format(conversion) + " " + BaseUnit.getAbbreviation(baseUnit);
     }
 
-    public String getFormattedConversionRatio(){
+    public String getFormattedConversionRatio() {
         return String.valueOf(conversion);
     }
 

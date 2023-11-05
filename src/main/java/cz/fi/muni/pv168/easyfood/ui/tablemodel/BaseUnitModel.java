@@ -3,12 +3,13 @@ package cz.fi.muni.pv168.easyfood.ui.tablemodel;
 import cz.fi.muni.pv168.easyfood.model.BaseUnit;
 import cz.fi.muni.pv168.easyfood.ui.column.Column;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JTable;
+import java.awt.Component;
 import java.util.List;
 
 public class BaseUnitModel extends EntityTableModel<BaseUnit> {
     private final List<BaseUnit> baseUnits;
+
     public BaseUnitModel(List<BaseUnit> baseUnits) {
         super(List.of(
                 Column.readOnly("Name", String.class, BaseUnit::toString),

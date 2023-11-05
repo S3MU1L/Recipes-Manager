@@ -46,8 +46,12 @@ public class IngredientWithAmount {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         IngredientWithAmount that = (IngredientWithAmount) o;
         return ingredient.equals(that.ingredient);
     }

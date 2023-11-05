@@ -30,7 +30,7 @@ public class TestDataGenerator {
             new Category("Brunch", Color.WHITE)
     );
     private static final List<Unit> UNITS = List.of(
-            new Unit("Gram", "g",  BaseUnit.GRAM, 1),
+            new Unit("Gram", "g", BaseUnit.GRAM, 1),
             new Unit("Milliliter", "ml", BaseUnit.MILLILITER, 1),
             new Unit("Piece", "pc", BaseUnit.PIECE, 1)
     );
@@ -60,7 +60,7 @@ public class TestDataGenerator {
 
     public List<Unit> createTestUnits(int count) {
         List<Unit> units = new ArrayList<>();
-        while (units.size() != count){
+        while (units.size() != count) {
             units.addAll(UNITS.stream()
                     .limit(count - units.size())
                     .toList());

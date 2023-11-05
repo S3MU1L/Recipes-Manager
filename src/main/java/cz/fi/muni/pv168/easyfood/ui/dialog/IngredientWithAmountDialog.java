@@ -5,7 +5,7 @@ import cz.fi.muni.pv168.easyfood.model.Ingredient;
 import cz.fi.muni.pv168.easyfood.model.Recipe;
 import cz.fi.muni.pv168.easyfood.model.Unit;
 
-import javax.swing.*;
+import javax.swing.JTextField;
 import java.util.List;
 
 public class IngredientWithAmountDialog extends EntityDialog<Recipe> {

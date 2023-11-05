@@ -5,13 +5,14 @@ import cz.fi.muni.pv168.easyfood.model.Recipe;
 import cz.fi.muni.pv168.easyfood.services.StatisticsService;
 import cz.fi.muni.pv168.easyfood.ui.column.Column;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JTable;
+import java.awt.Color;
+import java.awt.Component;
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class CategoryTableModel extends EntityTableModel<Category>{
+public class CategoryTableModel extends EntityTableModel<Category> {
     private final List<Category> categories;
 
     public CategoryTableModel(List<Category> categories, List<Recipe> recipes) {
