@@ -86,6 +86,7 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
 
     private void addIngredientFields() {
         ingredientFields.forEach(this::remove);
+        ingredientFields.clear();
         for (Ingredient ingredient : ingredientAmounts.keySet()) {
             SpinnerNumberModel numberModel = new SpinnerNumberModel();
             numberModel.setMinimum(0);

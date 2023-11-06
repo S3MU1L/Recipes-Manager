@@ -41,6 +41,7 @@ public abstract class EntityDialog<E> {
     public void remove(JComponent component) {
         panel.remove(component);
         panel.remove(componentLabelMap.get(component));
+        componentLabelMap.remove(component);
     }
 
     public abstract E getEntity();
