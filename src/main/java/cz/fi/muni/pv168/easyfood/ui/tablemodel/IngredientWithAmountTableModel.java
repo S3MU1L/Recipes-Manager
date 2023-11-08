@@ -31,8 +31,8 @@ public class IngredientWithAmountTableModel extends EntityTableModel<IngredientW
     }
 
     @Override
-    public void updateRow(IngredientWithAmount ingredient) {
-        int rowIndex = ingredients.indexOf(ingredient);
+    public void updateRow(IngredientWithAmount oldIngredient, IngredientWithAmount newIngredient) {
+        int rowIndex = ingredients.indexOf(oldIngredient);
         fireTableRowsUpdated(rowIndex, rowIndex);
     }
 

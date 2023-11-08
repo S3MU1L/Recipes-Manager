@@ -36,8 +36,8 @@ public class BaseUnitModel extends EntityTableModel<BaseUnit> {
     }
 
     @Override
-    public void updateRow(BaseUnit baseUnit) {
-        int rowIndex = baseUnits.indexOf(baseUnit);
+    public void updateRow(BaseUnit oldBaseUnit, BaseUnit newBaseUnit) {
+        int rowIndex = baseUnits.indexOf(oldBaseUnit);
         fireTableRowsUpdated(rowIndex, rowIndex);
     }
 
