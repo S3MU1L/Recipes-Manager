@@ -20,8 +20,6 @@ import java.util.List;
 
 public final class RecipeDialog extends EntityDialog<Recipe> {
     private final JTextField nameField = new JTextField();
-    private final Box descriptionBox = Box.createVerticalBox();
-    private final JTextArea description = new JTextArea(5, 20);
     private static final JSpinner prepareTimeField = new JSpinner(new SpinnerNumberModel());
     private static final JSpinner portionField = new JSpinner(new SpinnerNumberModel());
     private final Recipe recipe;
@@ -31,6 +29,8 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
     private final Box ingredientsBox = Box.createVerticalBox();
     private final List<JTextField> ingredientAmounts = new ArrayList<>();
     private final JScrollPane ingredientsField = new JScrollPane(ingredientsBox);
+    private final Box descriptionBox = Box.createVerticalBox();
+    private final JTextArea description = new JTextArea(5, 20);
 
     public RecipeDialog(List<Ingredient> ingredients, List<Category> categories) {
         this(Recipe.createEmptyRecipe(), ingredients, categories);
@@ -85,11 +85,12 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
 
     private void addFields() {
         add("Name:", nameField);
-        add("Description:", descriptionBox);
         add("Portions:", portionField);
         add("Time to prepare (minutes): ", prepareTimeField);
         add("Category:", categoriesField);
         add("Ingredients:", ingredientsField);
+        add("Description:", descriptionBox);
+
     }
 
     @Override
