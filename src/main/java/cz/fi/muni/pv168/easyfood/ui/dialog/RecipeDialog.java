@@ -102,8 +102,8 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
         List<IngredientWithAmount> ingredientsInRecipe = new ArrayList<>();
         JList<String> categoriesNames = (JList<String>) categoriesField.getViewport().getView();
         String categoryName = categoriesNames.getSelectedValue();
-        Category category =
-                categories.stream().filter(category1 -> category1.getName().equals(categoryName)).toList().get(0);
+        List<Category> categorySelected = categories.stream().filter(category1 -> category1.getName().equals(categoryName)).toList();
+        Category category = categorySelected.size() > 0 ? categorySelected.get(0) : Category.createEmptyCategory();
         for (Ingredient ingredient : ingredients) {
             double amount = Double.parseDouble(ingredientAmounts.get(ingredients.indexOf(ingredient)).getText());
             if (amount == 0) {
