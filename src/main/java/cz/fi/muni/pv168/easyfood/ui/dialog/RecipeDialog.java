@@ -6,7 +6,6 @@ import cz.fi.muni.pv168.easyfood.model.IngredientWithAmount;
 import cz.fi.muni.pv168.easyfood.model.Recipe;
 import cz.fi.muni.pv168.easyfood.model.Unit;
 import cz.fi.muni.pv168.easyfood.ui.Icons;
-import cz.fi.muni.pv168.easyfood.ui.tablemodel.EntityTableModel;
 import cz.fi.muni.pv168.easyfood.ui.tablemodel.IngredientWithAmountTableModel;
 
 import javax.swing.AbstractAction;
@@ -19,10 +18,12 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -38,8 +39,9 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
 
     private final JTextField nameField = new JTextField();
     private final JTextField caloriesField = new JTextField();
-    private final JTextField prepTimeField = new JTextField();
-    private final JTextField portionsTextField = new JTextField();
+    private static final JSpinner prepTimeField = new JSpinner(new SpinnerNumberModel());
+    private static final JSpinner portionField = new JSpinner(new SpinnerNumberModel());
+
     private final JTextField amountField = new JTextField();
     private final JTextArea descriptionArea = new JTextArea();
     private final JScrollPane categoriesPane;
@@ -95,8 +97,8 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
     private void setValues() {
         nameField.setText(recipe.getName());
         caloriesField.setText(String.valueOf(round(recipe.getCalories())));
-        prepTimeField.setText(String.valueOf(recipe.getPreparationTime()));
-        portionsTextField.setText(String.valueOf(recipe.getPortions()));
+        prepTimeField.setValue(recipe.getPreparationTime());
+        portionField.setValue(recipe.getPortions());
         amountField.setText("0");
         Dimension dimension = new Dimension(150, 100);
         categoriesPane.setMaximumSize(dimension);
@@ -105,7 +107,7 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
     private void createLayout() {
         add("Name: ", nameField);
         add("Time to prepare (minutes): ", prepTimeField);
-        add("Portions: ", portionsTextField);
+        add("Portions: ", portionField);
         add("Category: ", categoriesPane);
         add("Amount: ", amountField);
         add("Ingredients: ", ingredientJComboBox);
@@ -132,8 +134,8 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
     @Override
     public Recipe getEntity() {
         recipe.setName(nameField.getText());
-        recipe.setPreparationTime(Integer.parseInt(prepTimeField.getText()));
-        recipe.setPortions(Integer.parseInt(portionsTextField.getText()));
+        recipe.setPreparationTime((Integer) prepTimeField.getValue());
+        recipe.setPortions((Integer) portionField.getValue());
         recipe.setCategory(recipe.getCategory());
         recipe.setPortions(recipe.getPortions());
         recipe.setDescription(recipe.getDescription());
@@ -165,8 +167,8 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
         }
         recipe.setName(nameField.getText());
         recipe.setDescription(descriptionArea.getText());
-        recipe.setPreparationTime(Integer.parseInt(prepTimeField.getText()));
-        recipe.setPortions(Integer.parseInt(portionsTextField.getText()));
+        recipe.setPreparationTime((Integer) prepTimeField.getValue());
+        recipe.setPortions((Integer) portionField.getValue());
     }
 
     private boolean isInteger(String str) {
@@ -183,17 +185,18 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
 
     private boolean validAddRecipe() {
         if (nameField.getText().isEmpty()
-                || prepTimeField.getText().isEmpty()
-                || portionsTextField.getText().isEmpty()
                 || descriptionArea.getText().isEmpty()) {
             return false;
         }
 
-        if (!isInteger(prepTimeField.getText()) || Integer.parseInt(prepTimeField.getText()) <= 0) {
+        int prepTime = (int) prepTimeField.getValue();
+        int portion = (int) portionField.getValue();
+
+        if (prepTime <= 0 || portion <= 0) {
             return false;
         }
 
-        return isInteger(portionsTextField.getText()) && Integer.parseInt(portionsTextField.getText()) > 0;
+        return true;
     }
 
     private void addIngredient() {
