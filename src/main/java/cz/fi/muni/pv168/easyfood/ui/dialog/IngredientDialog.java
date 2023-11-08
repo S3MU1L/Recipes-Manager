@@ -51,7 +51,6 @@ public class IngredientDialog extends EntityDialog<Ingredient> {
     public Ingredient getEntity() {
         ingredient.setName(nameField.getText());
         ingredient.setCalories(Double.parseDouble(caloriesField.getText()));
-//        ingredient.setCalories(Utility.parseDoubleFromString(caloriesField.getText()));
         ingredient.setUnit(units.get(unitsList.getSelectedIndex()));
         return ingredient;
     }
