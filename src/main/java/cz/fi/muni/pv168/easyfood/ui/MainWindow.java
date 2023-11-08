@@ -50,6 +50,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Toolkit;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainWindow {
@@ -77,14 +78,24 @@ public class MainWindow {
     public MainWindow() {
         frame = createFrame();
         var testDataGenerator = new TestDataGenerator();
-        List<Recipe> recipes = testDataGenerator.createTestRecipes(10);
-        List<Ingredient> ingredients = testDataGenerator.createTestIngredients(10);
-        List<Category> categories = testDataGenerator.createTestCategories(10);
-        List<Unit> units = testDataGenerator.createTestUnits(10);
-        recipeTable = createRecipeTable(recipes, ingredients, categories);
+        List<Recipe> recipes = new ArrayList<>();
+        List<Ingredient> ingredients = new ArrayList<>();
+        List<Category> categories = new ArrayList<>();
+        List<Unit> units = new ArrayList<>();
+
+        unitTable = createUnitTable(units);
         ingredientTable = createIngredientTable(ingredients, units);
         categoryTable = createCategoryTable(categories, recipes);
-        unitTable = createUnitTable(units);
+        recipeTable = createRecipeTable(recipes, ingredients, categories);
+
+        UnitTableModel unitModel = (UnitTableModel) unitTable.getModel();
+        testDataGenerator.createTestUnits(3).forEach(unitModel::addRow);
+        IngredientTableModel ingredientModel = (IngredientTableModel) ingredientTable.getModel();
+        testDataGenerator.createTestIngredients(5, units).forEach(ingredientModel::addRow);
+        CategoryTableModel categoryModel = (CategoryTableModel) categoryTable.getModel();
+        testDataGenerator.createTestCategories(10).forEach(categoryModel::addRow);
+        RecipeTableModel recipeModel = (RecipeTableModel) recipeTable.getModel();
+        testDataGenerator.createTestRecipes(5, ingredients, categories).forEach(recipeModel::addRow);
 
         tabContainer = new TabContainer();
         tabContainer.addTab(recipeTab);

@@ -108,7 +108,7 @@ public class Recipe {
         ingredients.add(ingredientWithAmount);
     }
 
-    public void addIngredient(Ingredient ingredient, int amount) {
+    public void addIngredient(Ingredient ingredient, double amount) {
         addIngredient(new IngredientWithAmount(ingredient, amount));
     }
 

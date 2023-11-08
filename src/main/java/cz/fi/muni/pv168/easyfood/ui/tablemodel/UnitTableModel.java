@@ -7,6 +7,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
+import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
+
 public class UnitTableModel extends EntityTableModel<Unit> {
     private final List<Unit> units;
 
@@ -31,6 +33,11 @@ public class UnitTableModel extends EntityTableModel<Unit> {
 
     @Override
     public void addRow(Unit unit) {
+        if (units.stream().filter(unit1 -> unit1.getName().equals(unit.getName())).toList().size() != 0) {
+            JOptionPane.showMessageDialog(null, "Unable to add Row -> Name duplicity", "Error", INFORMATION_MESSAGE, null);
+            return;
+        }
+
         int newRowIndex = units.size();
         units.add(unit);
         fireTableRowsInserted(newRowIndex, newRowIndex);
@@ -38,6 +45,10 @@ public class UnitTableModel extends EntityTableModel<Unit> {
 
     @Override
     public void updateRow(Unit unit) {
+        if (units.stream().filter(unit1 -> unit1.getName().equals(unit.getName())).toList().size() != 0) {
+            JOptionPane.showMessageDialog(null, "Unable to edit Row -> Name duplicity", "Error", INFORMATION_MESSAGE, null);
+            return;
+        }
         int rowIndex = units.indexOf(unit);
         fireTableRowsUpdated(rowIndex, rowIndex);
     }

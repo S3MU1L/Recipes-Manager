@@ -3,9 +3,12 @@ package cz.fi.muni.pv168.easyfood.ui.tablemodel;
 import cz.fi.muni.pv168.easyfood.model.Recipe;
 import cz.fi.muni.pv168.easyfood.ui.column.Column;
 
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import java.awt.Component;
 import java.util.List;
+
+import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
 
 public class RecipeTableModel extends EntityTableModel<Recipe> {
     private final List<Recipe> recipes;
@@ -25,12 +28,23 @@ public class RecipeTableModel extends EntityTableModel<Recipe> {
     }
 
     public void addRow(Recipe recipe) {
+        if (recipes.stream().filter(recipe1 -> recipe1.getName().equals(recipe.getName())).toList().size() != 0) {
+            JOptionPane.showMessageDialog(null, "Unable to add Row -> Name duplicity", "Error", INFORMATION_MESSAGE, null);
+            return;
+        }
+
         int newRowIndex = recipes.size();
         recipes.add(recipe);
         fireTableRowsInserted(newRowIndex, newRowIndex);
+
     }
 
     public void updateRow(Recipe recipe) {
+        if (recipes.stream().filter(recipe1 -> recipe1.getName().equals(recipe.getName())).toList().size() != 0) {
+            JOptionPane.showMessageDialog(null, "Unable to update Row -> Name duplicity", "Error", INFORMATION_MESSAGE, null);
+            return;
+        }
+
         int rowIndex = recipes.indexOf(recipe);
         fireTableRowsUpdated(rowIndex, rowIndex);
     }
