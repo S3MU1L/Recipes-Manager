@@ -58,8 +58,7 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
     public RecipeDialog(Recipe recipe, List<Ingredient> ingredients, List<Category> categories) {
         this.recipe = recipe;
         this.ingredients = ingredients;
-        portionsTextField.setText(String.valueOf(recipe.getPortions()));
-        amountField.setText("0");
+
 
         JList<String> categoriesList = new JList<>(categories.stream().map(Category::getName).toArray(String[]::new));
         int idx = categories.indexOf(recipe.getCategory());
@@ -97,7 +96,8 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
         nameField.setText(recipe.getName());
         caloriesField.setText(String.valueOf(round(recipe.getCalories())));
         prepTimeField.setText(String.valueOf(recipe.getPreparationTime()));
-
+        portionsTextField.setText(String.valueOf(recipe.getPortions()));
+        amountField.setText("0");
         Dimension dimension = new Dimension(150, 100);
         categoriesPane.setMaximumSize(dimension);
     }
