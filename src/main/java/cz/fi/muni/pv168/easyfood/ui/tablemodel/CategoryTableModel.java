@@ -9,6 +9,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import java.awt.Color;
 import java.awt.Component;
+import java.util.ArrayList;
 import java.util.List;
 
 import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
@@ -79,9 +80,21 @@ public class CategoryTableModel extends EntityTableModel<Category> {
 
     @Override
     public void deleteRow(int rowIndex) {
-        if(StatisticsService.calculateCategoryStatistics(categories.get(rowIndex), recipes) > 0){
-            JOptionPane.showMessageDialog(null, "Unable to delete category " + categories.get(rowIndex).getName() +
-                    ". The category is assigned to the recipe.", "Error", INFORMATION_MESSAGE, null);
+        Category removedCategory = categories.get(rowIndex);
+        List<Recipe> usedIn = new ArrayList<>();
+        recipes.forEach(recipe -> {
+            if (recipe.getCategory().equals(removedCategory)) {
+                usedIn.add(recipe);
+            }
+        });
+
+        if (usedIn.size() > 0) {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("Unable to delete Row -> Name <").append(removedCategory.getName()).append("> used in Recipes: ");
+            for (Recipe recipe : usedIn){
+                stringBuilder.append(" <").append(recipe.getName()).append(">");
+            }
+            JOptionPane.showMessageDialog(null, stringBuilder.toString(), "Error", INFORMATION_MESSAGE, null);
             return;
         }
         categories.remove(rowIndex);
