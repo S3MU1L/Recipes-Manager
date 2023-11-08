@@ -16,6 +16,7 @@ import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
 
 public class CategoryTableModel extends EntityTableModel<Category> {
     private final List<Category> categories;
+    private final List<Recipe> recipes;
 
     public CategoryTableModel(List<Category> categories, List<Recipe> recipes) {
         super(List.of(
@@ -23,6 +24,7 @@ public class CategoryTableModel extends EntityTableModel<Category> {
                 Column.readOnly("Recipes per category", String.class, category -> StatisticsService.calculateCategoryStatistics(category, recipes).toString())
         ));
         this.categories = categories;
+        this.recipes = recipes;
     }
 
     @Override
@@ -77,6 +79,11 @@ public class CategoryTableModel extends EntityTableModel<Category> {
 
     @Override
     public void deleteRow(int rowIndex) {
+        if(StatisticsService.calculateCategoryStatistics(categories.get(rowIndex), recipes) > 0){
+            JOptionPane.showMessageDialog(null, "Unable to delete category " + categories.get(rowIndex).getName() +
+                    ". The category is assigned to the recipe.", "Error", INFORMATION_MESSAGE, null);
+            return;
+        }
         categories.remove(rowIndex);
         fireTableRowsDeleted(rowIndex, rowIndex);
     }
