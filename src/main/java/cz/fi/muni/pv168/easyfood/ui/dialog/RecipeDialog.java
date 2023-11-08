@@ -11,6 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import java.awt.Dimension;
@@ -19,7 +20,8 @@ import java.util.List;
 
 public final class RecipeDialog extends EntityDialog<Recipe> {
     private final JTextField nameField = new JTextField();
-    //private final JEditorPane description = new JEditorPane();
+    private final Box descriptionBox = Box.createVerticalBox();
+    private final JTextArea description = new JTextArea(5, 20);
     private static final JSpinner prepareTimeField = new JSpinner(new SpinnerNumberModel());
     private static final JSpinner portionField = new JSpinner(new SpinnerNumberModel());
     private final Recipe recipe;
@@ -50,8 +52,10 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
     private void setValues() {
         nameField.setText(recipe.getName());
         prepareTimeField.setValue(recipe.getPreparationTime());
-        //description.setText(recipe.getDescription());
+        description.setText(recipe.getDescription());
+        descriptionBox.add(description);
         portionField.setValue(recipe.getPortions());
+
 
         ((SpinnerNumberModel) prepareTimeField.getModel()).setMinimum(0);
         ((SpinnerNumberModel) portionField.getModel()).setMinimum(0);
@@ -81,7 +85,7 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
 
     private void addFields() {
         add("Name:", nameField);
-        //add("Description:", description);
+        add("Description:", descriptionBox);
         add("Portions:", portionField);
         add("Time to prepare (minutes): ", prepareTimeField);
         add("Category:", categoriesField);
@@ -93,6 +97,7 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
         String name = nameField.getText();
         int preparationTime = (Integer) prepareTimeField.getValue();
         int portions = (Integer) portionField.getValue();
+        String descriptionText = description.getText();
         List<IngredientWithAmount> ingredientsInRecipe = new ArrayList<>();
         JList<String> categoriesNames = (JList<String>) categoriesField.getViewport().getView();
         String categoryName = categoriesNames.getSelectedValue();
@@ -105,7 +110,7 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
             }
             ingredientsInRecipe.add(new IngredientWithAmount(ingredient, amount));
         }
-        return new Recipe(name, ingredientsInRecipe, recipe.getDescription(), preparationTime, portions, category);
+        return new Recipe(name, ingredientsInRecipe, descriptionText, preparationTime, portions, category);
     }
 
     @Override
