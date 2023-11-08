@@ -74,4 +74,13 @@ public class RecipeTableModel extends EntityTableModel<Recipe> {
         recipes.remove(rowIndex);
         fireTableRowsDeleted(rowIndex, rowIndex);
     }
+
+    public void clear() {
+        if (recipes.isEmpty()) {
+            return;
+        }
+        int last_index = recipes.size();
+        recipes.clear();
+        fireTableRowsDeleted(0, last_index - 1);
+    }
 }
