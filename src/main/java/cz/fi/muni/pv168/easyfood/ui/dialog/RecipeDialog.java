@@ -5,7 +5,6 @@ import cz.fi.muni.pv168.easyfood.model.Ingredient;
 import cz.fi.muni.pv168.easyfood.model.IngredientWithAmount;
 import cz.fi.muni.pv168.easyfood.model.Recipe;
 import cz.fi.muni.pv168.easyfood.model.Unit;
-import cz.fi.muni.pv168.easyfood.ui.Utility;
 
 import javax.swing.Box;
 import javax.swing.JLabel;
@@ -81,7 +80,7 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
     @Override
     public Recipe getEntity() {
         String name = nameField.getText();
-        int preparationTime = Utility.parseIntFromString(prepareTimeField.getText());
+        int preparationTime = Integer.parseInt(prepareTimeField.getText());
         List<IngredientWithAmount> ingredientsInRecipe = new ArrayList<>();
         JList<String> categoriesNames = (JList<String>) categoriesField.getViewport().getView();
         String categoryName = categoriesNames.getSelectedValue();
