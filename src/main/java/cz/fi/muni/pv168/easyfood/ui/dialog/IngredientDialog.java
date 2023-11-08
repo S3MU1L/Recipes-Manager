@@ -3,7 +3,6 @@ package cz.fi.muni.pv168.easyfood.ui.dialog;
 import cz.fi.muni.pv168.easyfood.model.Category;
 import cz.fi.muni.pv168.easyfood.model.Ingredient;
 import cz.fi.muni.pv168.easyfood.model.Unit;
-import cz.fi.muni.pv168.easyfood.ui.Utility;
 
 import javax.swing.JList;
 import javax.swing.JScrollPane;
@@ -50,10 +49,10 @@ public class IngredientDialog extends EntityDialog<Ingredient> {
 
     @Override
     public Ingredient getEntity() {
-        ingredient.setName(nameField.getText());
-        ingredient.setCalories(Utility.parseDoubleFromString(caloriesField.getText()));
-        ingredient.setUnit(units.get(unitsList.getSelectedIndex()));
-        return ingredient;
+        String name = nameField.getText();
+        double calories = Double.parseDouble(caloriesField.getText());
+        Unit unit = units.get(unitsList.getSelectedIndex());
+        return new Ingredient(name, calories, unit);
     }
 
     @Override

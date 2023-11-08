@@ -15,14 +15,14 @@ import javax.swing.JTextField;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public final class RecipeDialog extends EntityDialog<Recipe> {
     private final JTextField nameField = new JTextField();
     private final JTextField prepareTimeField = new JTextField();
     private final Recipe recipe;
-    private final List<Ingredient> ingredients;
+    private final List<Category> categories;
     private final JScrollPane categoriesField = new JScrollPane();
+    private final List<Ingredient> ingredients;
     private final Box ingredientsBox = Box.createVerticalBox();
     private final List<JTextField> ingredientAmounts = new ArrayList<>();
     private final JScrollPane ingredientsField = new JScrollPane(ingredientsBox);
@@ -34,6 +34,7 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
     public RecipeDialog(Recipe recipe, List<Ingredient> ingredients, List<Category> categories) {
         this.recipe = recipe;
         this.ingredients = ingredients;
+        this.categories = categories;
         JList<String> categoriesList = new JList<>(categories.stream().map(Category::getName).toArray(String[]::new));
         if (recipe.getCategory() != null) {
             categoriesList.setSelectedValue(recipe.getCategory().getName(), true);
@@ -79,17 +80,21 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
 
     @Override
     public Recipe getEntity() {
-        recipe.setName(nameField.getText());
-        recipe.setPreparationTime(Utility.parseIntFromString(prepareTimeField.getText()));
-        recipe.setIngredients(new ArrayList<>());
+        String name = nameField.getText();
+        int preparationTime = Utility.parseIntFromString(prepareTimeField.getText());
+        List<IngredientWithAmount> ingredientsInRecipe = new ArrayList<>();
+        JList<String> categoriesNames = (JList<String>) categoriesField.getViewport().getView();
+        String categoryName = categoriesNames.getSelectedValue();
+        Category category =
+                categories.stream().filter(category1 -> category1.getName().equals(categoryName)).toList().get(0);
         for (Ingredient ingredient : ingredients) {
             double amount = Double.parseDouble(ingredientAmounts.get(ingredients.indexOf(ingredient)).getText());
             if (amount == 0) {
                 continue;
             }
-            recipe.addIngredient(ingredient, amount);
+            ingredientsInRecipe.add(new IngredientWithAmount(ingredient, amount));
         }
-        return recipe;
+        return new Recipe(name, ingredientsInRecipe, recipe.getDescription(), preparationTime, recipe.getPortions(), category);
     }
 
     @Override

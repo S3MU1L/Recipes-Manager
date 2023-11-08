@@ -3,8 +3,9 @@ package cz.fi.muni.pv168.easyfood.ui.tablemodel;
 import cz.fi.muni.pv168.easyfood.model.Unit;
 import cz.fi.muni.pv168.easyfood.ui.column.Column;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import java.awt.Component;
 import java.util.List;
 
 import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
@@ -34,7 +35,8 @@ public class UnitTableModel extends EntityTableModel<Unit> {
     @Override
     public void addRow(Unit unit) {
         if (units.stream().filter(unit1 -> unit1.getName().equals(unit.getName())).toList().size() != 0) {
-            JOptionPane.showMessageDialog(null, "Unable to add Row -> Name duplicity", "Error", INFORMATION_MESSAGE, null);
+            JOptionPane.showMessageDialog(null,
+                    "Unable to add Row -> Name <" + unit.getName() + "> duplicity", "Error", INFORMATION_MESSAGE, null);
             return;
         }
 
@@ -44,12 +46,15 @@ public class UnitTableModel extends EntityTableModel<Unit> {
     }
 
     @Override
-    public void updateRow(Unit unit) {
-        if (units.stream().filter(unit1 -> unit1.getName().equals(unit.getName())).toList().size() != 0) {
-            JOptionPane.showMessageDialog(null, "Unable to edit Row -> Name duplicity", "Error", INFORMATION_MESSAGE, null);
+    public void updateRow(Unit oldUnit, Unit newUnit) {
+        if (units.stream().filter(unit -> unit != oldUnit &&
+                unit.getName().equals(newUnit.getName())).toList().size() != 0) {
+            JOptionPane.showMessageDialog(null, "Unable to edit Row -> Name <" + newUnit.getName() +
+                    "> duplicity", "Error", INFORMATION_MESSAGE, null);
             return;
         }
-        int rowIndex = units.indexOf(unit);
+        units.set(units.indexOf(oldUnit), newUnit);
+        int rowIndex = units.indexOf(oldUnit);
         fireTableRowsUpdated(rowIndex, rowIndex);
     }
 

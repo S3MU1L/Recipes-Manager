@@ -29,7 +29,8 @@ public class IngredientTableModel extends EntityTableModel<Ingredient> {
     public void addRow(Ingredient ingredient) {
         if (ingredients.stream().filter(ingredient1 -> ingredient1.getName().equals(ingredient.getName())).toList().size() !=
                 0) {
-            JOptionPane.showMessageDialog(null, "Unable to add Row -> Name duplicity", "Error", INFORMATION_MESSAGE, null);
+            JOptionPane.showMessageDialog(null, "Unable to add Row -> Name <" + ingredient.getName() +
+                    "> duplicity", "Error", INFORMATION_MESSAGE, null);
             return;
         }
 
@@ -38,14 +39,16 @@ public class IngredientTableModel extends EntityTableModel<Ingredient> {
         fireTableRowsInserted(newRowIndex, newRowIndex);
     }
 
-    public void updateRow(Ingredient ingredient) {
-        if (ingredients.stream().filter(ingredient1 -> ingredient1.getName().equals(ingredient.getName())).toList().size() !=
-                0) {
-            JOptionPane.showMessageDialog(null, "Unable to edit Row -> Name duplicity", "Error", INFORMATION_MESSAGE, null);
+    public void updateRow(Ingredient oldIngredient, Ingredient newIngredient) {
+        if (ingredients.stream().filter(ingredient -> ingredient != oldIngredient &&
+                ingredient.getName().equals(newIngredient.getName())).toList().size() != 0) {
+            JOptionPane.showMessageDialog(null, "Unable to edit Row -> Name <" + newIngredient.getName() +
+                    "> duplicity", "Error", INFORMATION_MESSAGE, null);
             return;
         }
 
-        int rowIndex = ingredients.indexOf(ingredient);
+        int rowIndex = ingredients.indexOf(oldIngredient);
+        ingredients.set(rowIndex, newIngredient);
         fireTableRowsUpdated(rowIndex, rowIndex);
     }
 
