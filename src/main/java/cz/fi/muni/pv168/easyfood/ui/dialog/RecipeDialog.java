@@ -10,14 +10,18 @@ import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
 
 public final class RecipeDialog extends EntityDialog<Recipe> {
     private final JTextField nameField = new JTextField();
-    private final JTextField prepareTimeField = new JTextField();
+    private static final JSpinner prepareTimeField = new JSpinner(new SpinnerNumberModel());
+    private static final JSpinner portionField = new JSpinner(new SpinnerNumberModel());
     private final Recipe recipe;
     private final List<Category> categories;
     private final JScrollPane categoriesField = new JScrollPane();
@@ -25,6 +29,8 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
     private final Box ingredientsBox = Box.createVerticalBox();
     private final List<JTextField> ingredientAmounts = new ArrayList<>();
     private final JScrollPane ingredientsField = new JScrollPane(ingredientsBox);
+    private final Box descriptionBox = Box.createVerticalBox();
+    private final JTextArea description = new JTextArea(5, 20);
 
     public RecipeDialog(List<Ingredient> ingredients, List<Category> categories) {
         this(Recipe.createEmptyRecipe(), ingredients, categories);
@@ -45,7 +51,14 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
 
     private void setValues() {
         nameField.setText(recipe.getName());
-        prepareTimeField.setText(String.valueOf(recipe.getPreparationTime()));
+        prepareTimeField.setValue(recipe.getPreparationTime());
+        description.setText(recipe.getDescription());
+        descriptionBox.add(description);
+        portionField.setValue(recipe.getPortions());
+
+
+        ((SpinnerNumberModel) prepareTimeField.getModel()).setMinimum(0);
+        ((SpinnerNumberModel) portionField.getModel()).setMinimum(0);
 
         Dimension dimension = new Dimension(250, 100);
         categoriesField.setMaximumSize(dimension);
@@ -72,20 +85,25 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
 
     private void addFields() {
         add("Name:", nameField);
+        add("Portions:", portionField);
         add("Time to prepare (minutes): ", prepareTimeField);
         add("Category:", categoriesField);
         add("Ingredients:", ingredientsField);
+        add("Description:", descriptionBox);
+
     }
 
     @Override
     public Recipe getEntity() {
         String name = nameField.getText();
-        int preparationTime = Integer.parseInt(prepareTimeField.getText());
+        int preparationTime = (Integer) prepareTimeField.getValue();
+        int portions = (Integer) portionField.getValue();
+        String descriptionText = description.getText();
         List<IngredientWithAmount> ingredientsInRecipe = new ArrayList<>();
         JList<String> categoriesNames = (JList<String>) categoriesField.getViewport().getView();
         String categoryName = categoriesNames.getSelectedValue();
-        Category category =
-                categories.stream().filter(category1 -> category1.getName().equals(categoryName)).toList().get(0);
+        List<Category> categorySelected = categories.stream().filter(category1 -> category1.getName().equals(categoryName)).toList();
+        Category category = categorySelected.size() > 0 ? categorySelected.get(0) : Category.createEmptyCategory();
         for (Ingredient ingredient : ingredients) {
             double amount = Double.parseDouble(ingredientAmounts.get(ingredients.indexOf(ingredient)).getText());
             if (amount == 0) {
@@ -93,7 +111,7 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
             }
             ingredientsInRecipe.add(new IngredientWithAmount(ingredient, amount));
         }
-        return new Recipe(name, ingredientsInRecipe, recipe.getDescription(), preparationTime, recipe.getPortions(), category);
+        return new Recipe(name, ingredientsInRecipe, descriptionText, preparationTime, portions, category);
     }
 
     @Override
