@@ -81,7 +81,7 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
         descriptionArea.setLineWrap(true);
         descriptionArea.setWrapStyleWord(true);
         setValues();
-        addValues();
+        addFields();
     }
 
     private JPopupMenu createPopUpMenu(Action deleteAction) {
@@ -104,7 +104,7 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
         categoriesPane.setMaximumSize(dimension);
     }
 
-    private void addValues() {
+    private void addFields() {
         add("Name: ", nameField);
         add("Time to prepare (minutes): ", prepTimeField);
         add("Portions: ", portionField);
