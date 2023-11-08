@@ -13,7 +13,6 @@ import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
@@ -29,6 +28,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
@@ -44,14 +44,13 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
 
     private final JTextField amountField = new JTextField();
     private final JTextArea descriptionArea = new JTextArea();
-    private final JScrollPane categoriesPane;
+    private final List<Category> categories;
+    private final JScrollPane categoriesPane = new JScrollPane();
     private final JButton addIngredientButton = new JButton("add Ingredient");
     private final JComboBox<Ingredient> ingredientJComboBox;
     private final JTable table;
     private final Recipe recipe;
     private final IngredientWithAmountTableModel model;
-
-    private final List<Ingredient> ingredients;
 
     public RecipeDialog(List<Ingredient> ingredients, List<Category> categories) {
         this(Recipe.createEmptyRecipe(), ingredients, categories);
@@ -59,16 +58,13 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
 
     public RecipeDialog(Recipe recipe, List<Ingredient> ingredients, List<Category> categories) {
         this.recipe = recipe;
-        this.ingredients = ingredients;
-
-
+        this.categories = categories;
         JList<String> categoriesList = new JList<>(categories.stream().map(Category::getName).toArray(String[]::new));
-        int idx = categories.indexOf(recipe.getCategory());
-        if (idx != -1) {
-            categoriesList.setSelectedIndex(idx);
+        if (recipe.getCategory() != null) {
+            categoriesList.setSelectedValue(recipe.getCategory().getName(), true);
         }
 
-        categoriesPane = new JScrollPane(categoriesList);
+        categoriesPane.setViewportView(categoriesList);
 
         model = new IngredientWithAmountTableModel(recipe.getIngredients());
         table = new JTable(model);
@@ -85,7 +81,7 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
         descriptionArea.setLineWrap(true);
         descriptionArea.setWrapStyleWord(true);
         setValues();
-        createLayout();
+        addValues();
     }
 
     private JPopupMenu createPopUpMenu(Action deleteAction) {
@@ -100,11 +96,15 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
         prepTimeField.setValue(recipe.getPreparationTime());
         portionField.setValue(recipe.getPortions());
         amountField.setText("0");
+
+        ((SpinnerNumberModel) prepTimeField.getModel()).setMinimum(0);
+        ((SpinnerNumberModel) portionField.getModel()).setMinimum(0);
+
         Dimension dimension = new Dimension(150, 100);
         categoriesPane.setMaximumSize(dimension);
     }
 
-    private void createLayout() {
+    private void addValues() {
         add("Name: ", nameField);
         add("Time to prepare (minutes): ", prepTimeField);
         add("Portions: ", portionField);
@@ -113,8 +113,7 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
         add("Ingredients: ", ingredientJComboBox);
         add("", addIngredientButton);
         add("", createTableScrollPane(new Dimension(300, 150)));
-        add("Description: ", new JLabel(""));
-        add("", createDescriptionScrollPane(new Dimension(300, 100)));
+        add("Description: ", createDescriptionScrollPane(new Dimension(300, 100)));
     }
 
     private JComponent createDescriptionScrollPane(Dimension size) {
@@ -133,21 +132,21 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
 
     @Override
     public Recipe getEntity() {
-        recipe.setName(nameField.getText());
-        recipe.setPreparationTime((Integer) prepTimeField.getValue());
-        recipe.setPortions((Integer) portionField.getValue());
-        recipe.setCategory(recipe.getCategory());
-        recipe.setPortions(recipe.getPortions());
-        recipe.setDescription(recipe.getDescription());
+        String name = nameField.getText();
+        int preparationTime = (Integer) prepTimeField.getValue();
+        int portions = (Integer) portionField.getValue();
+        String descriptionText = descriptionArea.getText();
+        List<IngredientWithAmount> ingredientsInRecipe = new ArrayList<>();
+        JList<String> categoriesNames = (JList<String>) categoriesPane.getViewport().getView();
+        String categoryName = categoriesNames.getSelectedValue();
+        List<Category> categorySelected = categories.stream().filter(category1 -> category1.getName().equals(categoryName)).toList();
+        Category category = categorySelected.size() > 0 ? categorySelected.get(0) : Category.createEmptyCategory();
+
         int rows = model.getRowCount();
-
         for (int i = 0; i < rows; i++) {
-            recipe.addIngredient(model.getEntity(i));
+            ingredientsInRecipe.add(model.getEntity(i));
         }
-
-        recipe.setDescription(descriptionArea.getText());
-
-        return recipe;
+        return new Recipe(name, ingredientsInRecipe, descriptionText, preparationTime, portions, category);
     }
 
     @Override
