@@ -160,45 +160,6 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
         return new RecipeDialog(entity, ingredients, categories);
     }
 
-    private void addRecipe() {
-        if (!validAddRecipe()) {
-            JOptionPane.showMessageDialog(null, "Please check filled values, since recipe is invalid");
-            return;
-        }
-        recipe.setName(nameField.getText());
-        recipe.setDescription(descriptionArea.getText());
-        recipe.setPreparationTime((Integer) prepTimeField.getValue());
-        recipe.setPortions((Integer) portionField.getValue());
-    }
-
-    private boolean isInteger(String str) {
-        if (str.isEmpty()) {
-            return false;
-        }
-        for (char c : str.toCharArray()) {
-            if (!Character.isDigit(c)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private boolean validAddRecipe() {
-        if (nameField.getText().isEmpty()
-                || descriptionArea.getText().isEmpty()) {
-            return false;
-        }
-
-        int prepTime = (int) prepTimeField.getValue();
-        int portion = (int) portionField.getValue();
-
-        if (prepTime <= 0 || portion <= 0) {
-            return false;
-        }
-
-        return true;
-    }
-
     private void addIngredient() {
         if (!validAddIngredient()) {
             JOptionPane.showMessageDialog(null, "Ingredient already present or invalid amount");
