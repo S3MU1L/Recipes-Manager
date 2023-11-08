@@ -47,11 +47,11 @@ public class UnitDialog extends EntityDialog<Unit> {
 
     @Override
     public Unit getEntity() {
-        unit.setName(nameField.getText());
-        unit.setAbbreviation(abbreviationField.getText());
-        unit.setBaseUnit(BaseUnit.getBaseUnitFormSymbol(Objects.requireNonNull(baseUnitField.getSelectedItem()).toString()));
-        unit.setConversion(Float.parseFloat(conversionRatio.getText()));
-        return unit;
+        String name = nameField.getText();
+        String abbreviation = abbreviationField.getText();
+        BaseUnit baseUnit = BaseUnit.getBaseUnitFormSymbol(Objects.requireNonNull(baseUnitField.getSelectedItem()).toString());
+        double conversion = Double.parseDouble(conversionRatio.getText());
+        return new Unit(name, abbreviation, baseUnit, conversion);
     }
 
     @Override

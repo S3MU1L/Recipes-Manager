@@ -34,23 +34,9 @@ public class TestDataGenerator {
             new Unit("Milliliter", "ml", BaseUnit.MILLILITER, 1),
             new Unit("Piece", "pc", BaseUnit.PIECE, 1)
     );
-    private static final List<Ingredient> INGREDIENTS = List.of(
-            new Ingredient("Water", 1, UNITS.get(1)),
-            new Ingredient("Meat", 1, UNITS.get(0)),
-            new Ingredient("Milk", 1, UNITS.get(1)),
-            new Ingredient("Egg", 1, UNITS.get(2)),
-            new Ingredient("Sugar", 1, UNITS.get(0)),
-            new Ingredient("Oil", 1, UNITS.get(1)),
-            new Ingredient("Salt", 1, UNITS.get(0)),
-            new Ingredient("Butter", 1, UNITS.get(0)),
-            new Ingredient("Bread", 1, UNITS.get(2)),
-            new Ingredient("Sausage", 1, UNITS.get(0))
-    );
+    private static final List<String> INGREDIENT_NAMES = List.of("Water", "Meat", "Milk", "Egg", "Sugar", "Oil", "Salt", "Butter", "Bread", "Sausage");
     private static final List<String> RECIPE_NAMES = List.of("Hot dog", "Steak", "Scrambled eggs", "Sandwich",
             "Hamburger", "Schnitzel", "Tofu", "Ramen");
-    private static final List<List<String>> RECIPE_INGREDIENTS = List.of(
-            List.of()
-    );
 
     private final Random random = new Random();
 
@@ -78,35 +64,35 @@ public class TestDataGenerator {
                 .collect(Collectors.toList());
     }
 
-    public Ingredient createTestIngredient() {
-        Ingredient ingredient = selectRandom(INGREDIENTS);
-        return new Ingredient(ingredient.getName(),
-                (random.nextInt(1000) + 1) / 10.0, ingredient.getUnit());
+    public Ingredient createTestIngredient(Unit unit) {
+        String ingredient = selectRandom(INGREDIENT_NAMES);
+        return new Ingredient(ingredient,
+                (random.nextInt(1000) + 1) / 10.0, unit);
     }
 
-    public IngredientWithAmount createTestIngredientWithAmount() {
-        return new IngredientWithAmount(createTestIngredient(), random.nextInt(100) / 10.);
+    public IngredientWithAmount createTestIngredientWithAmount(Ingredient ingredient) {
+        return new IngredientWithAmount(ingredient, random.nextInt(100) / 10.);
     }
 
-    public List<Ingredient> createTestIngredients(int count) {
+    public List<Ingredient> createTestIngredients(int count, List<Unit> units) {
         return Stream
-                .generate(this::createTestIngredient)
+                .generate(() -> createTestIngredient(selectRandom(units)))
                 .limit(count)
                 .collect(Collectors.toList());
     }
 
-    public Recipe createTestRecipe() {
+    public Recipe createTestRecipe(List<Ingredient> ingredients, Category category) {
         String name = selectRandom(RECIPE_NAMES);
-        List<IngredientWithAmount> ingredients =
-                Stream.generate(this::createTestIngredientWithAmount).limit(5).collect(Collectors.toList());
+        List<IngredientWithAmount> ingredientsWithAmount =
+                Stream.generate(() -> createTestIngredientWithAmount(selectRandom(ingredients))).limit(5).collect(Collectors.toList());
         String description = "In a medium bowl, beat together egg whites, 1/4 cup butter and 1/4 teaspoon salt";
-        return new Recipe(name, ingredients, description, random.nextInt(1, 20),
-                random.nextInt(5) + 1, createTestCategory());
+        return new Recipe(name, ingredientsWithAmount, description, random.nextInt(1, 20),
+                random.nextInt(5) + 1, category);
     }
 
-    public List<Recipe> createTestRecipes(int count) {
+    public List<Recipe> createTestRecipes(int count, List<Ingredient> ingredients, List<Category> categories) {
         return Stream
-                .generate(this::createTestRecipe)
+                .generate(() -> createTestRecipe(ingredients, selectRandom(categories)))
                 .limit(count)
                 .collect(Collectors.toList());
     }

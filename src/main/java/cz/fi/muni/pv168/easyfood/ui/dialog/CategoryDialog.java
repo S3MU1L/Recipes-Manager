@@ -43,9 +43,8 @@ public class CategoryDialog extends EntityDialog<Category> implements ActionList
 
     @Override
     public Category getEntity() {
-        category.setColor(color);
-        category.setName(nameField.getText());
-        return category;
+        String name = nameField.getText();
+        return new Category(name, color);
     }
 
     @Override

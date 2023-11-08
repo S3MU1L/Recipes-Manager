@@ -49,10 +49,10 @@ public class IngredientDialog extends EntityDialog<Ingredient> {
 
     @Override
     public Ingredient getEntity() {
-        ingredient.setName(nameField.getText());
-        ingredient.setCalories(Double.parseDouble(caloriesField.getText()));
-        ingredient.setUnit(units.get(unitsList.getSelectedIndex()));
-        return ingredient;
+        String name = nameField.getText();
+        double calories = Double.parseDouble(caloriesField.getText());
+        Unit unit = units.get(unitsList.getSelectedIndex());
+        return new Ingredient(name, calories, unit);
     }
 
     @Override

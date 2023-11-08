@@ -5,11 +5,13 @@ import cz.fi.muni.pv168.easyfood.model.Recipe;
 import cz.fi.muni.pv168.easyfood.services.StatisticsService;
 import cz.fi.muni.pv168.easyfood.ui.column.Column;
 
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import java.awt.Color;
 import java.awt.Component;
-import java.util.ArrayList;
 import java.util.List;
+
+import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
 
 
 public class CategoryTableModel extends EntityTableModel<Category> {
@@ -20,7 +22,7 @@ public class CategoryTableModel extends EntityTableModel<Category> {
                 Column.readOnly("Name", String.class, Category::getName),
                 Column.readOnly("Recipes per category", String.class, category -> StatisticsService.calculateCategoryStatistics(category, recipes).toString())
         ));
-        this.categories = new ArrayList<>(categories);
+        this.categories = categories;
     }
 
     @Override
@@ -29,13 +31,27 @@ public class CategoryTableModel extends EntityTableModel<Category> {
     }
 
     public void addRow(Category category) {
+        if (categories.stream().filter(category1 -> category1.getName().equals(category.getName())).toList().size() !=
+                0) {
+            JOptionPane.showMessageDialog(null, "Unable to add Row -> Name <" + category.getName() +
+                    "> duplicity", "Error", INFORMATION_MESSAGE, null);
+            return;
+        }
+
         int newRowIndex = categories.size();
         categories.add(category);
         fireTableRowsInserted(newRowIndex, newRowIndex);
     }
 
-    public void updateRow(Category category) {
-        int rowIndex = categories.indexOf(category);
+    public void updateRow(Category oldCategory, Category newCategory) {
+        if (categories.stream().filter(category -> category != oldCategory &&
+                category.getName().equals(newCategory.getName())).toList().size() != 0) {
+            JOptionPane.showMessageDialog(null, "Unable to edit Row -> Name <" + newCategory.getName() +
+                    "> duplicity", "Error", INFORMATION_MESSAGE, null);
+            return;
+        }
+        int rowIndex = categories.indexOf(oldCategory);
+        categories.set(rowIndex, newCategory);
         fireTableRowsUpdated(rowIndex, rowIndex);
     }
 

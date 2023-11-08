@@ -48,7 +48,8 @@ public final class EditAction extends AbstractAction {
         int modelRow = table.convertRowIndexToModel(selectedRows[0]);
         StringBuilder title = new StringBuilder("Edit ").append(tabContainer.getSelectedTab().getTitle());
         title.deleteCharAt(title.length() - 1);
-        var dialog = tabContainer.getSelectedTab().getDialog().createNewDialog(tabContainer.getSelectedTab().getModel().getEntity(modelRow), ingredients, categories, units);
-        dialog.show(table, title.toString()).ifPresent(model::updateRow);
+        var entity =tabContainer.getSelectedTab().getModel().getEntity(modelRow);
+        var dialog = tabContainer.getSelectedTab().getDialog().createNewDialog(entity, ingredients, categories, units);
+        dialog.show(table, title.toString()).ifPresent(entity1 -> model.updateRow(entity, entity1));
     }
 }
