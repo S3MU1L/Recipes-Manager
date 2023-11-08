@@ -9,9 +9,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import static javax.swing.JOptionPane.OK_CANCEL_OPTION;
@@ -19,7 +17,6 @@ import static javax.swing.JOptionPane.OK_OPTION;
 import static javax.swing.JOptionPane.PLAIN_MESSAGE;
 
 public abstract class EntityDialog<E> {
-    private final Map<JComponent, JLabel> componentLabelMap = new HashMap<>();
 
     private final JPanel panel = new JPanel();
 
@@ -33,15 +30,8 @@ public abstract class EntityDialog<E> {
 
     public void add(String labelText, JComponent component) {
         var label = new JLabel(labelText);
-        componentLabelMap.put(component, label);
         panel.add(label);
         panel.add(component, "wmin 250lp, grow");
-    }
-
-    public void remove(JComponent component) {
-        panel.remove(component);
-        panel.remove(componentLabelMap.get(component));
-        componentLabelMap.remove(component);
     }
 
     public abstract E getEntity();

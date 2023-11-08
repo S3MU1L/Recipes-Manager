@@ -11,13 +11,10 @@ import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
-import javax.swing.JSpinner;
 import javax.swing.JTextField;
-import javax.swing.SpinnerNumberModel;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public final class RecipeDialog extends EntityDialog<Recipe> {
     private final JTextField nameField = new JTextField();
@@ -29,8 +26,6 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
     private final Box ingredientsBox = Box.createVerticalBox();
     private final List<JTextField> ingredientAmounts = new ArrayList<>();
     private final JScrollPane ingredientsField = new JScrollPane(ingredientsBox);
-    private final Map<Ingredient, Integer> ingredientAmounts = new HashMap<>();
-    private final List<JSpinner> ingredientFields = new ArrayList<>();
 
     public RecipeDialog(List<Ingredient> ingredients, List<Category> categories) {
         this(Recipe.createEmptyRecipe(), ingredients, categories);
@@ -47,7 +42,6 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
         categoriesField.setViewportView(categoriesList);
         setValues();
         addFields();
-        addIngredientFields();
     }
 
     private void setValues() {
@@ -65,7 +59,7 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
                     .map(IngredientWithAmount::getAmount)
                     .toList();
 
-            double amount = lst.size() > 0 ? lst.get(0) : 0;
+            double amount = !lst.isEmpty() ? lst.get(0) : 0;
             JTextField jTextField = new JTextField(String.valueOf(amount));
 
             ingredientAmounts.add(jTextField);
@@ -82,18 +76,6 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
         add("Time to prepare (minutes): ", prepareTimeField);
         add("Category:", categoriesField);
         add("Ingredients:", ingredientsField);
-    }
-
-    private void addIngredientFields() {
-        ingredientFields.forEach(this::remove);
-        ingredientFields.clear();
-        for (Ingredient ingredient : ingredientAmounts.keySet()) {
-            SpinnerNumberModel numberModel = new SpinnerNumberModel();
-            numberModel.setMinimum(0);
-            JSpinner spinner = new JSpinner(numberModel);
-            ingredientFields.add(spinner);
-            add(ingredient.getName(), spinner);
-        }
     }
 
     @Override
