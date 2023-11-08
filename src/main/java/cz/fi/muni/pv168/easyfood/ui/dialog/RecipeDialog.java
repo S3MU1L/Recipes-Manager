@@ -59,7 +59,7 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
                     .map(IngredientWithAmount::getAmount)
                     .toList();
 
-            double amount = lst.size() > 0 ? lst.get(0) : 0;
+            double amount = !lst.isEmpty() ? lst.get(0) : 0;
             JTextField jTextField = new JTextField(String.valueOf(amount));
 
             ingredientAmounts.add(jTextField);
