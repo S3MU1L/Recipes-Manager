@@ -1,24 +1,26 @@
 package cz.fi.muni.pv168.easyfood.ui.tablemodel;
 
 import cz.fi.muni.pv168.easyfood.model.Ingredient;
+import cz.fi.muni.pv168.easyfood.model.IngredientWithAmount;
+import cz.fi.muni.pv168.easyfood.model.Recipe;
 import cz.fi.muni.pv168.easyfood.ui.column.Column;
 
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import java.awt.Component;
+import java.util.ArrayList;
 import java.util.List;
 
 import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
 
 public class IngredientTableModel extends EntityTableModel<Ingredient> {
     private final List<Ingredient> ingredients;
+    private final List<Recipe> recipes;
 
-    public IngredientTableModel(List<Ingredient> ingredients) {
-        super(List.of(
-                Column.readOnly("Name", String.class, Ingredient::getName),
-                Column.readOnly("Calories", String.class, Ingredient::getFormattedCalories)
-        ));
+    public IngredientTableModel(List<Ingredient> ingredients, List<Recipe> recipes) {
+        super(List.of(Column.readOnly("Name", String.class, Ingredient::getName), Column.readOnly("Calories", String.class, Ingredient::getFormattedCalories)));
         this.ingredients = ingredients;
+        this.recipes = recipes;
     }
 
     @Override
@@ -73,7 +75,26 @@ public class IngredientTableModel extends EntityTableModel<Ingredient> {
 
     @Override
     public void deleteRow(int rowIndex) {
+        Ingredient removedIngredient = ingredients.get(rowIndex);
+        List<Recipe> usedIn = new ArrayList<>();
+        recipes.forEach(recipe -> {
+            if (recipe.getIngredients().stream().map(IngredientWithAmount::getIngredient).filter(ingredient -> ingredient.equals(removedIngredient)).toList().size() >
+                    0) {
+                usedIn.add(recipe);
+            }
+        });
+
+        if (usedIn.size() > 0) {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("Unable to delete Row -> Name <").append(removedIngredient.getName()).append("> used in Recipes: ");
+            for (Recipe recipe : usedIn){
+                stringBuilder.append(" <").append(recipe.getName()).append(">");
+            }
+            JOptionPane.showMessageDialog(null, stringBuilder.toString(), "Error", INFORMATION_MESSAGE, null);
+            return;
+        }
         ingredients.remove(rowIndex);
+
         fireTableRowsDeleted(rowIndex, rowIndex);
     }
 }
