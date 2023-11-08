@@ -4,7 +4,6 @@ import cz.fi.muni.pv168.easyfood.model.Category;
 import cz.fi.muni.pv168.easyfood.model.Ingredient;
 import cz.fi.muni.pv168.easyfood.model.Recipe;
 import cz.fi.muni.pv168.easyfood.model.Unit;
-import cz.fi.muni.pv168.easyfood.ui.Utility;
 
 import javax.swing.Box;
 import javax.swing.JCheckBox;
@@ -67,9 +66,8 @@ public final class  RecipeDialog extends EntityDialog<Recipe> {
     @Override
     public Recipe getEntity() {
         recipe.setName(nameField.getText());
-        recipe.setPreparationTime(Utility.parseIntFromString(prepareTimeField.getText()));
-        // only temporary solution, so that we can see calories we entered, will have to refactor this
-        double calories = Utility.parseDoubleFromString(caloriesField.getText());
+        recipe.setPreparationTime(Integer.parseInt(prepareTimeField.getText()));
+        double calories = Double.parseDouble(caloriesField.getText());
         recipe.addIngredient(new Ingredient("nahodna", calories, Unit.createEmptyUnit()), 1);
         return recipe;
     }
