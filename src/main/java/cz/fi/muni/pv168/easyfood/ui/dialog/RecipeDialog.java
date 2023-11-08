@@ -80,7 +80,7 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
     @Override
     public Recipe getEntity() {
         String name = nameField.getText();
-        int preparationTime = Utility.parseIntFromString(prepareTimeField.getText());
+        int preparationTime = Integer.parseInt(prepareTimeField.getText());
         List<IngredientWithAmount> ingredientsInRecipe = new ArrayList<>();
         JList<String> categoriesNames = (JList<String>) categoriesField.getViewport().getView();
         String categoryName = categoriesNames.getSelectedValue();
