@@ -17,10 +17,11 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import java.awt.Dimension;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 public class FilterDialog extends EntityDialog<Filter> {
     private final Filter filter;
@@ -36,6 +37,8 @@ public class FilterDialog extends EntityDialog<Filter> {
     private static final JSpinner maxNutritionalValueField = new JSpinner(new SpinnerNumberModel());
     private static final JSlider portionsField = new JSlider();
     private static final JButton resetButton = new JButton();
+    private static final Set<Category> filterCategories = new HashSet<>();
+    private static final Set<Ingredient> filterIngredients = new HashSet<>();
     private final Map<Category, JCheckBox> categoriesCheckboxes = new HashMap<>();
     private final Map<Ingredient, JCheckBox> ingredientsCheckboxes = new HashMap<>();
 
@@ -54,18 +57,8 @@ public class FilterDialog extends EntityDialog<Filter> {
     @Override
     public Filter getEntity() {
         filter.setName(nameField.getText());
-        filter.setCategories(
-                categoriesCheckboxes.keySet()
-                        .stream()
-                        .filter(category -> categoriesCheckboxes.get(category).isSelected())
-                        .collect(Collectors.toSet())
-        );
-        filter.setIngredients(
-                ingredientsCheckboxes.keySet()
-                        .stream()
-                        .filter(ingredient -> ingredientsCheckboxes.get(ingredient).isSelected())
-                        .collect(Collectors.toSet())
-        );
+        filter.setCategories(filterCategories);
+        filter.setIngredients(filterIngredients);
         filter.setPreparationTime((int) timeField.getValue());
         filter.setMinimumNutritionalValue((int) minNutritionalValueField.getValue());
         filter.setMaximumNutritionalValue((int) maxNutritionalValueField.getValue());
@@ -103,12 +96,26 @@ public class FilterDialog extends EntityDialog<Filter> {
             JCheckBox checkBox = new JCheckBox(category.getName());
             categoriesCheckboxes.put(category, checkBox);
             categoriesBox.add(checkBox);
+            checkBox.addActionListener(e -> {
+                if (checkBox.isSelected()) {
+                    filterCategories.add(category);
+                } else {
+                    filterCategories.remove(category);
+                }
+            });
         }
 
         for (Ingredient ingredient : ingredients) {
             JCheckBox checkBox = new JCheckBox(ingredient.getName());
             ingredientsCheckboxes.put(ingredient, checkBox);
             ingredientsBox.add(checkBox);
+            checkBox.addActionListener(e -> {
+                if (checkBox.isSelected()) {
+                    filterIngredients.add(ingredient);
+                } else {
+                    filterIngredients.remove(ingredient);
+                }
+            });
         }
 
         ((SpinnerNumberModel) timeField.getModel()).setMinimum(0);
@@ -125,6 +132,7 @@ public class FilterDialog extends EntityDialog<Filter> {
         portionsField.setPaintLabels(true);
         portionsField.setPaintTicks(true);
         portionsField.setSnapToTicks(true);
+        portionsField.setValue(0);
 
         resetButton.setText("Reset");
         resetButton.addActionListener(e -> {
@@ -134,7 +142,7 @@ public class FilterDialog extends EntityDialog<Filter> {
             timeField.setValue(0);
             minNutritionalValueField.setValue(0);
             maxNutritionalValueField.setValue(0);
-            portionsField.setValue(6);
+            portionsField.setValue(0);
         });
     }
 }
