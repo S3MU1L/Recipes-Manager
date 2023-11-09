@@ -8,18 +8,13 @@ import cz.fi.muni.pv168.easyfood.model.Recipe;
 import cz.fi.muni.pv168.easyfood.model.Unit;
 import cz.fi.muni.pv168.easyfood.ui.Icons;
 import cz.fi.muni.pv168.easyfood.ui.dialog.FilterDialog;
-import cz.fi.muni.pv168.easyfood.ui.renderers.CustomTableCellRenderer;
-import cz.fi.muni.pv168.easyfood.ui.tab.Tab;
 import cz.fi.muni.pv168.easyfood.ui.tab.TabContainer;
 import cz.fi.muni.pv168.easyfood.ui.tablemodel.RecipeTableModel;
 
 import javax.swing.AbstractAction;
-import javax.swing.JLabel;
 import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
 import java.util.List;
 
 public final class FilterAction extends AbstractAction {
@@ -45,7 +40,8 @@ public final class FilterAction extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        var dialog = (FilterDialog) filterContainer.getSelectedTab().getDialog().createNewDialog(Filter.createEmptyFilter(), ingredients, categories, units);
+        var dialog =
+                (FilterDialog) filterContainer.getSelectedTab().getDialog().createNewDialog(Filter.createEmptyFilter(), ingredients, categories, units);
         Filter filter = dialog.show(filterContainer.getComponent(), "Filter").orElse(null);
 
         JTable recipeTable = tabContainer.getSelectedTab().getTable();
