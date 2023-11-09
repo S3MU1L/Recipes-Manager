@@ -15,12 +15,14 @@ import javax.swing.AbstractAction;
 import javax.swing.JTable;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import java.util.List;
 
 public final class FilterAction extends AbstractAction {
 
     private final TabContainer tabContainer;
     private final TabContainer filterContainer;
+    private final List<Recipe> originalRecipes;
     private final List<Recipe> recipes;
     private final List<Ingredient> ingredients;
     private final List<Category> categories;
@@ -34,6 +36,7 @@ public final class FilterAction extends AbstractAction {
         this.ingredients = ingredients;
         this.categories = categories;
         this.units = units;
+        originalRecipes = new ArrayList<>(this.recipes);
         putValue(SHORT_DESCRIPTION, "Filter recipes");
         putValue(MNEMONIC_KEY, KeyEvent.VK_F);
     }
@@ -46,7 +49,12 @@ public final class FilterAction extends AbstractAction {
 
         JTable recipeTable = tabContainer.getSelectedTab().getTable();
         RecipeTableModel recipeTableModel = (RecipeTableModel) recipeTable.getModel();
-        if (filter != null) {
+         if (filter != null && filter.getName().equals("") && filter.getCategories().size() == 0 && filter.getIngredients().size() == 0 &&
+                filter.getPreparationTime() == 0 && filter.getMinimumNutritionalValue() == 0 &&
+                filter.getMaximumNutritionalValue() == 0 && filter.getPortions() == 0) {
+             recipeTableModel.clear();
+             originalRecipes.forEach(recipeTableModel::addRow);
+        }else if (filter != null) {
             List<Recipe> filteredRecipes = filter.getFilteredRecipes(recipes);
             recipeTableModel.clear();
             filteredRecipes.forEach(recipeTableModel::addRow);

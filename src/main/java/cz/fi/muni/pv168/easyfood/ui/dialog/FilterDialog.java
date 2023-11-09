@@ -143,6 +143,8 @@ public class FilterDialog extends EntityDialog<Filter> {
             minNutritionalValueField.setValue(0);
             maxNutritionalValueField.setValue(0);
             portionsField.setValue(0);
+            categories.forEach(filterCategories::remove);
+            ingredients.forEach(filterIngredients::remove);
         });
     }
 }
