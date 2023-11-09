@@ -54,7 +54,6 @@ public final class FilterAction extends AbstractAction {
             List<Recipe> filteredRecipes = filter.getFilteredRecipes(recipes);
             recipeTableModel.clear();
             filteredRecipes.forEach(recipeTableModel::addRow);
-            filteredRecipes.forEach(r -> System.out.println(r.getName()));
         }
     }
 }
