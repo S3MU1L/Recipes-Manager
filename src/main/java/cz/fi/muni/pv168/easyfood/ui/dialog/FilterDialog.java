@@ -116,9 +116,10 @@ public class FilterDialog extends EntityDialog<Filter> {
         ((SpinnerNumberModel) maxNutritionalValueField.getModel()).setMinimum(0);
 
         Hashtable<Integer, JComponent> labelTable = portionsField.createStandardLabels(1);
+        labelTable.put(0, new JLabel("Any"));
         labelTable.put(6, new JLabel(">5"));
         portionsField.setLabelTable(labelTable);
-        portionsField.setMinimum(1);
+        portionsField.setMinimum(0);
         portionsField.setMaximum(6);
         portionsField.setMajorTickSpacing(1);
         portionsField.setPaintLabels(true);
