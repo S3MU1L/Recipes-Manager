@@ -211,7 +211,7 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
     private void deleteSelected() {
         int[] selected = table.getSelectedRows();
         for (int i = selected.length - 1; i >= 0; i--) {
-            model.deleteRow(i);
+            model.deleteRow(selected[i]);
         }
     }
 
