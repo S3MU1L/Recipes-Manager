@@ -36,10 +36,10 @@ public class Filter {
             if (portions != 0 && ((portions == 6 && recipe.getPortions() <= 5) || portions != recipe.getPortions())) {
                 continue;
             }
-            if (categories.size() != 0 && !categories.contains(recipe.getCategory())) {
+            if (!categories.isEmpty() && !categories.contains(recipe.getCategory())) {
                 continue;
             }
-            if (ingredients.size() != 0 && !ingredients.containsAll(
+            if (!ingredients.isEmpty() && !ingredients.containsAll(
                     recipe.getIngredients()
                             .stream()
                             .map(IngredientWithAmount::getIngredient)

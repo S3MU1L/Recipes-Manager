@@ -16,6 +16,7 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import java.awt.Dimension;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -39,8 +40,8 @@ public class FilterDialog extends EntityDialog<Filter> {
     private static final JButton resetButton = new JButton();
     private static final Set<Category> filterCategories = new HashSet<>();
     private static final Set<Ingredient> filterIngredients = new HashSet<>();
-    private final Map<Category, JCheckBox> categoriesCheckboxes = new HashMap<>();
-    private final Map<Ingredient, JCheckBox> ingredientsCheckboxes = new HashMap<>();
+    private final List<JCheckBox> categoriesCheckboxes = new ArrayList<>();
+    private final List<JCheckBox> ingredientsCheckboxes = new ArrayList<>();
 
     public FilterDialog(List<Category> categories, List<Ingredient> ingredients, Filter filter) {
         this.filter = filter;
@@ -94,7 +95,7 @@ public class FilterDialog extends EntityDialog<Filter> {
 
         for (Category category : categories) {
             JCheckBox checkBox = new JCheckBox(category.getName());
-            categoriesCheckboxes.put(category, checkBox);
+            categoriesCheckboxes.add(checkBox);
             categoriesBox.add(checkBox);
             checkBox.addActionListener(e -> {
                 if (checkBox.isSelected()) {
@@ -107,7 +108,7 @@ public class FilterDialog extends EntityDialog<Filter> {
 
         for (Ingredient ingredient : ingredients) {
             JCheckBox checkBox = new JCheckBox(ingredient.getName());
-            ingredientsCheckboxes.put(ingredient, checkBox);
+            ingredientsCheckboxes.add(checkBox);
             ingredientsBox.add(checkBox);
             checkBox.addActionListener(e -> {
                 if (checkBox.isSelected()) {
@@ -137,8 +138,8 @@ public class FilterDialog extends EntityDialog<Filter> {
         resetButton.setText("Reset");
         resetButton.addActionListener(e -> {
             nameField.setText("");
-            for (JCheckBox checkBox : categoriesCheckboxes.values()) checkBox.setSelected(false);
-            for (JCheckBox checkBox : ingredientsCheckboxes.values()) checkBox.setSelected(false);
+            for (JCheckBox checkBox : categoriesCheckboxes) checkBox.setSelected(false);
+            for (JCheckBox checkBox : ingredientsCheckboxes) checkBox.setSelected(false);
             timeField.setValue(0);
             minNutritionalValueField.setValue(0);
             maxNutritionalValueField.setValue(0);
