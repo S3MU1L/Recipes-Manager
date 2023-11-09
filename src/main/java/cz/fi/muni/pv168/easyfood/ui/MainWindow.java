@@ -65,8 +65,8 @@ public class MainWindow {
     private final ExportAction exportAction;
     private final ImportAction importAction;
     private final TabContainer tabContainer;
-    private Tab ingredientTab;
     private Tab recipeTab;
+    private Tab ingredientTab;
     private Tab categoryTab;
     private Tab unitTab;
     private final JTable ingredientTable;
@@ -114,7 +114,7 @@ public class MainWindow {
         deleteAction = new DeleteAction(tabContainer);
         editAction = new EditAction(tabContainer, ingredients, categories, units);
         showAction = new ShowAction(tabContainer);
-        filterAction = new FilterAction(filterContainer, ingredients, categories, units);
+        filterAction = new FilterAction(tabContainer, filterContainer, recipes, ingredients, categories, units);
         importAction = new ImportAction();
         exportAction = new ExportAction();
 
