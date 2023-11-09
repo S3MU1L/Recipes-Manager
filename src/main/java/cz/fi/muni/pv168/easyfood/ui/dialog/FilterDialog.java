@@ -133,7 +133,6 @@ public class FilterDialog extends EntityDialog<Filter> {
         portionsField.setPaintLabels(true);
         portionsField.setPaintTicks(true);
         portionsField.setSnapToTicks(true);
-        portionsField.setValue(0);
 
         resetButton.setText("Reset");
         resetButton.addActionListener(e -> {
