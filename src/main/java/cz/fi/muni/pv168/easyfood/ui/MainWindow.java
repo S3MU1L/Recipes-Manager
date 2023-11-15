@@ -114,7 +114,7 @@ public class MainWindow {
         deleteAction = new DeleteAction(this, tabContainer);
         editAction = new EditAction(tabContainer, ingredients, categories, units);
         showAction = new ShowAction(tabContainer);
-        filterAction = new FilterAction(tabContainer, filterContainer, recipes, ingredients, categories, units);
+        filterAction = new FilterAction(this, tabContainer, filterContainer, recipes, ingredients, categories, units);
         importAction = new ImportAction();
         exportAction = new ExportAction();
 
