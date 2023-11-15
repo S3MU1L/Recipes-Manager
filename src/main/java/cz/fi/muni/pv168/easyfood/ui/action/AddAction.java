@@ -5,6 +5,7 @@ import cz.fi.muni.pv168.easyfood.model.Category;
 import cz.fi.muni.pv168.easyfood.model.Ingredient;
 import cz.fi.muni.pv168.easyfood.model.Unit;
 import cz.fi.muni.pv168.easyfood.ui.Icons;
+import cz.fi.muni.pv168.easyfood.ui.MainWindow;
 import cz.fi.muni.pv168.easyfood.ui.tab.TabContainer;
 
 import javax.swing.AbstractAction;
@@ -20,8 +21,11 @@ public final class AddAction extends AbstractAction {
     private final List<Category> categories;
     private final List<Unit> units;
 
-    public AddAction(TabContainer tabContainer, List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
+    private MainWindow mainWindow;
+
+    public AddAction(MainWindow mainWindow, TabContainer tabContainer, List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
         super("Add", Icons.ADD_ICON);
+        this.mainWindow = mainWindow;
         this.tabContainer = tabContainer;
         this.ingredients = ingredients;
         this.categories = categories;
@@ -40,5 +44,6 @@ public final class AddAction extends AbstractAction {
         title.deleteCharAt(title.length() - 1);
         var dialog = tabContainer.getSelectedTab().getDialog().createNewDialog(ingredients, categories, units);
         dialog.show(table, title.toString()).ifPresent(model::addRow);
+        mainWindow.updateRecipeCountLabel();
     }
 }
