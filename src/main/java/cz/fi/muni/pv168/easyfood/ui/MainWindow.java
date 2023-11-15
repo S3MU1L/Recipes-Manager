@@ -73,7 +73,7 @@ public class MainWindow {
     private final JTable recipeTable;
     private final JTable categoryTable;
     private final JTable unitTable;
-    private static final JLabel recipeCountLabel = new JLabel();
+    private JLabel recipeCountLabel = new JLabel();
 
     public MainWindow() {
         frame = createFrame();
