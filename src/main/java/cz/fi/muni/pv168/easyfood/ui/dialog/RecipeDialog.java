@@ -6,6 +6,7 @@ import cz.fi.muni.pv168.easyfood.model.IngredientWithAmount;
 import cz.fi.muni.pv168.easyfood.model.Recipe;
 import cz.fi.muni.pv168.easyfood.model.Unit;
 import cz.fi.muni.pv168.easyfood.ui.Icons;
+import cz.fi.muni.pv168.easyfood.ui.renderers.CategoryListCellRenderer;
 import cz.fi.muni.pv168.easyfood.ui.tablemodel.IngredientWithAmountTableModel;
 
 import javax.swing.AbstractAction;
@@ -45,7 +46,6 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
     private static final JSpinner prepTimeField = new JSpinner(new SpinnerNumberModel());
     private static final JSpinner portionField = new JSpinner(new SpinnerNumberModel());
     private final JSpinner amountField = new JSpinner(new SpinnerNumberModel(0.0, 0.0, Integer.MAX_VALUE, 0.5));
-
     private final JTextArea descriptionArea = new JTextArea();
     private final List<Category> categories;
     private final JScrollPane categoriesPane = new JScrollPane();
@@ -62,7 +62,10 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
     public RecipeDialog(Recipe recipe, List<Ingredient> ingredients, List<Category> categories) {
         this.recipe = recipe;
         this.categories = categories;
+
         JList<String> categoriesList = new JList<>(categories.stream().map(Category::getName).toArray(String[]::new));
+        categoriesList.setCellRenderer(new CategoryListCellRenderer(categories));
+
         if (recipe.getCategory() != null) {
             categoriesList.setSelectedValue(recipe.getCategory().getName(), true);
         }
@@ -112,6 +115,7 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
         add("Description: ", createDescriptionScrollPane(new Dimension(300, 100)));
         add("Time to prepare (minutes): ", prepTimeField);
         add("Portions: ", portionField);
+        add("Category: ", categoriesPane);
 
         JLabel chooseIngredientsLabel = new JLabel("Choose Ingredients");
         chooseIngredientsLabel.setFont(new Font("Arial", Font.BOLD, 20));
@@ -144,13 +148,15 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
         if (!validRecipe()) {
             return null;
         }
-        String name = nameField.getText();
+
         int preparationTime = (Integer) prepTimeField.getValue();
         int portions = (Integer) portionField.getValue();
+        String name = nameField.getText();
         String descriptionText = descriptionArea.getText();
-        List<IngredientWithAmount> ingredientsInRecipe = new ArrayList<>();
         JList<String> categoriesNames = (JList<String>) categoriesPane.getViewport().getView();
         String categoryName = categoriesNames.getSelectedValue();
+
+        List<IngredientWithAmount> ingredientsInRecipe = new ArrayList<>();
         List<Category> categorySelected = categories.stream().filter(category1 -> category1.getName().equals(categoryName)).toList();
         Category category = categorySelected.size() > 0 ? categorySelected.get(0) : Category.createEmptyCategory();
 
