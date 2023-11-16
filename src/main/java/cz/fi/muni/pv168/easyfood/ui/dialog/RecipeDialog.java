@@ -10,9 +10,11 @@ import cz.fi.muni.pv168.easyfood.ui.tablemodel.IngredientWithAmountTableModel;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
@@ -26,6 +28,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -41,8 +44,8 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
     private final JTextField caloriesField = new JTextField();
     private static final JSpinner prepTimeField = new JSpinner(new SpinnerNumberModel());
     private static final JSpinner portionField = new JSpinner(new SpinnerNumberModel());
+    private final JSpinner amountField = new JSpinner(new SpinnerNumberModel(0.0, 0.0, Integer.MAX_VALUE, 0.5));
 
-    private final JTextField amountField = new JTextField();
     private final JTextArea descriptionArea = new JTextArea();
     private final List<Category> categories;
     private final JScrollPane categoriesPane = new JScrollPane();
@@ -95,7 +98,7 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
         caloriesField.setText(String.valueOf(round(recipe.getCalories())));
         prepTimeField.setValue(recipe.getPreparationTime());
         portionField.setValue(recipe.getPortions());
-        amountField.setText("0");
+        amountField.setValue(0.0);
 
         ((SpinnerNumberModel) prepTimeField.getModel()).setMinimum(0);
         ((SpinnerNumberModel) portionField.getModel()).setMinimum(0);
@@ -106,14 +109,20 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
 
     private void addFields() {
         add("Name: ", nameField);
+        add("Description: ", createDescriptionScrollPane(new Dimension(300, 100)));
         add("Time to prepare (minutes): ", prepTimeField);
         add("Portions: ", portionField);
-        add("Category: ", categoriesPane);
+
+        JLabel chooseIngredientsLabel = new JLabel("Choose Ingredients");
+        chooseIngredientsLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        chooseIngredientsLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        chooseIngredientsLabel.setBorder(BorderFactory.createEmptyBorder(20, 10, 20, 10));
+        add("", chooseIngredientsLabel);
+
         add("Amount: ", amountField);
         add("Ingredients: ", ingredientJComboBox);
         add("", addIngredientButton);
         add("", createTableScrollPane(new Dimension(300, 150)));
-        add("Description: ", createDescriptionScrollPane(new Dimension(300, 100)));
     }
 
     private JComponent createDescriptionScrollPane(Dimension size) {
@@ -164,39 +173,29 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
             JOptionPane.showMessageDialog(null, "Ingredient already present or invalid amount");
             return;
         }
-        double amount = Double.parseDouble(amountField.getText());
+
+        double amount = (double) amountField.getValue();
         var ingredient = (Ingredient) ingredientJComboBox.getSelectedItem();
         if (ingredient == null) {
             return;
         }
+
         var ingredientAndAmount = new IngredientWithAmount(ingredient, amount);
         model.addRow(ingredientAndAmount);
-        amountField.setText("0");
-    }
-
-    private boolean isDouble(String str) {
-        if (str.isEmpty()) {
-            return false;
-        }
-        try {
-            Double.parseDouble(str);
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
-        }
+        amountField.setValue(0.0);
     }
 
     private boolean validAddIngredient() {
         Ingredient selectedIngredient = (Ingredient) ingredientJComboBox.getSelectedItem();
-        if (amountField.getText().isEmpty() || !isDouble(amountField.getText())) {
-            return false;
-        }
-        double amount = Double.parseDouble(amountField.getText());
-        if (amount <= 0) {
-            return false;
-        }
+//        if (amountField.getText().isEmpty() || !isDouble(amountField.getText())) {
+//            return false;
+//        }
+//        double amount = Double.parseDouble(amountField.getText());
+//        if (amount <= 0) {
+//            return false;
+//        }
 
-        IngredientWithAmount ingredient = new IngredientWithAmount(selectedIngredient, amount);
+        IngredientWithAmount ingredient = new IngredientWithAmount(selectedIngredient, (Double) amountField.getValue());
         int rows = model.getRowCount();
 
         for (int i = 0; i < rows; i++) {
