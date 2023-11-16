@@ -38,12 +38,17 @@ public final class AddAction extends AbstractAction {
     @Override
     public void actionPerformed(ActionEvent e) {
         var table = tabContainer.getSelectedTab().getTable();
-
         var model = tabContainer.getSelectedTab().getModel();
+
         StringBuilder title = new StringBuilder("Add ").append(tabContainer.getSelectedTab().getTitle());
         title.deleteCharAt(title.length() - 1);
+
         var dialog = tabContainer.getSelectedTab().getDialog().createNewDialog(ingredients, categories, units);
-        dialog.show(table, title.toString()).ifPresent(model::addRow);
-        mainWindow.updateRecipeCountLabel();
+        var result = dialog.show(table, title.toString());
+
+        result.ifPresent(recipe -> {
+            model.addRow(recipe);
+            mainWindow.updateRecipeCountLabel();
+        });
     }
 }
