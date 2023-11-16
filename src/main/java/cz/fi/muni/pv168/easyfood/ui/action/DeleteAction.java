@@ -2,6 +2,7 @@ package cz.fi.muni.pv168.easyfood.ui.action;
 
 
 import cz.fi.muni.pv168.easyfood.ui.Icons;
+import cz.fi.muni.pv168.easyfood.ui.MainWindow;
 import cz.fi.muni.pv168.easyfood.ui.tab.TabContainer;
 
 import javax.swing.AbstractAction;
@@ -19,9 +20,11 @@ import static javax.swing.JOptionPane.YES_NO_OPTION;
 public final class DeleteAction extends AbstractAction {
     private final TabContainer tabContainer;
 
-    public DeleteAction(TabContainer tabContainer) {
+    private final MainWindow mainWindow;
+    public DeleteAction(MainWindow mainWindow, TabContainer tabContainer) {
         super("Delete", Icons.DELETE_ICON);
         setEnabled(false);
+        this.mainWindow = mainWindow;
         this.tabContainer = tabContainer;
         putValue(SHORT_DESCRIPTION, "Deletes selected row/s");
         putValue(MNEMONIC_KEY, KeyEvent.VK_D);
@@ -44,6 +47,7 @@ public final class DeleteAction extends AbstractAction {
         if (result == OK_OPTION) {
             tabContainer.getSelectedTab().delete();
         }
+        mainWindow.updateRecipeCountLabel();
     }
 }
 

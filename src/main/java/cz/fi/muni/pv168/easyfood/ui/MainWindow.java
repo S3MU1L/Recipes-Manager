@@ -73,7 +73,7 @@ public class MainWindow {
     private final JTable recipeTable;
     private final JTable categoryTable;
     private final JTable unitTable;
-    private final JLabel recipeCountLabel = new JLabel();
+    private JLabel recipeCountLabel = new JLabel();
 
     public MainWindow() {
         frame = createFrame();
@@ -110,11 +110,11 @@ public class MainWindow {
         Tab filterTab = new Tab("Filter", table, model, new FilterDialog(categories, ingredients));
         filterContainer.addTab(filterTab);
 
-        addAction = new AddAction(tabContainer, ingredients, categories, units);
-        deleteAction = new DeleteAction(tabContainer);
+        addAction = new AddAction(this, tabContainer, ingredients, categories, units);
+        deleteAction = new DeleteAction(this, tabContainer);
         editAction = new EditAction(tabContainer, ingredients, categories, units);
         showAction = new ShowAction(tabContainer);
-        filterAction = new FilterAction(tabContainer, filterContainer, recipes, ingredients, categories, units);
+        filterAction = new FilterAction(this, tabContainer, filterContainer, recipes, ingredients, categories, units);
         importAction = new ImportAction();
         exportAction = new ExportAction();
 
@@ -127,7 +127,6 @@ public class MainWindow {
         frame.add(createToolbar(), BorderLayout.BEFORE_FIRST_LINE);
         frame.add(createFooter(), BorderLayout.AFTER_LAST_LINE);
         frame.setJMenuBar(createMenuBar());
-//        frame.pack();
         frame.setSize(900, 600);
     }
 
@@ -161,7 +160,7 @@ public class MainWindow {
         footerPanel.setLayout(new BorderLayout());
         recipeCountLabel.setFont(new Font("Arial", Font.PLAIN, 24));
 
-        updateRecipeCountLabel(recipeCountLabel);
+        updateRecipeCountLabel();
         recipeCountLabel.setHorizontalAlignment(SwingConstants.CENTER);
         footerPanel.add(recipeCountLabel, BorderLayout.CENTER);
         footerPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -273,10 +272,9 @@ public class MainWindow {
         editAction.setEnabled(selectionModel.getSelectedItemsCount() == 1);
         deleteAction.setEnabled(selectionModel.getSelectedItemsCount() >= 1);
         showAction.setEnabled(selectionModel.getSelectedItemsCount() == 1);
-        updateRecipeCountLabel(recipeCountLabel);
     }
 
-    private void updateRecipeCountLabel(JLabel recipeCountLabel) {
+    public void updateRecipeCountLabel() {
         int recipeCount = recipeTable.getModel().getRowCount();
         recipeCountLabel.setText("Amount of recipes: " + recipeCount);
 
