@@ -29,7 +29,7 @@ public class RecipeTableModel extends EntityTableModel<Recipe> {
 
     public void addRow(Recipe recipe) {
         if (recipes.stream().filter(recipe1 -> recipe1.getName().equals(recipe.getName())).toList().size() != 0) {
-            JOptionPane.showMessageDialog(null, "Unable to add Row -> Name <" + recipe.getName() + "> duplicity", "Error", INFORMATION_MESSAGE, null);
+            JOptionPane.showMessageDialog(null, "Duplicate name: " + recipe.getName(), "Error", INFORMATION_MESSAGE, null);
             return;
         }
 
@@ -41,7 +41,7 @@ public class RecipeTableModel extends EntityTableModel<Recipe> {
 
     public void updateRow(Recipe oldRecipe, Recipe newRecipe) {
         if (recipes.stream().filter(recipe -> recipe != oldRecipe && recipe.getName().equals(newRecipe.getName())).toList().size() != 0) {
-            JOptionPane.showMessageDialog(null, "Unable to update Row -> Name <" + newRecipe.getName() + "> duplicity", "Error", INFORMATION_MESSAGE, null);
+            JOptionPane.showMessageDialog(null, "Duplicate name: " + newRecipe.getName(), "Error", INFORMATION_MESSAGE, null);
             return;
         }
 

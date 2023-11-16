@@ -29,10 +29,9 @@ public class IngredientTableModel extends EntityTableModel<Ingredient> {
     }
 
     public void addRow(Ingredient ingredient) {
-        if (ingredients.stream().filter(ingredient1 -> ingredient1.getName().equals(ingredient.getName())).toList().size() !=
-                0) {
-            JOptionPane.showMessageDialog(null, "Unable to add Row -> Name <" + ingredient.getName() +
-                    "> duplicity", "Error", INFORMATION_MESSAGE, null);
+        if (!ingredients.stream().filter(ingredient1 -> ingredient1.getName().equals(ingredient.getName())).toList().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Duplicate name: " + ingredient.getName(),
+                    "Error", INFORMATION_MESSAGE, null);
             return;
         }
 
@@ -42,10 +41,10 @@ public class IngredientTableModel extends EntityTableModel<Ingredient> {
     }
 
     public void updateRow(Ingredient oldIngredient, Ingredient newIngredient) {
-        if (ingredients.stream().filter(ingredient -> ingredient != oldIngredient &&
-                ingredient.getName().equals(newIngredient.getName())).toList().size() != 0) {
-            JOptionPane.showMessageDialog(null, "Unable to edit Row -> Name <" + newIngredient.getName() +
-                    "> duplicity", "Error", INFORMATION_MESSAGE, null);
+        if (!ingredients.stream().filter(ingredient -> ingredient != oldIngredient &&
+                ingredient.getName().equals(newIngredient.getName())).toList().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Duplicate name: " + newIngredient.getName(),
+                    "Error", INFORMATION_MESSAGE, null);
             return;
         }
 

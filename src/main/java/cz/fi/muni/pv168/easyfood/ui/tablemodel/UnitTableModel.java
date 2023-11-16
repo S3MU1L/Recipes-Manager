@@ -34,9 +34,9 @@ public class UnitTableModel extends EntityTableModel<Unit> {
 
     @Override
     public void addRow(Unit unit) {
-        if (units.stream().filter(unit1 -> unit1.getName().equals(unit.getName())).toList().size() != 0) {
+        if (!units.stream().filter(unit1 -> unit1.getName().equals(unit.getName())).toList().isEmpty()) {
             JOptionPane.showMessageDialog(null,
-                    "Unable to add Row -> Name <" + unit.getName() + "> duplicity", "Error", INFORMATION_MESSAGE, null);
+                    "Duplicate name: " + unit.getName(), "Error", INFORMATION_MESSAGE, null);
             return;
         }
 
@@ -47,10 +47,10 @@ public class UnitTableModel extends EntityTableModel<Unit> {
 
     @Override
     public void updateRow(Unit oldUnit, Unit newUnit) {
-        if (units.stream().filter(unit -> unit != oldUnit &&
-                unit.getName().equals(newUnit.getName())).toList().size() != 0) {
-            JOptionPane.showMessageDialog(null, "Unable to edit Row -> Name <" + newUnit.getName() +
-                    "> duplicity", "Error", INFORMATION_MESSAGE, null);
+        if (!units.stream().filter(unit -> unit != oldUnit &&
+                unit.getName().equals(newUnit.getName())).toList().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Duplicate name: " + newUnit.getName(),
+                    "Error", INFORMATION_MESSAGE, null);
             return;
         }
         units.set(units.indexOf(oldUnit), newUnit);

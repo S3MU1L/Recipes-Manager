@@ -34,10 +34,9 @@ public class CategoryTableModel extends EntityTableModel<Category> {
     }
 
     public void addRow(Category category) {
-        if (categories.stream().filter(category1 -> category1.getName().equals(category.getName())).toList().size() !=
-                0) {
-            JOptionPane.showMessageDialog(null, "Unable to add Row -> Name <" + category.getName() +
-                    "> duplicity", "Error", INFORMATION_MESSAGE, null);
+        if (!categories.stream().filter(category1 -> category1.getName().equals(category.getName())).toList().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Duplicate name: " + category.getName(),
+                    "Error", INFORMATION_MESSAGE, null);
             return;
         }
 
@@ -47,10 +46,9 @@ public class CategoryTableModel extends EntityTableModel<Category> {
     }
 
     public void updateRow(Category oldCategory, Category newCategory) {
-        if (categories.stream().filter(category -> category != oldCategory &&
-                category.getName().equals(newCategory.getName())).toList().size() != 0) {
-            JOptionPane.showMessageDialog(null, "Unable to edit Row -> Name <" + newCategory.getName() +
-                    "> duplicity", "Error", INFORMATION_MESSAGE, null);
+        if (!categories.stream().filter(category -> category != oldCategory &&
+                category.getName().equals(newCategory.getName())).toList().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Duplicate name: " + newCategory.getName(), "Error", INFORMATION_MESSAGE, null);
             return;
         }
         int rowIndex = categories.indexOf(oldCategory);
@@ -91,7 +89,7 @@ public class CategoryTableModel extends EntityTableModel<Category> {
         if (usedIn.size() > 0) {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append("Unable to delete Row -> Name <").append(removedCategory.getName()).append("> used in Recipes: ");
-            for (Recipe recipe : usedIn){
+            for (Recipe recipe : usedIn) {
                 stringBuilder.append(" <").append(recipe.getName()).append(">");
             }
             JOptionPane.showMessageDialog(null, stringBuilder.toString(), "Error", INFORMATION_MESSAGE, null);
