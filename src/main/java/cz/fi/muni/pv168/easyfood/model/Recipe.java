@@ -98,24 +98,28 @@ public class Recipe {
     }
 
     public String getFormattedCalories() {
-        if (getCalories() == 0) {
-            return "";
-        }
         return Double.valueOf(getCalories()).intValue() + " kJ";
     }
 
     public void addIngredient(IngredientWithAmount ingredientWithAmount) {
         ingredients.add(ingredientWithAmount);
     }
-    public void addIngredient(Ingredient ingredient, int amount) {
+
+    public void addIngredient(Ingredient ingredient, double amount) {
         addIngredient(new IngredientWithAmount(ingredient, amount));
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Recipe recipe)) return false;
-        return preparationTime == recipe.preparationTime && portions == recipe.portions && Objects.equals(name, recipe.name) && Objects.equals(ingredients, recipe.ingredients) && Objects.equals(description, recipe.description);
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Recipe recipe)) {
+            return false;
+        }
+        return preparationTime == recipe.preparationTime && portions == recipe.portions &&
+                Objects.equals(name, recipe.name) && Objects.equals(ingredients, recipe.ingredients) &&
+                Objects.equals(description, recipe.description);
     }
 
     @Override

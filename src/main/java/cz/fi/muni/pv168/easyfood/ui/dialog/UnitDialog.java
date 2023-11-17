@@ -5,14 +5,15 @@ import cz.fi.muni.pv168.easyfood.model.Category;
 import cz.fi.muni.pv168.easyfood.model.Ingredient;
 import cz.fi.muni.pv168.easyfood.model.Unit;
 
-import javax.swing.*;
+import javax.swing.JComboBox;
+import javax.swing.JTextField;
 import java.util.List;
+import java.util.Objects;
 
-/**
- * @author Samuel Sabo
- */
-public class UnitDialog  extends EntityDialog<Unit>{
+public class UnitDialog extends EntityDialog<Unit> {
     private final JTextField nameField = new JTextField();
+    private final JTextField abbreviationField = new JTextField();
+    private final JTextField conversionRatio = new JTextField();
     private final JComboBox<BaseUnit> baseUnitField = new JComboBox<>();
     private final Unit unit;
 
@@ -28,6 +29,8 @@ public class UnitDialog  extends EntityDialog<Unit>{
 
     private void setValues() {
         nameField.setText(unit.getName());
+        abbreviationField.setText(unit.getAbbreviation());
+        conversionRatio.setText(unit.getFormattedConversionRatio());
 
         baseUnitField.removeAllItems();
         for (BaseUnit baseUnit : BaseUnit.values()) {
@@ -37,11 +40,18 @@ public class UnitDialog  extends EntityDialog<Unit>{
 
     private void addFields() {
         add("Name:", nameField);
+        add("Abbreviation", abbreviationField);
         add("Base Unit: ", baseUnitField);
+        add("Amount in Base Unit", conversionRatio);
     }
+
     @Override
     public Unit getEntity() {
-        return null;
+        String name = nameField.getText();
+        String abbreviation = abbreviationField.getText();
+        BaseUnit baseUnit = BaseUnit.getBaseUnitFormSymbol(Objects.requireNonNull(baseUnitField.getSelectedItem()).toString());
+        double conversion = Double.parseDouble(conversionRatio.getText());
+        return new Unit(name, abbreviation, baseUnit, conversion);
     }
 
     @Override

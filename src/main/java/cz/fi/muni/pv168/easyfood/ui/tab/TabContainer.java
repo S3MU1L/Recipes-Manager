@@ -1,8 +1,9 @@
 package cz.fi.muni.pv168.easyfood.ui.tab;
 
-import javax.swing.*;
+import javax.swing.JComponent;
+import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeListener;
-import java.awt.*;
+import java.awt.Component;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
@@ -11,8 +12,8 @@ public class TabContainer {
     private final JTabbedPane tabbedPane = new JTabbedPane();
     private final Map<Component, Tab> tabs = new IdentityHashMap<>();
 
-    public void addChangeListener(ChangeListener l) {
-        tabbedPane.addChangeListener(l);
+    public void addChangeListener(ChangeListener listener) {
+        tabbedPane.addChangeListener(listener);
     }
 
     public JComponent getComponent() {

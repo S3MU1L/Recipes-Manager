@@ -2,8 +2,9 @@ package cz.fi.muni.pv168.easyfood.ui;
 
 import cz.fi.muni.pv168.easyfood.ui.action.AddAction;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import java.awt.Image;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;

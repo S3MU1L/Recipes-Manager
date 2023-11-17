@@ -4,8 +4,10 @@ import cz.fi.muni.pv168.easyfood.model.Category;
 import cz.fi.muni.pv168.easyfood.model.Ingredient;
 import cz.fi.muni.pv168.easyfood.model.Unit;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JList;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import java.awt.Dimension;
 import java.util.List;
 
 
@@ -13,6 +15,8 @@ public class IngredientDialog extends EntityDialog<Ingredient> {
     private final JTextField nameField = new JTextField();
     private final JTextField caloriesField = new JTextField();
     private final JScrollPane unitsField = new JScrollPane();
+    private final JList<String> unitsList;
+    private final List<Unit> units;
     private final Ingredient ingredient;
 
     public IngredientDialog(List<Unit> units) {
@@ -21,7 +25,8 @@ public class IngredientDialog extends EntityDialog<Ingredient> {
 
     public IngredientDialog(Ingredient ingredient, List<Unit> units) {
         this.ingredient = ingredient;
-        JList<String> unitsList = new JList<>(units.stream().map(Unit::getName).toArray(String[]::new));
+        this.units = units;
+        unitsList = new JList<>(units.stream().map(Unit::getName).toArray(String[]::new));
         unitsField.setViewportView(unitsList);
         setValues();
         addFields();
@@ -33,6 +38,7 @@ public class IngredientDialog extends EntityDialog<Ingredient> {
 
         Dimension dimension = new Dimension(150, 100);
         unitsField.setMaximumSize(dimension);
+        unitsList.setSelectedIndex(units.indexOf(ingredient.getUnit()));
     }
 
     private void addFields() {
@@ -43,8 +49,10 @@ public class IngredientDialog extends EntityDialog<Ingredient> {
 
     @Override
     public Ingredient getEntity() {
-        //return new Ingredient(nameField.getText(), Utility.parseDoubleFromString(caloriesField.getText()), (Unit) unitsField.getSelectedItem());
-        return Ingredient.createEmptyIngredient();
+        String name = nameField.getText();
+        double calories = Double.parseDouble(caloriesField.getText());
+        Unit unit = units.get(unitsList.getSelectedIndex());
+        return new Ingredient(name, calories, unit);
     }
 
     @Override

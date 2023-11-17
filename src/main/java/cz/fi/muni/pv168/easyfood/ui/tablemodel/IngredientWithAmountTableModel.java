@@ -1,11 +1,11 @@
 package cz.fi.muni.pv168.easyfood.ui.tablemodel;
 
-import cz.fi.muni.pv168.easyfood.model.Ingredient;
 import cz.fi.muni.pv168.easyfood.model.IngredientWithAmount;
 import cz.fi.muni.pv168.easyfood.ui.column.Column;
 
+import javax.swing.JTable;
+import java.awt.Component;
 import java.util.ArrayList;
-
 import java.util.List;
 
 public class IngredientWithAmountTableModel extends EntityTableModel<IngredientWithAmount> {
@@ -14,7 +14,6 @@ public class IngredientWithAmountTableModel extends EntityTableModel<IngredientW
     public IngredientWithAmountTableModel(List<IngredientWithAmount> ingredients) {
         super(List.of(
                 Column.readOnly("Name", String.class, IngredientWithAmount::getName),
-                Column.readOnly("Calories", String.class, IngredientWithAmount::getFormattedCalories),
                 Column.readOnly("Amount", String.class, IngredientWithAmount::getFormattedAmount)
         ));
         this.ingredients = new ArrayList<>(ingredients);
@@ -32,14 +31,19 @@ public class IngredientWithAmountTableModel extends EntityTableModel<IngredientW
     }
 
     @Override
-    public void updateRow(IngredientWithAmount ingredient) {
-        int rowIndex = ingredients.indexOf(ingredient);
+    public void updateRow(IngredientWithAmount oldIngredient, IngredientWithAmount newIngredient) {
+        int rowIndex = ingredients.indexOf(oldIngredient);
         fireTableRowsUpdated(rowIndex, rowIndex);
     }
 
-    public void updateRow(Ingredient ingredient) {
-        int rowIndex = ingredients.indexOf(ingredient);
-        fireTableRowsUpdated(rowIndex, rowIndex);
+    @Override
+    public void customizeTableCell(Component cell, int row) {
+
+    }
+
+    @Override
+    public void customizeTable(JTable table) {
+
     }
 
     public IngredientWithAmount getEntity(int rowIndex) {

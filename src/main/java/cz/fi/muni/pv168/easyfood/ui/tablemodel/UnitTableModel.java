@@ -3,19 +3,21 @@ package cz.fi.muni.pv168.easyfood.ui.tablemodel;
 import cz.fi.muni.pv168.easyfood.model.Unit;
 import cz.fi.muni.pv168.easyfood.ui.column.Column;
 
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import java.awt.Component;
 import java.util.List;
 
-/**
- * @author Samuel Sabo
- */
+import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
+
 public class UnitTableModel extends EntityTableModel<Unit> {
     private final List<Unit> units;
 
     public UnitTableModel(List<Unit> units) {
         super(List.of(
                 Column.readOnly("Name", String.class, Unit::getName),
-                Column.readOnly("Base Unit", String.class, Unit::getFormattedBaseUnit),
-                Column.readOnly("Conversion ratio", String.class, Unit::getFormattedConversionRatio)
+                Column.readOnly("Abbreviation", String.class, Unit::getAbbreviation),
+                Column.readOnly("In Base Unit", String.class, Unit::getFormattedBaseUnit)
         ));
         this.units = units;
     }
@@ -32,15 +34,38 @@ public class UnitTableModel extends EntityTableModel<Unit> {
 
     @Override
     public void addRow(Unit unit) {
+        if (!units.stream().filter(unit1 -> unit1.getName().equals(unit.getName())).toList().isEmpty()) {
+            JOptionPane.showMessageDialog(null,
+                    "Duplicate name: " + unit.getName(), "Error", INFORMATION_MESSAGE, null);
+            return;
+        }
+
         int newRowIndex = units.size();
         units.add(unit);
         fireTableRowsInserted(newRowIndex, newRowIndex);
     }
 
     @Override
-    public void updateRow(Unit unit) {
-        int rowIndex = units.indexOf(unit);
+    public void updateRow(Unit oldUnit, Unit newUnit) {
+        if (!units.stream().filter(unit -> unit != oldUnit &&
+                unit.getName().equals(newUnit.getName())).toList().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Duplicate name: " + newUnit.getName(),
+                    "Error", INFORMATION_MESSAGE, null);
+            return;
+        }
+        units.set(units.indexOf(oldUnit), newUnit);
+        int rowIndex = units.indexOf(oldUnit);
         fireTableRowsUpdated(rowIndex, rowIndex);
+    }
+
+    @Override
+    public void customizeTableCell(Component cell, int row) {
+
+    }
+
+    @Override
+    public void customizeTable(JTable table) {
+
     }
 
     @Override

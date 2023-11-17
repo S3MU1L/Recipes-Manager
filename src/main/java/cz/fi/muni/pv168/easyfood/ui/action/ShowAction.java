@@ -1,8 +1,12 @@
 package cz.fi.muni.pv168.easyfood.ui.action;
+
+import cz.fi.muni.pv168.easyfood.model.Recipe;
 import cz.fi.muni.pv168.easyfood.ui.Icons;
 import cz.fi.muni.pv168.easyfood.ui.dialog.ShowDialog;
 import cz.fi.muni.pv168.easyfood.ui.tab.TabContainer;
-import javax.swing.*;
+
+import javax.swing.AbstractAction;
+import javax.swing.KeyStroke;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
@@ -12,6 +16,7 @@ public class ShowAction extends AbstractAction {
     public ShowAction(TabContainer tabContainer) {
         super("Show", Icons.SHOW_ICON);
         this.tabContainer = tabContainer;
+        setEnabled(false);
         putValue(SHORT_DESCRIPTION, "Show the details of a recipe");
         putValue(MNEMONIC_KEY, KeyEvent.VK_S);
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke("ctrl S"));
@@ -29,7 +34,7 @@ public class ShowAction extends AbstractAction {
         }
 
         int modelRow = table.convertRowIndexToModel(selectedRows[0]);
-        var dialog = new ShowDialog(tabContainer.getSelectedTab().getModel().getEntity(modelRow));
+        var dialog = new ShowDialog((Recipe) tabContainer.getSelectedTab().getModel().getEntity(modelRow));
         dialog.show(tabContainer.getComponent(), "Show");
     }
 }

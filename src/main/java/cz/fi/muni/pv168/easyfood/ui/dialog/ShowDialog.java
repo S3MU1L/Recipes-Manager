@@ -5,67 +5,79 @@ import cz.fi.muni.pv168.easyfood.model.Ingredient;
 import cz.fi.muni.pv168.easyfood.model.IngredientWithAmount;
 import cz.fi.muni.pv168.easyfood.model.Recipe;
 import cz.fi.muni.pv168.easyfood.model.Unit;
-import cz.fi.muni.pv168.easyfood.ui.Utility;
+import cz.fi.muni.pv168.easyfood.ui.tablemodel.IngredientWithAmountTableModel;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.Box;
+import javax.swing.JComponent;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import java.awt.Dimension;
 import java.util.List;
+import java.util.Optional;
 
 import static java.lang.Math.round;
+import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
 
-/**
- * @author Samuel Sabo
- */
 public class ShowDialog extends EntityDialog<Recipe> {
     private final JTextField nameField = new JTextField();
+    private final JTextField portionField = new JTextField();
     private final JTextField caloriesField = new JTextField();
     private final JTextField prepareTimeField = new JTextField();
     private final Recipe recipe;
-    private final List<IngredientWithAmount> ingredients;
     private final JTextField categoriesField = new JTextField();
-    private final Box ingredientsBox = Box.createVerticalBox();
-    private final JScrollPane ingredientsField = new JScrollPane(ingredientsBox);
-
+    private final JScrollPane ingredientsTable;
+    private final Box descriptionBox = Box.createVerticalBox();
+    private final JTextArea description = new JTextArea(5, 20);
     public ShowDialog() {
         this(Recipe.createEmptyRecipe());
     }
 
-    public ShowDialog(Object object) {
-        this.recipe = (Recipe) object;
-        ingredients = recipe.getIngredients();
+    public ShowDialog(Recipe recipe) {
+        this.recipe = recipe;
+        List<IngredientWithAmount> ingredients = recipe.getIngredients();
+        var model = new IngredientWithAmountTableModel(ingredients);
+         var table = new JTable(model);
+        table.setAutoCreateRowSorter(true);
+        table.setCellSelectionEnabled(false);
+        ingredientsTable = new JScrollPane(table);
         setValues();
         addFields();
     }
 
     private void setValues() {
         nameField.setText(recipe.getName());
+        nameField.setEditable(false);
+        portionField.setText(String.valueOf(recipe.getPortions()));
+        portionField.setEditable(false);
         caloriesField.setText(String.valueOf(round(recipe.getCalories())));
+        caloriesField.setEditable(false);
         prepareTimeField.setText(String.valueOf(recipe.getPreparationTime()));
+        prepareTimeField.setEditable(false);
         categoriesField.setText(recipe.getCategory().getName());
+        categoriesField.setEditable(false);
+        description.setText(recipe.getDescription());
+        description.setEditable(false);
+        descriptionBox.add(description);
 
-        Dimension dimension = new Dimension(150, 100);
-        ingredientsField.setMaximumSize(dimension);
-
-        for (IngredientWithAmount ingredient : ingredients) {
-            ingredientsBox.add(new JCheckBox(ingredient.getName()));
-        }
+        Dimension dimension = new Dimension(250, 100);
+        ingredientsTable.setMaximumSize(dimension);
     }
 
     private void addFields() {
         add("Name:", nameField);
-        add("Calories (kJ): ", caloriesField);
+        add("Portions:", portionField);
+        add("Energy Value (kJ): ", caloriesField);
         add("Time to prepare (minutes): ", prepareTimeField);
         add("Category:", categoriesField);
-        add("Ingredients:", ingredientsField);
+        add("Ingredients:", ingredientsTable);
+        add("Description:", descriptionBox);
     }
 
     @Override
     public Recipe getEntity() {
-        recipe.setName(nameField.getText());
-        recipe.setPreparationTime(Utility.parseIntFromString(prepareTimeField.getText()));
-        // only temporary solution, so that we can see calories we entered, will have to refactor this
-        double calories = Utility.parseDoubleFromString(caloriesField.getText());
-        recipe.addIngredient(new Ingredient("nahodna", calories, Unit.createEmptyUnit()), 1);
         return recipe;
     }
 
@@ -77,5 +89,11 @@ public class ShowDialog extends EntityDialog<Recipe> {
     @Override
     public EntityDialog<Recipe> createNewDialog(Recipe recipe, List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
         return new ShowDialog(recipe);
+    }
+
+    @Override
+    public Optional<Recipe> show(JComponent parentComponent, String title) {
+        JOptionPane.showMessageDialog(parentComponent, super.getPanel(), "Show", INFORMATION_MESSAGE, null);
+        return Optional.ofNullable(recipe);
     }
 }

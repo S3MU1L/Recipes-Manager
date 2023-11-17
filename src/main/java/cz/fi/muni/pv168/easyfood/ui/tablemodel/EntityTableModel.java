@@ -1,9 +1,10 @@
 package cz.fi.muni.pv168.easyfood.ui.tablemodel;
 
-import cz.fi.muni.pv168.easyfood.model.Recipe;
 import cz.fi.muni.pv168.easyfood.ui.column.Column;
 
+import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
+import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -12,8 +13,7 @@ public abstract class EntityTableModel<E> extends AbstractTableModel {
     private final List<Column<?, E>> columns;
 
     public EntityTableModel(List<Column<?, E>> columns) {
-        List<Column<?, E>> cols = new ArrayList<>();
-        cols.addAll(columns);
+        List<Column<?, E>> cols = new ArrayList<>(columns);
         this.columns = Collections.unmodifiableList(cols);
     }
 
@@ -37,7 +37,12 @@ public abstract class EntityTableModel<E> extends AbstractTableModel {
     }
 
     public abstract void addRow(E entity);
-    public abstract void updateRow(E entity);
+
+    public abstract void updateRow(E oldEntity, E newEntity);
+
+    public abstract void customizeTableCell(Component cell, int row);
+
+    public abstract void customizeTable(JTable table);
 
     @Override
     public String getColumnName(int columnIndex) {
