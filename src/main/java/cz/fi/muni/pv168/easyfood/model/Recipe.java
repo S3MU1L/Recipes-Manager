@@ -98,9 +98,6 @@ public class Recipe {
     }
 
     public String getFormattedCalories() {
-        if (getCalories() == 0) {
-            return "";
-        }
         return Double.valueOf(getCalories()).intValue() + " kJ";
     }
 
