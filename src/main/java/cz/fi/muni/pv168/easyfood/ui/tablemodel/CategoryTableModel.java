@@ -88,7 +88,7 @@ public class CategoryTableModel extends EntityTableModel<Category> {
 
         if (usedIn.size() > 0) {
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("Unable to delete Category -> ").append(removedCategory.getName()).append(". It is used in Recipes:");
+            stringBuilder.append("Unable to delete Category : ").append(removedCategory.getName()).append(".\nIt is used in Recipes:");
             for (Recipe recipe : usedIn) {
                 stringBuilder.append(" ").append(recipe.getName()).append(",");
             }

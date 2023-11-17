@@ -85,7 +85,7 @@ public class IngredientTableModel extends EntityTableModel<Ingredient> {
 
         if (usedIn.size() > 0) {
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("Unable to delete Ingredient -> ").append(removedIngredient.getName()).append(". It is used in Recipes: ");
+            stringBuilder.append("Unable to delete Ingredient : ").append(removedIngredient.getName()).append(".\nIt is used in Recipes: ");
             for (Recipe recipe : usedIn){
                 stringBuilder.append(" ").append(recipe.getName()).append(",");
             }
