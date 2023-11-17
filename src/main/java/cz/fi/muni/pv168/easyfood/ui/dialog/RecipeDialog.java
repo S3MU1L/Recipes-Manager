@@ -156,6 +156,11 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
         JList<String> categoriesNames = (JList<String>) categoriesPane.getViewport().getView();
         String categoryName = categoriesNames.getSelectedValue();
 
+        if (categoryName == null) {
+            JOptionPane.showMessageDialog(null, "Please pick a category");
+            return null;
+        }
+
         List<IngredientWithAmount> ingredientsInRecipe = new ArrayList<>();
         List<Category> categorySelected = categories.stream().filter(category1 -> category1.getName().equals(categoryName)).toList();
         Category category = categorySelected.size() > 0 ? categorySelected.get(0) : Category.createEmptyCategory();
