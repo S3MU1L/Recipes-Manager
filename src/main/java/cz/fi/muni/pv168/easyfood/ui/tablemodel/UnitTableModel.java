@@ -99,7 +99,7 @@ public class UnitTableModel extends EntityTableModel<Unit> {
 
         if (usedIn.size() > 0) {
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("Unable to delete Unit : ").append(removedUnit.getName()).append(".\nIt is used in Ingredients:");
+            stringBuilder.append("Unable to delete Unit : ").append(removedUnit.getName()).append("\nIt is used in Ingredients:");
             for (Ingredient ingredient : usedIn) {
                 stringBuilder.append(" ").append(ingredient.getName()).append(",");
             }
