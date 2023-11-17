@@ -25,7 +25,7 @@ public class IngredientWithAmount {
     }
 
     public String getFormattedAmount() {
-        return String.valueOf(amount);
+        return amount + " (" + ingredient.getUnit().getAbbreviation() + ")";
     }
 
     public Ingredient getIngredient() {

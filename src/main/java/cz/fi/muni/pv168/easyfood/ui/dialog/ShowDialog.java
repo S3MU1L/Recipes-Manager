@@ -7,13 +7,13 @@ import cz.fi.muni.pv168.easyfood.model.Recipe;
 import cz.fi.muni.pv168.easyfood.model.Unit;
 import cz.fi.muni.pv168.easyfood.ui.tablemodel.IngredientWithAmountTableModel;
 
-import javax.swing.Box;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.util.List;
 import java.util.Optional;
@@ -22,15 +22,14 @@ import static java.lang.Math.round;
 import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
 
 public class ShowDialog extends EntityDialog<Recipe> {
-    private final JTextField nameField = new JTextField();
-    private final JTextField portionField = new JTextField();
-    private final JTextField caloriesField = new JTextField();
-    private final JTextField prepareTimeField = new JTextField();
+    private final JLabel nameField = new JLabel();
+    private final JLabel portionField = new JLabel();
+    private final JLabel caloriesField = new JLabel();
+    private final JLabel prepareTimeField = new JLabel();
     private final Recipe recipe;
-    private final JTextField categoriesField = new JTextField();
+    private final JLabel categoriesField = new JLabel();
     private final JScrollPane ingredientsTable;
-    private final Box descriptionBox = Box.createVerticalBox();
-    private final JTextArea description = new JTextArea(5, 20);
+    private final JTextArea description = new JTextArea();
     public ShowDialog() {
         this(Recipe.createEmptyRecipe());
     }
@@ -49,21 +48,20 @@ public class ShowDialog extends EntityDialog<Recipe> {
 
     private void setValues() {
         nameField.setText(recipe.getName());
-        nameField.setEditable(false);
         portionField.setText(String.valueOf(recipe.getPortions()));
-        portionField.setEditable(false);
         caloriesField.setText(String.valueOf(round(recipe.getCalories())));
-        caloriesField.setEditable(false);
         prepareTimeField.setText(String.valueOf(recipe.getPreparationTime()));
-        prepareTimeField.setEditable(false);
         categoriesField.setText(recipe.getCategory().getName());
-        categoriesField.setEditable(false);
         description.setText(recipe.getDescription());
-        description.setEditable(false);
-        descriptionBox.add(description);
+        description.setLineWrap(true);
+        description.setWrapStyleWord(true);
+        description.setEnabled(false);
+        description.setDisabledTextColor(Color.BLACK);
+        description.setCaretPosition(0);
 
-        Dimension dimension = new Dimension(250, 100);
+        Dimension dimension = new Dimension(300, 100);
         ingredientsTable.setMaximumSize(dimension);
+        ingredientsTable.setEnabled(false);
     }
 
     private void addFields() {
@@ -73,7 +71,14 @@ public class ShowDialog extends EntityDialog<Recipe> {
         add("Time to prepare (minutes): ", prepareTimeField);
         add("Category:", categoriesField);
         add("Ingredients:", ingredientsTable);
-        add("Description:", descriptionBox);
+        add("Description:", createDescriptionScrollPane(new Dimension(300,100)));
+    }
+
+    private JComponent createDescriptionScrollPane(Dimension size) {
+        JScrollPane directionsScrollPane = new JScrollPane(description);
+        directionsScrollPane.setMinimumSize(size);
+        directionsScrollPane.setPreferredSize(size);
+        return directionsScrollPane;
     }
 
     @Override
