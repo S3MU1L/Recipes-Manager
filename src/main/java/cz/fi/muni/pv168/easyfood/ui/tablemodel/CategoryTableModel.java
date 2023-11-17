@@ -88,10 +88,11 @@ public class CategoryTableModel extends EntityTableModel<Category> {
 
         if (usedIn.size() > 0) {
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("Unable to delete Row -> Name <").append(removedCategory.getName()).append("> used in Recipes: ");
+            stringBuilder.append("Unable to delete Category -> ").append(removedCategory.getName()).append(". It is used in Recipes:");
             for (Recipe recipe : usedIn) {
-                stringBuilder.append(" <").append(recipe.getName()).append(">");
+                stringBuilder.append(" ").append(recipe.getName()).append(",");
             }
+            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
             JOptionPane.showMessageDialog(null, stringBuilder.toString(), "Error", ERROR_MESSAGE, null);
             return;
         }
