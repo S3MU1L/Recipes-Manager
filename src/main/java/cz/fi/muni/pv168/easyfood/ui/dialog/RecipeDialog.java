@@ -6,13 +6,16 @@ import cz.fi.muni.pv168.easyfood.model.IngredientWithAmount;
 import cz.fi.muni.pv168.easyfood.model.Recipe;
 import cz.fi.muni.pv168.easyfood.model.Unit;
 import cz.fi.muni.pv168.easyfood.ui.Icons;
+import cz.fi.muni.pv168.easyfood.ui.renderers.CategoryListCellRenderer;
 import cz.fi.muni.pv168.easyfood.ui.tablemodel.IngredientWithAmountTableModel;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
@@ -26,6 +29,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -41,8 +45,7 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
     private final JTextField caloriesField = new JTextField();
     private static final JSpinner prepTimeField = new JSpinner(new SpinnerNumberModel());
     private static final JSpinner portionField = new JSpinner(new SpinnerNumberModel());
-
-    private final JTextField amountField = new JTextField();
+    private final JSpinner amountField = new JSpinner(new SpinnerNumberModel(0.0, 0.0, Integer.MAX_VALUE, 0.5));
     private final JTextArea descriptionArea = new JTextArea();
     private final List<Category> categories;
     private final JScrollPane categoriesPane = new JScrollPane();
@@ -59,7 +62,10 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
     public RecipeDialog(Recipe recipe, List<Ingredient> ingredients, List<Category> categories) {
         this.recipe = recipe;
         this.categories = categories;
+
         JList<String> categoriesList = new JList<>(categories.stream().map(Category::getName).toArray(String[]::new));
+        categoriesList.setCellRenderer(new CategoryListCellRenderer(categories));
+
         if (recipe.getCategory() != null) {
             categoriesList.setSelectedValue(recipe.getCategory().getName(), true);
         }
@@ -95,7 +101,7 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
         caloriesField.setText(String.valueOf(round(recipe.getCalories())));
         prepTimeField.setValue(recipe.getPreparationTime());
         portionField.setValue(recipe.getPortions());
-        amountField.setText("0");
+        amountField.setValue(0.0);
 
         ((SpinnerNumberModel) prepTimeField.getModel()).setMinimum(0);
         ((SpinnerNumberModel) portionField.getModel()).setMinimum(0);
@@ -106,14 +112,21 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
 
     private void addFields() {
         add("Name: ", nameField);
+        add("Description: ", createDescriptionScrollPane(new Dimension(300, 100)));
         add("Time to prepare (minutes): ", prepTimeField);
         add("Portions: ", portionField);
         add("Category: ", categoriesPane);
+
+        JLabel chooseIngredientsLabel = new JLabel("Choose Ingredients");
+        chooseIngredientsLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        chooseIngredientsLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        chooseIngredientsLabel.setBorder(BorderFactory.createEmptyBorder(20, 10, 20, 10));
+        add("", chooseIngredientsLabel);
+
         add("Amount: ", amountField);
         add("Ingredients: ", ingredientJComboBox);
         add("", addIngredientButton);
         add("", createTableScrollPane(new Dimension(300, 150)));
-        add("Description: ", createDescriptionScrollPane(new Dimension(300, 100)));
     }
 
     private JComponent createDescriptionScrollPane(Dimension size) {
@@ -132,13 +145,18 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
 
     @Override
     public Recipe getEntity() {
-        String name = nameField.getText();
+        if (!validRecipe()) {
+            return null;
+        }
+
         int preparationTime = (Integer) prepTimeField.getValue();
         int portions = (Integer) portionField.getValue();
+        String name = nameField.getText();
         String descriptionText = descriptionArea.getText();
-        List<IngredientWithAmount> ingredientsInRecipe = new ArrayList<>();
         JList<String> categoriesNames = (JList<String>) categoriesPane.getViewport().getView();
         String categoryName = categoriesNames.getSelectedValue();
+
+        List<IngredientWithAmount> ingredientsInRecipe = new ArrayList<>();
         List<Category> categorySelected = categories.stream().filter(category1 -> category1.getName().equals(categoryName)).toList();
         Category category = categorySelected.size() > 0 ? categorySelected.get(0) : Category.createEmptyCategory();
 
@@ -148,6 +166,39 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
         }
         return new Recipe(name, ingredientsInRecipe, descriptionText, preparationTime, portions, category);
     }
+
+    private boolean validRecipe() {
+        String name = nameField.getText().trim();
+        if (name.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Please enter a valid name");
+            return false;
+        }
+
+        try {
+            int preparationTime = Integer.parseInt(prepTimeField.getValue().toString());
+            if (preparationTime < 0) {
+                JOptionPane.showMessageDialog(null, "Preparation time must be a non-negative integer");
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "Please enter a valid preparation time");
+            return false;
+        }
+
+        try {
+            int portions = Integer.parseInt(portionField.getValue().toString());
+            if (portions <= 0) {
+                JOptionPane.showMessageDialog(null, "Portions must be a positive integer");
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "Please enter a valid number of portions");
+            return false;
+        }
+
+        return true;
+    }
+
 
     @Override
     public EntityDialog<?> createNewDialog(List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
@@ -161,46 +212,34 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
 
     private void addIngredient() {
         if (!validAddIngredient()) {
-            JOptionPane.showMessageDialog(null, "Ingredient already present or invalid amount");
             return;
         }
-        double amount = Double.parseDouble(amountField.getText());
+
+        double amount = (double) amountField.getValue();
         var ingredient = (Ingredient) ingredientJComboBox.getSelectedItem();
         if (ingredient == null) {
             return;
         }
+
         var ingredientAndAmount = new IngredientWithAmount(ingredient, amount);
         model.addRow(ingredientAndAmount);
-        amountField.setText("0");
-    }
-
-    private boolean isDouble(String str) {
-        if (str.isEmpty()) {
-            return false;
-        }
-        try {
-            Double.parseDouble(str);
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
-        }
+        amountField.setValue(0.0);
     }
 
     private boolean validAddIngredient() {
         Ingredient selectedIngredient = (Ingredient) ingredientJComboBox.getSelectedItem();
-        if (amountField.getText().isEmpty() || !isDouble(amountField.getText())) {
-            return false;
-        }
-        double amount = Double.parseDouble(amountField.getText());
+        double amount = (double) amountField.getValue();
         if (amount <= 0) {
+            JOptionPane.showMessageDialog(null, "Invalid amount of ingredient");
             return false;
         }
 
-        IngredientWithAmount ingredient = new IngredientWithAmount(selectedIngredient, amount);
+        IngredientWithAmount ingredient = new IngredientWithAmount(selectedIngredient, (Double) amountField.getValue());
         int rows = model.getRowCount();
 
         for (int i = 0; i < rows; i++) {
             if (model.getEntity(i).equals(ingredient)) {
+                JOptionPane.showMessageDialog(null, "Ingredient already present");
                 return false;
             }
         }

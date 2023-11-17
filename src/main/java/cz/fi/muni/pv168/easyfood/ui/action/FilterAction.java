@@ -1,7 +1,6 @@
 package cz.fi.muni.pv168.easyfood.ui.action;
 
 
-import cz.fi.muni.pv168.easyfood.Main;
 import cz.fi.muni.pv168.easyfood.model.Category;
 import cz.fi.muni.pv168.easyfood.model.Filter;
 import cz.fi.muni.pv168.easyfood.model.Ingredient;

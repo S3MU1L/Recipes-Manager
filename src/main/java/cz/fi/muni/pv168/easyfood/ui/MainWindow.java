@@ -259,7 +259,6 @@ public class MainWindow {
     private JToolBar createToolbar() {
         var toolbar = new JToolBar();
         toolbar.add(addAction);
-        toolbar.addSeparator();
         toolbar.add(editAction);
         toolbar.add(deleteAction);
         toolbar.add(showAction);
