@@ -14,6 +14,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.util.List;
 import java.util.Optional;
@@ -49,21 +50,28 @@ public class ShowDialog extends EntityDialog<Recipe> {
 
     private void setValues() {
         nameField.setText(recipe.getName());
-        nameField.setEditable(false);
+        nameField.setEnabled(false);
+        nameField.setDisabledTextColor(Color.BLACK);
         portionField.setText(String.valueOf(recipe.getPortions()));
-        portionField.setEditable(false);
+        portionField.setEnabled(false);
+        portionField.setDisabledTextColor(Color.BLACK);
         caloriesField.setText(String.valueOf(round(recipe.getCalories())));
-        caloriesField.setEditable(false);
+        caloriesField.setEnabled(false);
+        caloriesField.setDisabledTextColor(Color.BLACK);
         prepareTimeField.setText(String.valueOf(recipe.getPreparationTime()));
-        prepareTimeField.setEditable(false);
+        prepareTimeField.setEnabled(false);
+        prepareTimeField.setDisabledTextColor(Color.BLACK);
         categoriesField.setText(recipe.getCategory().getName());
-        categoriesField.setEditable(false);
+        categoriesField.setEnabled(false);
+        categoriesField.setDisabledTextColor(Color.BLACK);
         description.setText(recipe.getDescription());
-        description.setEditable(false);
+        description.setEnabled(false);
+        description.setDisabledTextColor(Color.BLACK);
         descriptionBox.add(description);
 
         Dimension dimension = new Dimension(250, 100);
         ingredientsTable.setMaximumSize(dimension);
+        ingredientsTable.setEnabled(false);
     }
 
     private void addFields() {
