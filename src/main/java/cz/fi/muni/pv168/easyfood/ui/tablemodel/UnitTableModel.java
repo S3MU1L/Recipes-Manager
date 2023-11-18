@@ -59,7 +59,7 @@ public class UnitTableModel extends EntityTableModel<Unit> {
     }
 
     @Override
-    public void customizeTableCell(Component cell, int row) {
+    public void customizeTableCell(Component cell, Object value, int row, JTable table) {
 
     }
 
