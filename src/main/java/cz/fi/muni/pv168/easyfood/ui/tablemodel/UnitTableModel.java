@@ -1,6 +1,6 @@
 package cz.fi.muni.pv168.easyfood.ui.tablemodel;
 
-import cz.fi.muni.pv168.easyfood.model.Unit;
+import cz.fi.muni.pv168.easyfood.bussiness.model.Unit;
 import cz.fi.muni.pv168.easyfood.ui.column.Column;
 
 import javax.swing.JOptionPane;

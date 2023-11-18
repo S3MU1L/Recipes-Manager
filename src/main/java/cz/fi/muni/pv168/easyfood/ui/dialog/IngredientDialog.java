@@ -1,8 +1,8 @@
 package cz.fi.muni.pv168.easyfood.ui.dialog;
 
-import cz.fi.muni.pv168.easyfood.model.Category;
-import cz.fi.muni.pv168.easyfood.model.Ingredient;
-import cz.fi.muni.pv168.easyfood.model.Unit;
+import cz.fi.muni.pv168.easyfood.bussiness.model.Category;
+import cz.fi.muni.pv168.easyfood.bussiness.model.Ingredient;
+import cz.fi.muni.pv168.easyfood.bussiness.model.Unit;
 
 import javax.swing.JList;
 import javax.swing.JScrollPane;

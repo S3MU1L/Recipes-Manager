@@ -1,6 +1,6 @@
 package cz.fi.muni.pv168.easyfood.ui.tablemodel;
 
-import cz.fi.muni.pv168.easyfood.model.IngredientWithAmount;
+import cz.fi.muni.pv168.easyfood.bussiness.model.IngredientWithAmount;
 import cz.fi.muni.pv168.easyfood.ui.column.Column;
 
 import javax.swing.JTable;

@@ -1,7 +1,7 @@
 package cz.fi.muni.pv168.easyfood.ui.tablemodel;
 
-import cz.fi.muni.pv168.easyfood.model.Category;
-import cz.fi.muni.pv168.easyfood.model.Recipe;
+import cz.fi.muni.pv168.easyfood.bussiness.model.Category;
+import cz.fi.muni.pv168.easyfood.bussiness.model.Recipe;
 import cz.fi.muni.pv168.easyfood.services.StatisticsService;
 import cz.fi.muni.pv168.easyfood.ui.column.Column;
 

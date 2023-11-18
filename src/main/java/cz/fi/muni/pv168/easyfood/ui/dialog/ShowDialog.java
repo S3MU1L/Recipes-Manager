@@ -1,10 +1,10 @@
 package cz.fi.muni.pv168.easyfood.ui.dialog;
 
-import cz.fi.muni.pv168.easyfood.model.Category;
-import cz.fi.muni.pv168.easyfood.model.Ingredient;
-import cz.fi.muni.pv168.easyfood.model.IngredientWithAmount;
-import cz.fi.muni.pv168.easyfood.model.Recipe;
-import cz.fi.muni.pv168.easyfood.model.Unit;
+import cz.fi.muni.pv168.easyfood.bussiness.model.Category;
+import cz.fi.muni.pv168.easyfood.bussiness.model.Ingredient;
+import cz.fi.muni.pv168.easyfood.bussiness.model.IngredientWithAmount;
+import cz.fi.muni.pv168.easyfood.bussiness.model.Recipe;
+import cz.fi.muni.pv168.easyfood.bussiness.model.Unit;
 import cz.fi.muni.pv168.easyfood.ui.tablemodel.IngredientWithAmountTableModel;
 
 import javax.swing.JComponent;
