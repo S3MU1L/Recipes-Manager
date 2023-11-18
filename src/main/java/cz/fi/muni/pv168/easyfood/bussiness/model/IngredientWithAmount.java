@@ -1,17 +1,20 @@
 package cz.fi.muni.pv168.easyfood.bussiness.model;
 
 import java.util.Objects;
+import java.util.UUID;
 
 public class IngredientWithAmount extends Entity {
     private Ingredient ingredient;
     private double amount;
 
     public IngredientWithAmount(String name, double calories, Unit unit, double amount) {
+        super(UUID.randomUUID().toString());
         this.ingredient = new Ingredient(name, calories, unit);
         this.amount = amount;
     }
 
     public IngredientWithAmount(Ingredient ingredient, double amount) {
+        super(UUID.randomUUID().toString());
         this.ingredient = new Ingredient(ingredient.getName(), ingredient.getCalories(), ingredient.getUnit());
         this.amount = amount;
     }

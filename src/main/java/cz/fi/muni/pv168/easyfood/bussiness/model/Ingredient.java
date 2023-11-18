@@ -1,6 +1,7 @@
 package cz.fi.muni.pv168.easyfood.bussiness.model;
 
 import java.util.Objects;
+import java.util.UUID;
 
 public class Ingredient extends Entity {
     private String name;
@@ -8,12 +9,14 @@ public class Ingredient extends Entity {
     private Unit unit;
 
     public Ingredient(String name, double calories, Unit unit) {
+        super(UUID.randomUUID().toString());
         this.name = name;
         this.calories = calories;
         this.unit = unit;
     }
 
     public Ingredient(String name, double calories) {
+        UUID.randomUUID().toString();
         this.name = name;
         this.calories = calories;
     }
@@ -27,7 +30,7 @@ public class Ingredient extends Entity {
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name = Objects.requireNonNull(name, "name must not be null");
     }
 
     public double getCalories() {
@@ -58,7 +61,7 @@ public class Ingredient extends Entity {
     }
 
     public void setUnit(Unit unit) {
-        this.unit = unit;
+        this.unit = Objects.requireNonNull(unit, "unit must not be null");
     }
 
     @Override

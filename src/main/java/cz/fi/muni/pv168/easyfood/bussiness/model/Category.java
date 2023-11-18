@@ -1,18 +1,27 @@
 package cz.fi.muni.pv168.easyfood.bussiness.model;
 
 import java.awt.Color;
+import java.util.Objects;
+import java.util.UUID;
 
 public class Category extends Entity {
     private String name;
     private Color color;
 
     public Category(String name, Color color) {
+        super(UUID.randomUUID().toString());
+        this.name = name;
+        this.color = color;
+    }
+
+    public Category(String guid, String name, Color color) {
+        super(guid);
         this.name = name;
         this.color = color;
     }
 
     public static Category createEmptyCategory() {
-        return new Category("", Color.WHITE);
+        return new Category(UUID.randomUUID().toString(), "", Color.WHITE);
     }
 
     public String getName() {
@@ -24,11 +33,12 @@ public class Category extends Entity {
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name = Objects.requireNonNull(name, "name must not be null");
     }
 
+
     public void setColor(Color color) {
-        this.color = color;
+        this.color = Objects.requireNonNull(color, "color must not be null");
     }
 
     @Override
