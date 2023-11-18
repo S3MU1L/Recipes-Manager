@@ -57,9 +57,13 @@ public class CategoryTableModel extends EntityTableModel<Category> {
     }
 
     @Override
-    public void customizeTableCell(Component cell, int row) {
-        cell.setBackground(getEntity(row).getColor());
-        cell.setForeground(Color.BLACK);
+    public void customizeTableCell(Component cell, Object value, int row, JTable table) {
+        Object fstCol = table.getValueAt(row, 0);
+        if(fstCol instanceof String){
+            Category category = findCategoryByName((String)fstCol);
+            cell.setBackground(category.getColor());
+            cell.setForeground(Color.BLACK);
+        }
     }
 
     @Override
@@ -98,5 +102,11 @@ public class CategoryTableModel extends EntityTableModel<Category> {
         }
         categories.remove(rowIndex);
         fireTableRowsDeleted(rowIndex, rowIndex);
+    }
+    public Category findCategoryByName(String categoryName) {
+        return categories.stream()
+                .filter(category -> category.getName().equals(categoryName))
+                .findFirst()
+                .orElse(null);
     }
 }

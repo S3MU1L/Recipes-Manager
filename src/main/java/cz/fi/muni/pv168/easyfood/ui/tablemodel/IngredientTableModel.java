@@ -54,7 +54,7 @@ public class IngredientTableModel extends EntityTableModel<Ingredient> {
     }
 
     @Override
-    public void customizeTableCell(Component cell, int row) {
+    public void customizeTableCell(Component cell, Object value, int row, JTable table) {
 
     }
 

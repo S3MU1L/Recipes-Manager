@@ -40,7 +40,7 @@ public abstract class EntityTableModel<E> extends AbstractTableModel {
 
     public abstract void updateRow(E oldEntity, E newEntity);
 
-    public abstract void customizeTableCell(Component cell, int row);
+    public abstract void customizeTableCell(Component cell, Object value, int row, JTable table);
 
     public abstract void customizeTable(JTable table);
 
