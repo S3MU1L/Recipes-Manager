@@ -1,4 +1,4 @@
-package cz.fi.muni.pv168.easyfood.model;
+package cz.fi.muni.pv168.easyfood.bussiness.model;
 
 import java.text.DecimalFormat;
 

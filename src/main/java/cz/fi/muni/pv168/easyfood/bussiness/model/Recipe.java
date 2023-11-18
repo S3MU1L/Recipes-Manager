@@ -1,6 +1,4 @@
-package cz.fi.muni.pv168.easyfood.model;
-
-import cz.fi.muni.pv168.easyfood.bussiness.model.Entity;
+package cz.fi.muni.pv168.easyfood.bussiness.model;
 
 import java.util.ArrayList;
 import java.util.Collections;

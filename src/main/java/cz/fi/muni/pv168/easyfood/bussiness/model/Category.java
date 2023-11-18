@@ -1,6 +1,4 @@
-package cz.fi.muni.pv168.easyfood.model;
-
-import cz.fi.muni.pv168.easyfood.bussiness.model.Entity;
+package cz.fi.muni.pv168.easyfood.bussiness.model;
 
 import java.awt.Color;
 
@@ -31,5 +29,13 @@ public class Category extends Entity {
 
     public void setColor(Color color) {
         this.color = color;
+    }
+
+    @Override
+    public String toString() {
+        return "Category{" +
+                "name='" + name + '\'' +
+                ", color='" + color.toString() + '\'' +
+                "}";
     }
 }
