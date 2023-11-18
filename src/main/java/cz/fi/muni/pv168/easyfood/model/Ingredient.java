@@ -1,8 +1,10 @@
 package cz.fi.muni.pv168.easyfood.model;
 
+import cz.fi.muni.pv168.easyfood.bussiness.model.Entity;
+
 import java.util.Objects;
 
-public class Ingredient {
+public class Ingredient extends Entity {
     private String name;
     private double calories;
     private Unit unit;

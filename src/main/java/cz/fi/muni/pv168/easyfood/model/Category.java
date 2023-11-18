@@ -1,8 +1,10 @@
 package cz.fi.muni.pv168.easyfood.model;
 
+import cz.fi.muni.pv168.easyfood.bussiness.model.Entity;
+
 import java.awt.Color;
 
-public class Category {
+public class Category extends Entity {
     private String name;
     private Color color;
 

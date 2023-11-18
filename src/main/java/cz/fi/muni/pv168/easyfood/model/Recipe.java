@@ -1,11 +1,13 @@
 package cz.fi.muni.pv168.easyfood.model;
 
+import cz.fi.muni.pv168.easyfood.bussiness.model.Entity;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-public class Recipe {
+public class Recipe extends Entity {
     private String name;
     private List<IngredientWithAmount> ingredients;
     private String description;
