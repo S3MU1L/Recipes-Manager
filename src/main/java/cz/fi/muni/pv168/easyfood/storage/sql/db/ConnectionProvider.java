@@ -1,6 +1,7 @@
-package cz.muni.fi.pv168.employees.storage.sql.db;
+package cz.fi.muni.pv168.easyfood.storage.sql.db;
 
-import cz.muni.fi.pv168.employees.storage.sql.dao.DataStorageException;
+
+import cz.fi.muni.pv168.easyfood.storage.sql.dao.DataStorageException;
 
 import javax.sql.DataSource;
 import java.sql.Connection;

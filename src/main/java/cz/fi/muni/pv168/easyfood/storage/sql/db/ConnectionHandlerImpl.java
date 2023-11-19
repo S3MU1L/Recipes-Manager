@@ -1,6 +1,7 @@
-package cz.muni.fi.pv168.employees.storage.sql.db;
+package cz.fi.muni.pv168.easyfood.storage.sql.db;
 
-import cz.muni.fi.pv168.employees.storage.sql.dao.DataStorageException;
+
+import cz.fi.muni.pv168.easyfood.storage.sql.dao.DataStorageException;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -15,6 +16,7 @@ class ConnectionHandlerImpl implements ConnectionHandler {
 
     /**
      * Creates new handler over given connection
+     *
      * @param connection database connection
      */
     ConnectionHandlerImpl(Connection connection) {

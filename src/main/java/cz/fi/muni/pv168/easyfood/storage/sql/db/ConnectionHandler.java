@@ -1,4 +1,4 @@
-package cz.muni.fi.pv168.employees.storage.sql.db;
+package cz.fi.muni.pv168.easyfood.storage.sql.db;
 
 import java.io.Closeable;
 import java.sql.Connection;

@@ -1,6 +1,7 @@
-package cz.muni.fi.pv168.employees.storage.sql.db;
+package cz.fi.muni.pv168.easyfood.storage.sql.db;
 
-import cz.muni.fi.pv168.employees.storage.sql.dao.DataStorageException;
+
+import cz.fi.muni.pv168.easyfood.storage.sql.dao.DataStorageException;
 import org.h2.jdbcx.JdbcConnectionPool;
 import org.tinylog.Logger;
 
@@ -9,6 +10,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
+
 
 /**
  * The class is responsible for managing H2 database connection and schemas
