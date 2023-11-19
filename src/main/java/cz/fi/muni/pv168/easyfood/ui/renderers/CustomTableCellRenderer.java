@@ -26,7 +26,7 @@ public class CustomTableCellRenderer<E> extends DefaultTableCellRenderer {
                 //general settings for every row
 
                 //custom settings for every row
-                model.customizeTableCell(cell, row);
+                model.customizeTableCell(cell, value, row, table);
             }
 
         }

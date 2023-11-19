@@ -54,8 +54,7 @@ public class IngredientTableModel extends EntityTableModel<Ingredient> {
     }
 
     @Override
-    public void customizeTableCell(Component cell, int row) {
-
+    public void customizeTableCell(Component cell, Object value, int row, JTable table) {
     }
 
     @Override
@@ -86,7 +85,7 @@ public class IngredientTableModel extends EntityTableModel<Ingredient> {
         if (usedIn.size() > 0) {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append("Unable to delete Row -> Name <").append(removedIngredient.getName()).append("> used in Recipes: ");
-            for (Recipe recipe : usedIn){
+            for (Recipe recipe : usedIn) {
                 stringBuilder.append(" <").append(recipe.getName()).append(">");
             }
             JOptionPane.showMessageDialog(null, stringBuilder.toString(), "Error", INFORMATION_MESSAGE, null);

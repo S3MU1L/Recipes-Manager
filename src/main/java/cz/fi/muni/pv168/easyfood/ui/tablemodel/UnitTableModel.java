@@ -1,5 +1,7 @@
 package cz.fi.muni.pv168.easyfood.ui.tablemodel;
 
+import cz.fi.muni.pv168.easyfood.bussiness.model.BaseUnit;
+import cz.fi.muni.pv168.easyfood.bussiness.model.Ingredient;
 import cz.fi.muni.pv168.easyfood.bussiness.model.Unit;
 import cz.fi.muni.pv168.easyfood.ui.column.Column;
 
@@ -59,8 +61,7 @@ public class UnitTableModel extends EntityTableModel<Unit> {
     }
 
     @Override
-    public void customizeTableCell(Component cell, int row) {
-
+    public void customizeTableCell(Component cell, Object value, int row, JTable table) {
     }
 
     @Override

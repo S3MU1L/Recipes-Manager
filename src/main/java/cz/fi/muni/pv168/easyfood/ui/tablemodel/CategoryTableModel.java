@@ -56,11 +56,24 @@ public class CategoryTableModel extends EntityTableModel<Category> {
         fireTableRowsUpdated(rowIndex, rowIndex);
     }
 
+
     @Override
-    public void customizeTableCell(Component cell, int row) {
-        cell.setBackground(getEntity(row).getColor());
-        cell.setForeground(Color.BLACK);
+    public void customizeTableCell(Component cell, Object value, int row, JTable table) {
+        Object fstCol = table.getValueAt(row, 0);
+        if (fstCol instanceof String) {
+            Category category = findCategoryByName((String) fstCol);
+            cell.setBackground(category.getColor());
+            cell.setForeground(Color.BLACK);
+        }
     }
+
+    public Category findCategoryByName(String categoryName) {
+        return categories.stream()
+                .filter(category -> category.getName().equals(categoryName))
+                .findFirst()
+                .orElse(null);
+    }
+
 
     @Override
     public void customizeTable(JTable table) {
