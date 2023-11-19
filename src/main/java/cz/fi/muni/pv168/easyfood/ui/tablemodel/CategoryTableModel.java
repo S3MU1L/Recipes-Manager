@@ -112,10 +112,4 @@ public class CategoryTableModel extends EntityTableModel<Category> {
         categories.remove(rowIndex);
         fireTableRowsDeleted(rowIndex, rowIndex);
     }
-    public Category findCategoryByName(String categoryName) {
-        return categories.stream()
-                .filter(category -> category.getName().equals(categoryName))
-                .findFirst()
-                .orElse(null);
-    }
 }
