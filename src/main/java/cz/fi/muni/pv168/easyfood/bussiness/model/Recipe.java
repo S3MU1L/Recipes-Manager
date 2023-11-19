@@ -14,8 +14,28 @@ public class Recipe extends Entity {
     private int portions;
     private Category category;
 
-    public Recipe(String name, List<IngredientWithAmount> ingredients, String description, int preparationTime, int portions, Category category) {
-        super(UUID.randomUUID().toString());
+    public Recipe(String guid,
+                  String name,
+                  List<IngredientWithAmount> ingredients,
+                  String description,
+                  int preparationTime,
+                  int portions,
+                  Category category) {
+        super(guid);
+        this.name = name;
+        this.ingredients = ingredients;
+        this.description = description;
+        this.preparationTime = preparationTime;
+        this.portions = portions;
+        this.category = category;
+    }
+
+    public Recipe(String name,
+                  List<IngredientWithAmount> ingredients,
+                  String description,
+                  int preparationTime,
+                  int portions,
+                  Category category) {
         this.name = name;
         this.ingredients = ingredients;
         this.description = description;
