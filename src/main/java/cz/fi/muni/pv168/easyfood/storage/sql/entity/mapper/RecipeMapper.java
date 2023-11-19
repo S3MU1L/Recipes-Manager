@@ -1,71 +1,49 @@
 package cz.fi.muni.pv168.easyfood.storage.sql.entity.mapper;
 
+import cz.fi.muni.pv168.easyfood.bussiness.model.Recipe;
+import cz.fi.muni.pv168.easyfood.storage.sql.entity.RecipeEntity;
 
 /**
- * Mapper from the {@link EmployeeEntity} to {@link Employee}.
+ * Mapper from the {@link RecipeEntity} to {@link Recipe}.
  */
-public class EmployeeMapper implements EntityMapper<EmployeeEntity, Employee> {
-
-    private final DataAccessObject<DepartmentEntity> departmentDao;
-    private final EntityMapper<DepartmentEntity, Department> departmentMapper;
-
-    public EmployeeMapper(
-            DataAccessObject<DepartmentEntity> departmentDao,
-            EntityMapper<DepartmentEntity, Department> departmentMapper) {
-        this.departmentDao = departmentDao;
-        this.departmentMapper = departmentMapper;
-    }
-
+public class RecipeMapper implements EntityMapper<RecipeEntity, Recipe> {
     @Override
-    public Employee mapToBusiness(EmployeeEntity entity) {
-        var department = departmentDao
-                .findById(entity.departmentId())
-                .map(departmentMapper::mapToBusiness)
-                .orElseThrow(() -> new DataStorageException("Department not found, id: " +
-                        entity.departmentId()));
-
-        return new Employee(
+    public Recipe mapToBusiness(RecipeEntity entity) {
+        return new Recipe(
                 entity.guid(),
-                entity.firstName(),
-                entity.lastName(),
-                entity.gender(),
-                entity.birthDate(),
-                department
+                entity.name(),
+                entity.ingredients(),
+                entity.description(),
+                entity.preparationTime(),
+                entity.portions(),
+                entity.category()
         );
     }
 
     @Override
-    public EmployeeEntity mapNewEntityToDatabase(Employee entity) {
-        var departmentEntity = departmentDao
-                .findByGuid(entity.getDepartment().getGuid())
-                .orElseThrow(() -> new DataStorageException("Department not found, guid: " +
-                        entity.getDepartment().getGuid()));
-
-        return new EmployeeEntity(
+    public RecipeEntity mapNewEntityToDatabase(Recipe entity) {
+        return new RecipeEntity(
                 entity.getGuid(),
-                departmentEntity.id(),
-                entity.getFirstName(),
-                entity.getLastName(),
-                entity.getGender(),
-                entity.getBirthDate()
+                entity.getName(),
+                entity.getIngredients(),
+                entity.getDescription(),
+                entity.getPreparationTime(),
+                entity.getPortions(),
+                entity.getCategory()
         );
     }
 
     @Override
-    public EmployeeEntity mapExistingEntityToDatabase(Employee entity, Long dbId) {
-        var departmentEntity = departmentDao
-                .findByGuid(entity.getDepartment().getGuid())
-                .orElseThrow(() -> new DataStorageException("Department not found, guid: " +
-                        entity.getDepartment().getGuid()));
-
-        return new EmployeeEntity(
+    public RecipeEntity mapExistingEntityToDatabase(Recipe entity, Long dbId) {
+        return new RecipeEntity(
                 dbId,
                 entity.getGuid(),
-                departmentEntity.id(),
-                entity.getFirstName(),
-                entity.getLastName(),
-                entity.getGender(),
-                entity.getBirthDate()
+                entity.getName(),
+                entity.getIngredients(),
+                entity.getDescription(),
+                entity.getPreparationTime(),
+                entity.getPortions(),
+                entity.getCategory()
         );
     }
 }

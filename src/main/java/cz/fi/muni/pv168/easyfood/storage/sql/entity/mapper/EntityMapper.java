@@ -1,4 +1,4 @@
-package cz.muni.fi.pv168.employees.storage.sql.entity.mapper;
+package cz.fi.muni.pv168.easyfood.storage.sql.entity.mapper;
 
 /**
  * Map from one entity to another
