@@ -1,6 +1,7 @@
-package cz.muni.fi.pv168.employees.storage.sql.db.actions;
+package cz.fi.muni.pv168.easyfood.storage.sql.db.actions;
 
-import cz.muni.fi.pv168.employees.storage.sql.db.DatabaseManager;
+
+import cz.fi.muni.pv168.easyfood.storage.sql.db.DatabaseManager;
 
 public final class CreateDatabase {
     public static void main(String[] args) {
