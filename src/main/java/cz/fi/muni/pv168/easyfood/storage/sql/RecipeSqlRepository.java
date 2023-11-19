@@ -2,8 +2,10 @@ package cz.fi.muni.pv168.easyfood.storage.sql;
 
 import cz.fi.muni.pv168.easyfood.bussiness.model.Recipe;
 import cz.fi.muni.pv168.easyfood.bussiness.repository.Repository;
+import cz.fi.muni.pv168.easyfood.storage.DataStorageException;
 import cz.fi.muni.pv168.easyfood.storage.sql.dao.DataAccessObject;
 import cz.fi.muni.pv168.easyfood.storage.sql.entity.RecipeEntity;
+import cz.fi.muni.pv168.easyfood.storage.sql.entity.mapper.EntityMapper;
 
 import java.util.List;
 import java.util.Optional;
@@ -36,9 +38,9 @@ public class RecipeSqlRepository implements Repository<Recipe> {
 
     @Override
     public void update(Recipe entity) {
-        var existingRecipe = recipeDao.findByGuid(entity.getId())
-                .orElseThrow(() -> new DataStorageException("Recipe not found, id: " + entity.getId()));
-        var updatedRecipe = recipeMapper.mapExistingEntityToDatabase(entity, existingRecipe.getId());
+        var existingRecipe = recipeDao.findByGuid(entity.getGuid())
+                .orElseThrow(() -> new DataStorageException("Recipe not found, id: " + entity.getGuid()));
+        var updatedRecipe = recipeMapper.mapExistingEntityToDatabase(entity, existingRecipe.id());
 
         recipeDao.update(updatedRecipe);
     }
