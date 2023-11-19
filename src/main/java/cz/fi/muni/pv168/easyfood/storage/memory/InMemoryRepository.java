@@ -12,6 +12,7 @@ import java.util.Optional;
 
 /**
  * Generic implementation of {@link Repository} which persists entities in memory.
+ *
  * @param <T> entity type
  */
 public class InMemoryRepository<T extends Entity> implements Repository<T> {
@@ -72,8 +73,7 @@ public class InMemoryRepository<T extends Entity> implements Repository<T> {
     }
 
     @Override
-    public boolean existsByGuid(String guid)
-    {
+    public boolean existsByGuid(String guid) {
         return data.containsKey(guid);
     }
 }
