@@ -1,6 +1,7 @@
-package cz.muni.fi.pv168.employees.business.service.export.batch;
+package cz.fi.muni.pv168.easyfood.bussiness.service.export.batch;
 
-import cz.muni.fi.pv168.employees.business.error.RuntimeApplicationException;
+
+import cz.fi.muni.pv168.easyfood.bussiness.error.RuntimeApplicationException;
 
 /**
  * Exception thrown in case there is a problem with a bulk operation.

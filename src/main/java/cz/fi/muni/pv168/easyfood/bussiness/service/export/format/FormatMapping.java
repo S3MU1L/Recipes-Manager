@@ -1,4 +1,4 @@
-package cz.muni.fi.pv168.employees.business.service.export.format;
+package cz.fi.muni.pv168.easyfood.bussiness.service.export.format;
 
 import java.util.Collection;
 import java.util.Map;
@@ -23,16 +23,16 @@ public final class FormatMapping<T extends FileFormat> {
     public FormatMapping(Collection<T> fileFormats) {
         this.fileFormats = fileFormats;
         extensionMapping = fileFormats.stream()
-            .map(f -> f.getFormat().extensions().stream()
-                    .collect(Collectors.toMap(
-                            Function.identity(),
-                            e -> f
-                    )))
-            .flatMap(m -> m.entrySet().stream())
-            .collect(Collectors.toMap(
-                    Map.Entry::getKey,
-                    Map.Entry::getValue
-            ));
+                .map(f -> f.getFormat().extensions().stream()
+                        .collect(Collectors.toMap(
+                                Function.identity(),
+                                e -> f
+                        )))
+                .flatMap(m -> m.entrySet().stream())
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue
+                ));
     }
 
     /**

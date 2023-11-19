@@ -1,9 +1,9 @@
-package cz.muni.fi.pv168.employees.business.service.export.batch;
+package cz.fi.muni.pv168.easyfood.bussiness.service.export.batch;
 
-import cz.muni.fi.pv168.employees.business.model.Department;
-import cz.muni.fi.pv168.employees.business.model.Employee;
+import cz.fi.muni.pv168.easyfood.bussiness.model.Ingredient;
+import cz.fi.muni.pv168.easyfood.bussiness.model.Recipe;
 
 import java.util.Collection;
 
-public record Batch(Collection<Department> departments, Collection<Employee> employees) {
+public record Batch(Collection<Recipe> recipes, Collection<Ingredient> ingredients) {
 }

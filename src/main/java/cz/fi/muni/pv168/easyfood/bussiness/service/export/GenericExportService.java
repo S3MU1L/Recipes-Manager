@@ -1,13 +1,14 @@
-package cz.muni.fi.pv168.employees.business.service.export;
+package cz.fi.muni.pv168.easyfood.bussiness.service.export;
 
-import cz.muni.fi.pv168.employees.business.model.Department;
-import cz.muni.fi.pv168.employees.business.model.Employee;
-import cz.muni.fi.pv168.employees.business.service.crud.CrudService;
-import cz.muni.fi.pv168.employees.business.service.export.batch.Batch;
-import cz.muni.fi.pv168.employees.business.service.export.batch.BatchExporter;
-import cz.muni.fi.pv168.employees.business.service.export.batch.BatchOperationException;
-import cz.muni.fi.pv168.employees.business.service.export.format.Format;
-import cz.muni.fi.pv168.employees.business.service.export.format.FormatMapping;
+
+import cz.fi.muni.pv168.easyfood.bussiness.model.Ingredient;
+import cz.fi.muni.pv168.easyfood.bussiness.model.Recipe;
+import cz.fi.muni.pv168.easyfood.bussiness.service.crud.CrudService;
+import cz.fi.muni.pv168.easyfood.bussiness.service.export.batch.Batch;
+import cz.fi.muni.pv168.easyfood.bussiness.service.export.batch.BatchExporter;
+import cz.fi.muni.pv168.easyfood.bussiness.service.export.batch.BatchOperationException;
+import cz.fi.muni.pv168.easyfood.bussiness.service.export.format.Format;
+import cz.fi.muni.pv168.easyfood.bussiness.service.export.format.FormatMapping;
 
 import java.util.Collection;
 
@@ -16,17 +17,17 @@ import java.util.Collection;
  */
 public class GenericExportService implements ExportService {
 
-    private final CrudService<Employee> employeeCrudService;
-    private final CrudService<Department> departmentCrudService;
+    private final CrudService<Recipe> recipeCrudService;
+    private final CrudService<Ingredient> ingredientCrudService;
     private final FormatMapping<BatchExporter> exporters;
 
     public GenericExportService(
-            CrudService<Employee> employeeCrudService,
-            CrudService<Department> departmentCrudService,
+            CrudService<Recipe> recipeCrudService,
+            CrudService<Ingredient> ingredientCrudService,
             Collection<BatchExporter> exporters
     ) {
-        this.employeeCrudService = employeeCrudService;
-        this.departmentCrudService = departmentCrudService;
+        this.recipeCrudService = recipeCrudService;
+        this.ingredientCrudService = ingredientCrudService;
         this.exporters = new FormatMapping<>(exporters);
     }
 
@@ -39,7 +40,7 @@ public class GenericExportService implements ExportService {
     public void exportData(String filePath) {
         var exporter = getExporter(filePath);
 
-        var batch = new Batch(departmentCrudService.findAll(), employeeCrudService.findAll());
+        var batch = new Batch(recipeCrudService.findAll(), ingredientCrudService.findAll());
         exporter.exportBatch(batch, filePath);
     }
 

@@ -1,6 +1,7 @@
-package cz.muni.fi.pv168.employees.business.service.export;
+package cz.fi.muni.pv168.easyfood.bussiness.service.export;
 
-import cz.muni.fi.pv168.employees.business.error.RuntimeApplicationException;
+
+import cz.fi.muni.pv168.easyfood.bussiness.error.RuntimeApplicationException;
 
 /**
  * Exception thrown if there is some problem with data import/export.

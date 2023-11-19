@@ -1,4 +1,4 @@
-package cz.muni.fi.pv168.employees.business.service.export.format;
+package cz.fi.muni.pv168.easyfood.bussiness.service.export.format;
 
 import java.util.Collection;
 import java.util.Collections;
