@@ -8,12 +8,16 @@ import cz.fi.muni.pv168.easyfood.bussiness.model.Category;
 import cz.fi.muni.pv168.easyfood.bussiness.model.Ingredient;
 import cz.fi.muni.pv168.easyfood.bussiness.model.IngredientWithAmount;
 import cz.fi.muni.pv168.easyfood.bussiness.model.Recipe;
+import cz.fi.muni.pv168.easyfood.storage.sql.db.DatabaseManager;
 import cz.fi.muni.pv168.easyfood.storage.sql.db.TransactionExecutor;
+import cz.fi.muni.pv168.easyfood.bussiness.service.export.ExportService;
+import cz.fi.muni.pv168.easyfood.bussiness.service.export.ImportService;
 
 /**
  * Interface for instance wiring
  */
 public interface DependencyProvider {
+    DatabaseManager getDatabaseManager();
 
     Repository<Recipe> getRecipeRepository();
 
@@ -32,6 +36,10 @@ public interface DependencyProvider {
     CrudService<Category> getCategoryCrudService();
 
     CrudService<IngredientWithAmount> getIngredientWithAmountCrudService();
+
+    ImportService getImportService();
+
+    ExportService getExportService();
 
     Validator<Recipe> getRecipeValidator();
 }
