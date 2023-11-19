@@ -11,7 +11,7 @@ import java.awt.Component;
 import java.util.ArrayList;
 import java.util.List;
 
-import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
 
 public class IngredientTableModel extends EntityTableModel<Ingredient> {
     private final List<Ingredient> ingredients;
@@ -31,7 +31,7 @@ public class IngredientTableModel extends EntityTableModel<Ingredient> {
     public void addRow(Ingredient ingredient) {
         if (!ingredients.stream().filter(ingredient1 -> ingredient1.getName().equals(ingredient.getName())).toList().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Duplicate name: " + ingredient.getName(),
-                    "Error", INFORMATION_MESSAGE, null);
+                    "Error", ERROR_MESSAGE, null);
             return;
         }
 
@@ -44,7 +44,7 @@ public class IngredientTableModel extends EntityTableModel<Ingredient> {
         if (!ingredients.stream().filter(ingredient -> ingredient != oldIngredient &&
                 ingredient.getName().equals(newIngredient.getName())).toList().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Duplicate name: " + newIngredient.getName(),
-                    "Error", INFORMATION_MESSAGE, null);
+                    "Error", ERROR_MESSAGE, null);
             return;
         }
 
@@ -55,6 +55,7 @@ public class IngredientTableModel extends EntityTableModel<Ingredient> {
 
     @Override
     public void customizeTableCell(Component cell, Object value, int row, JTable table) {
+
     }
 
     @Override
@@ -84,11 +85,12 @@ public class IngredientTableModel extends EntityTableModel<Ingredient> {
 
         if (usedIn.size() > 0) {
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("Unable to delete Row -> Name <").append(removedIngredient.getName()).append("> used in Recipes: ");
-            for (Recipe recipe : usedIn) {
-                stringBuilder.append(" <").append(recipe.getName()).append(">");
+            stringBuilder.append("Unable to delete Ingredient : ").append(removedIngredient.getName()).append("\nIt is used in Recipes: ");
+            for (Recipe recipe : usedIn){
+                stringBuilder.append(" ").append(recipe.getName()).append(",");
             }
-            JOptionPane.showMessageDialog(null, stringBuilder.toString(), "Error", INFORMATION_MESSAGE, null);
+            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+            JOptionPane.showMessageDialog(null, stringBuilder.toString(), "Error", ERROR_MESSAGE, null);
             return;
         }
         ingredients.remove(rowIndex);

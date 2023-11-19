@@ -83,7 +83,7 @@ public class MainWindow {
         List<Category> categories = new ArrayList<>();
         List<Unit> units = new ArrayList<>();
 
-        unitTable = createUnitTable(units);
+        unitTable = createUnitTable(units, ingredients);
         ingredientTable = createIngredientTable(recipes, ingredients, units);
         categoryTable = createCategoryTable(categories, recipes);
         recipeTable = createRecipeTable(recipes, ingredients, categories);
@@ -198,8 +198,8 @@ public class MainWindow {
         return table;
     }
 
-    private JTable createUnitTable(List<Unit> units) {
-        var unitModel = new UnitTableModel(units);
+    private JTable createUnitTable(List<Unit> units, List<Ingredient> ingredients) {
+        var unitModel = new UnitTableModel(units, ingredients);
         var unitTable = new JTable(unitModel);
         unitTable.setAutoCreateRowSorter(true);
         unitTable.setDefaultRenderer(Object.class, new CustomTableCellRenderer<>(unitModel));

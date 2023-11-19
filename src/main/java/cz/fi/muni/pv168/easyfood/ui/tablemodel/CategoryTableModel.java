@@ -12,7 +12,7 @@ import java.awt.Component;
 import java.util.ArrayList;
 import java.util.List;
 
-import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
 
 
 public class CategoryTableModel extends EntityTableModel<Category> {
@@ -36,7 +36,7 @@ public class CategoryTableModel extends EntityTableModel<Category> {
     public void addRow(Category category) {
         if (!categories.stream().filter(category1 -> category1.getName().equals(category.getName())).toList().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Duplicate name: " + category.getName(),
-                    "Error", INFORMATION_MESSAGE, null);
+                    "Error", ERROR_MESSAGE, null);
             return;
         }
 
@@ -48,7 +48,7 @@ public class CategoryTableModel extends EntityTableModel<Category> {
     public void updateRow(Category oldCategory, Category newCategory) {
         if (!categories.stream().filter(category -> category != oldCategory &&
                 category.getName().equals(newCategory.getName())).toList().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Duplicate name: " + newCategory.getName(), "Error", INFORMATION_MESSAGE, null);
+            JOptionPane.showMessageDialog(null, "Duplicate name: " + newCategory.getName(), "Error", ERROR_MESSAGE, null);
             return;
         }
         int rowIndex = categories.indexOf(oldCategory);
@@ -101,14 +101,21 @@ public class CategoryTableModel extends EntityTableModel<Category> {
 
         if (usedIn.size() > 0) {
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("Unable to delete Row -> Name <").append(removedCategory.getName()).append("> used in Recipes: ");
+            stringBuilder.append("Unable to delete Category : ").append(removedCategory.getName()).append("\nIt is used in Recipes:");
             for (Recipe recipe : usedIn) {
-                stringBuilder.append(" <").append(recipe.getName()).append(">");
+                stringBuilder.append(" ").append(recipe.getName()).append(",");
             }
-            JOptionPane.showMessageDialog(null, stringBuilder.toString(), "Error", INFORMATION_MESSAGE, null);
+            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+            JOptionPane.showMessageDialog(null, stringBuilder.toString(), "Error", ERROR_MESSAGE, null);
             return;
         }
         categories.remove(rowIndex);
         fireTableRowsDeleted(rowIndex, rowIndex);
+    }
+    public Category findCategoryByName(String categoryName) {
+        return categories.stream()
+                .filter(category -> category.getName().equals(categoryName))
+                .findFirst()
+                .orElse(null);
     }
 }

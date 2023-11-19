@@ -38,6 +38,7 @@ public class IngredientWithAmountTableModel extends EntityTableModel<IngredientW
 
     @Override
     public void customizeTableCell(Component cell, Object value, int row, JTable table) {
+
     }
 
     @Override
