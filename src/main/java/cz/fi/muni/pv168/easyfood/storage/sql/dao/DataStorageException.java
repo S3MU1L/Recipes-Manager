@@ -1,6 +1,7 @@
-package cz.muni.fi.pv168.employees.storage.sql.dao;
+package cz.fi.muni.pv168.easyfood.storage.sql.dao;
 
-import cz.muni.fi.pv168.employees.business.error.RuntimeApplicationException;
+
+import cz.fi.muni.pv168.easyfood.bussiness.error.RuntimeApplicationException;
 
 import java.io.Serial;
 
@@ -17,11 +18,11 @@ public class DataStorageException extends RuntimeApplicationException {
     }
 
     public DataStorageException(String message, Throwable cause) {
-        this("Problem while interacting with database" , message, cause);
+        this("Problem while interacting with database", message, cause);
     }
 
     public DataStorageException(String userMessage, String message, Throwable cause) {
-        super(userMessage, "Storage error: " +  message, cause);
+        super(userMessage, "Storage error: " + message, cause);
     }
 }
 

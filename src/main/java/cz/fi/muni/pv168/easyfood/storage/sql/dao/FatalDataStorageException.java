@@ -1,6 +1,7 @@
-package cz.muni.fi.pv168.employees.storage.sql.dao;
+package cz.fi.muni.pv168.easyfood.storage.sql.dao;
 
-import cz.muni.fi.pv168.employees.business.error.FatalError;
+
+import cz.fi.muni.pv168.easyfood.bussiness.error.FatalError;
 
 import java.io.Serial;
 
