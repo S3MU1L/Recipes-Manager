@@ -1,11 +1,12 @@
-package cz.fi.muni.pv168.easyfood.model;
+package cz.fi.muni.pv168.easyfood.bussiness.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
-public class Recipe {
+public class Recipe extends Entity {
     private String name;
     private List<IngredientWithAmount> ingredients;
     private String description;
@@ -13,7 +14,28 @@ public class Recipe {
     private int portions;
     private Category category;
 
-    public Recipe(String name, List<IngredientWithAmount> ingredients, String description, int preparationTime, int portions, Category category) {
+    public Recipe(String guid,
+                  String name,
+                  List<IngredientWithAmount> ingredients,
+                  String description,
+                  int preparationTime,
+                  int portions,
+                  Category category) {
+        super(guid);
+        this.name = name;
+        this.ingredients = ingredients;
+        this.description = description;
+        this.preparationTime = preparationTime;
+        this.portions = portions;
+        this.category = category;
+    }
+
+    public Recipe(String name,
+                  List<IngredientWithAmount> ingredients,
+                  String description,
+                  int preparationTime,
+                  int portions,
+                  Category category) {
         this.name = name;
         this.ingredients = ingredients;
         this.description = description;
@@ -27,7 +49,7 @@ public class Recipe {
     }
 
     public void setCategory(Category category) {
-        this.category = category;
+        this.category = Objects.requireNonNull(category, "category must not be null");
     }
 
     public Category getCategory() {
@@ -39,7 +61,7 @@ public class Recipe {
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name = Objects.requireNonNull(name, "name must not be null");
     }
 
     public List<IngredientWithAmount> getIngredients() {
@@ -47,7 +69,7 @@ public class Recipe {
     }
 
     public void setIngredients(List<IngredientWithAmount> ingredients) {
-        this.ingredients = ingredients;
+        this.ingredients = Objects.requireNonNull(ingredients, "ingredients must not be null");
     }
 
     public double getCalories() {
@@ -63,7 +85,7 @@ public class Recipe {
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        this.description = Objects.requireNonNull(description, "description must not be null");
     }
 
     public int getPreparationTime() {

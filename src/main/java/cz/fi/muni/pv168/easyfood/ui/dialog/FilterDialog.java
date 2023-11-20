@@ -1,9 +1,9 @@
 package cz.fi.muni.pv168.easyfood.ui.dialog;
 
-import cz.fi.muni.pv168.easyfood.model.Category;
-import cz.fi.muni.pv168.easyfood.model.Filter;
-import cz.fi.muni.pv168.easyfood.model.Ingredient;
-import cz.fi.muni.pv168.easyfood.model.Unit;
+import cz.fi.muni.pv168.easyfood.bussiness.model.Category;
+import cz.fi.muni.pv168.easyfood.bussiness.model.Filter;
+import cz.fi.muni.pv168.easyfood.bussiness.model.Ingredient;
+import cz.fi.muni.pv168.easyfood.bussiness.model.Unit;
 
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -17,11 +17,9 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import java.awt.Dimension;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public class FilterDialog extends EntityDialog<Filter> {

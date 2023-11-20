@@ -1,6 +1,6 @@
 package cz.fi.muni.pv168.easyfood.ui.renderers;
 
-import cz.fi.muni.pv168.easyfood.model.Category;
+import cz.fi.muni.pv168.easyfood.bussiness.model.Category;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;

@@ -1,7 +1,7 @@
 package cz.fi.muni.pv168.easyfood.ui.tablemodel;
 
-import cz.fi.muni.pv168.easyfood.model.Category;
-import cz.fi.muni.pv168.easyfood.model.Recipe;
+import cz.fi.muni.pv168.easyfood.bussiness.model.Category;
+import cz.fi.muni.pv168.easyfood.bussiness.model.Recipe;
 import cz.fi.muni.pv168.easyfood.services.StatisticsService;
 import cz.fi.muni.pv168.easyfood.ui.column.Column;
 
@@ -56,15 +56,24 @@ public class CategoryTableModel extends EntityTableModel<Category> {
         fireTableRowsUpdated(rowIndex, rowIndex);
     }
 
+
     @Override
     public void customizeTableCell(Component cell, Object value, int row, JTable table) {
         Object fstCol = table.getValueAt(row, 0);
-        if(fstCol instanceof String){
-            Category category = findCategoryByName((String)fstCol);
+        if (fstCol instanceof String) {
+            Category category = findCategoryByName((String) fstCol);
             cell.setBackground(category.getColor());
             cell.setForeground(Color.BLACK);
         }
     }
+
+    public Category findCategoryByName(String categoryName) {
+        return categories.stream()
+                .filter(category -> category.getName().equals(categoryName))
+                .findFirst()
+                .orElse(null);
+    }
+
 
     @Override
     public void customizeTable(JTable table) {
@@ -102,11 +111,5 @@ public class CategoryTableModel extends EntityTableModel<Category> {
         }
         categories.remove(rowIndex);
         fireTableRowsDeleted(rowIndex, rowIndex);
-    }
-    public Category findCategoryByName(String categoryName) {
-        return categories.stream()
-                .filter(category -> category.getName().equals(categoryName))
-                .findFirst()
-                .orElse(null);
     }
 }

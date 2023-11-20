@@ -2,11 +2,11 @@ package cz.fi.muni.pv168.easyfood.ui;
 
 
 import cz.fi.muni.pv168.easyfood.data.TestDataGenerator;
-import cz.fi.muni.pv168.easyfood.model.BaseUnit;
-import cz.fi.muni.pv168.easyfood.model.Category;
-import cz.fi.muni.pv168.easyfood.model.Ingredient;
-import cz.fi.muni.pv168.easyfood.model.Recipe;
-import cz.fi.muni.pv168.easyfood.model.Unit;
+import cz.fi.muni.pv168.easyfood.bussiness.model.BaseUnit;
+import cz.fi.muni.pv168.easyfood.bussiness.model.Category;
+import cz.fi.muni.pv168.easyfood.bussiness.model.Ingredient;
+import cz.fi.muni.pv168.easyfood.bussiness.model.Recipe;
+import cz.fi.muni.pv168.easyfood.bussiness.model.Unit;
 import cz.fi.muni.pv168.easyfood.ui.action.AddAction;
 import cz.fi.muni.pv168.easyfood.ui.action.DeleteAction;
 import cz.fi.muni.pv168.easyfood.ui.action.EditAction;

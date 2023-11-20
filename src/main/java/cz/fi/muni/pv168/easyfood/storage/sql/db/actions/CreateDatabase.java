@@ -1,0 +1,13 @@
+package cz.fi.muni.pv168.easyfood.storage.sql.db.actions;
+
+
+import cz.fi.muni.pv168.easyfood.storage.sql.db.DatabaseManager;
+
+public final class CreateDatabase {
+    public static void main(String[] args) {
+        var dbManager = DatabaseManager.createProductionInstance();
+        dbManager.initSchema();
+        System.out.println("Database created...");
+        System.out.println("Database connection string: " + dbManager.getDatabaseConnectionString());
+    }
+}
