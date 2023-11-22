@@ -10,28 +10,28 @@ import java.util.Map;
 public class TabContainer {
 
     private final JTabbedPane tabbedPane = new JTabbedPane();
-    private final Map<Component, Tab> tabs = new IdentityHashMap<>();
+    private final Map<Component, Tab<?>> tabs = new IdentityHashMap<>();
 
-    public void addChangeListener(ChangeListener listener) {
-        tabbedPane.addChangeListener(listener);
+    public void addChangeListener(ChangeListener l) {
+        tabbedPane.addChangeListener(l);
     }
 
     public JComponent getComponent() {
         return tabbedPane;
     }
 
-    public void addTab(Tab tab) {
+    public void addTab(Tab<?> tab) {
         JComponent component = tab.getComponent();
         tabbedPane.addTab(tab.getTitle(), component);
         tabs.put(component, tab);
     }
 
-    public Tab getSelectedTab() {
+    public Tab<?> getSelectedTab() {
         Component selectedComponent = tabbedPane.getSelectedComponent();
         if (selectedComponent == null) {
             throw new IllegalStateException("No tab is selected");
         }
-        Tab tab = tabs.get(selectedComponent);
+        Tab<?> tab = tabs.get(selectedComponent);
         if (tab == null) {
             throw new AssertionError("Unknown tabbedPane selectedComponent");
         }

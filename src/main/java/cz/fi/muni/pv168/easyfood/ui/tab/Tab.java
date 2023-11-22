@@ -1,25 +1,36 @@
 package cz.fi.muni.pv168.easyfood.ui.tab;
 
-import cz.fi.muni.pv168.easyfood.ui.dialog.EntityDialog;
-import cz.fi.muni.pv168.easyfood.ui.tablemodel.EntityTableModel;
+import cz.fi.muni.pv168.easyfood.model.Recipe;
+import cz.fi.muni.pv168.easyfood.service.RecipeService;
+import cz.fi.muni.pv168.easyfood.service.Service;
+import cz.fi.muni.pv168.easyfood.ui.table.Table;
 
 import javax.swing.JComponent;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
+import java.util.List;
 
-public class Tab<E extends EntityTableModel> {
-    private JComponent component;
-    private String title;
-    private JTable table;
-    private final E model;
-    private EntityDialog dialog;
+public class Tab<E> {
 
-    public Tab(String title, JTable table, E model, EntityDialog dialog) {
+     private Service<E> service;
+
+     private JComponent component;
+
+     private String title;
+
+     private Table<E> table;
+
+    public Tab(Service<E> service, String title, Table<E> table) {
         this.title = title;
-        this.table = table;
-        this.model = model;
-        this.dialog = dialog;
-        this.component = new JScrollPane(table);
+        this.service = service;
+        this.table =  table;
+        this.component =  table.wrapIntoScrollPane();
+    }
+
+    public Service<E> getService() {
+        return service;
+    }
+
+    public void setService(Service<E> service) {
+        this.service = service;
     }
 
     public JComponent getComponent() {
@@ -38,32 +49,31 @@ public class Tab<E extends EntityTableModel> {
         this.title = title;
     }
 
-    public JTable getTable() {
+    public Table<E> getTable() {
         return table;
     }
 
-    public void setTable(JTable table) {
+    public void setTable(Table<E> table) {
         this.table = table;
     }
 
-    public E getModel() {
-        return model;
-    }
-
-    public EntityDialog getDialog() {
-        return dialog;
-    }
-
-    public void setDialog(EntityDialog dialog) {
-        this.dialog = dialog;
-    }
-
-    public void delete() {
-        int[] rows = table.getSelectedRows();
-        for (int i = rows.length - 1; i >= 0; i--) {
-            int modelRow = table.convertRowIndexToModel(rows[i]);
-            model.deleteRow(modelRow);
+    public void deleteSelected() {
+        List<E> selected = table.getSelectedEntities();
+        var iterator = selected.listIterator(selected.size());
+        while (iterator.hasPrevious()) {
+           service.delete(iterator.previous());
         }
     }
 
+    public void showSelected() {
+        table.getSelectedEntities().forEach(service::openShowWindow);
+    }
+
+    public void updateSelected() {
+        table.getSelectedEntities().forEach(service::openUpdateWindow);
+    }
+
+    public void generateShoppingList() {
+        ((RecipeService) service).generateShoppingList((List<Recipe>) table.getSelectedEntities());
+    }
 }
