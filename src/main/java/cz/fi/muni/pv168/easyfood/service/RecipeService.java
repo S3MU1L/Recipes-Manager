@@ -6,8 +6,12 @@ import cz.fi.muni.pv168.easyfood.model.IngredientAndAmount;
 import cz.fi.muni.pv168.easyfood.model.Recipe;
 import cz.fi.muni.pv168.easyfood.ui.windows.WindowsManager;
 
-import javax.swing.*;
-import java.util.*;
+import javax.swing.JOptionPane;
+import javax.swing.SwingWorker;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class RecipeService extends BaseService<Recipe> {
@@ -67,7 +71,7 @@ public class RecipeService extends BaseService<Recipe> {
     public void generateShoppingList(List<Recipe> selectedEntities) {
         var amountMap = sumAmounts(selectedEntities);
         var ingredientAndAmountList = new ArrayList<IngredientAndAmount>();
-        for (var ingredient: amountMap.keySet()) {
+        for (var ingredient : amountMap.keySet()) {
             ingredientAndAmountList.add(new IngredientAndAmount(ingredient, amountMap.get(ingredient)));
         }
         windowsManager.showShoppingList(ingredientAndAmountList);
@@ -75,8 +79,8 @@ public class RecipeService extends BaseService<Recipe> {
 
     private HashMap<Ingredient, Double> sumAmounts(List<Recipe> selectedEntities) {
         var amountMap = new HashMap<Ingredient, Double>();
-        for (var recipe: selectedEntities) {
-            for (var ingredient: recipe.getIngredients()) {
+        for (var recipe : selectedEntities) {
+            for (var ingredient : recipe.getIngredients()) {
                 amountMap.putIfAbsent(ingredient.getIngredient(), 0D);
                 amountMap.put(ingredient.getIngredient(), amountMap.get(ingredient.getIngredient()) + ingredient.getAmount());
             }

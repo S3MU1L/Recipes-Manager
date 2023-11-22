@@ -6,7 +6,8 @@ import cz.fi.muni.pv168.easyfood.model.IngredientAndAmount;
 import cz.fi.muni.pv168.easyfood.model.Recipe;
 import cz.fi.muni.pv168.easyfood.ui.windows.WindowsManager;
 
-import javax.swing.*;
+import javax.swing.JOptionPane;
+import javax.swing.SwingWorker;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -15,7 +16,7 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
-public class IngredientService extends BaseService<Ingredient>{
+public class IngredientService extends BaseService<Ingredient> {
 
     private final WindowsManager windowsManager;
     private final RecipeService recipeService;
@@ -81,7 +82,7 @@ public class IngredientService extends BaseService<Ingredient>{
         return Collections.unmodifiableList(ingredientList);
     }
 
-    private boolean inAnyRecipe(Ingredient ingredient){
+    private boolean inAnyRecipe(Ingredient ingredient) {
         return recipeService.getContainingRecipeIDs(ingredient).size() > 0;
     }
 
@@ -125,7 +126,7 @@ public class IngredientService extends BaseService<Ingredient>{
 
         @Override
         protected Boolean doInBackground() {
-            if(! inAnyRecipe(ingredient)) {
+            if (!inAnyRecipe(ingredient)) {
                 ingredientDao.delete(ingredient);
                 return true;
             }
@@ -135,7 +136,7 @@ public class IngredientService extends BaseService<Ingredient>{
         @Override
         protected void done() {
             try {
-                if(get()){
+                if (get()) {
                     int index = ingredientList.indexOf(ingredient);
                     ingredientList.remove(index);
                     windowsManager.notifyDeletedIngredient(ingredient, index);
