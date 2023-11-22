@@ -1,4 +1,4 @@
-package cz.muni.fi.pv168.project;
+package cz.fi.muni.pv168.easyfood;
 
 import org.junit.jupiter.api.Test;
 
