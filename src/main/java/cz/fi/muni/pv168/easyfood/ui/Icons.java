@@ -16,6 +16,9 @@ public final class Icons {
     public static final Icon ADD_ICON = createIcon("icons/add.png");
     public static final Icon QUIT_ICON = createIcon("icons/exit.png");
     public static final Icon SHOW_ICON = createIcon("icons/show.png");
+    public static final Icon FILTER_ICON = createIcon("icons/filter.png");
+    public static final Icon EXPORT_ICON = createIcon("icons/export.png");
+    public static final Icon IMPORT_ICON = createIcon("icons/import.png");
     public static final int ICON_WIDTH = 30;
     public static final int ICON_HEIGHT = 30;
 
