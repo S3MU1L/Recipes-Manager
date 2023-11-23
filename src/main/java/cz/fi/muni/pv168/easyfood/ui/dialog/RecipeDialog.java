@@ -194,12 +194,6 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
             JOptionPane.showMessageDialog(null, "Please enter a valid number of portions", "Error", ERROR_MESSAGE, null);
             return false;
         }
-
-        if (recipe.getCategory() == null) {
-            JOptionPane.showMessageDialog(null, "Please pick a category", "Error", ERROR_MESSAGE, null);
-            return false;
-        }
-
         return true;
     }
 
