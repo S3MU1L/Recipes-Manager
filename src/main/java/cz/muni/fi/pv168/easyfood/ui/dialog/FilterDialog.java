@@ -24,7 +24,7 @@ public class FilterDialog extends EntityDialog<Filter> {
     private final List<Ingredient> ingredients;
     private static final JTextField nameField = new JTextField();
     private static final Box categoriesBox = Box.createVerticalBox();
-    private static final JScrollPane categoriesField = new JScrollPane(categoriesBox);
+    private stati final JScrollPane categoriesField = new JScrollPane(categoriesBox);
     private static final Box ingredientsBox = Box.createVerticalBox();
     private static final JScrollPane ingredientsField = new JScrollPane(ingredientsBox);
     private static final JSpinner timeField = new JSpinner(new SpinnerNumberModel());
