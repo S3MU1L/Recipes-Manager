@@ -75,6 +75,7 @@ public class UnitTableModel extends EntityTableModel<Unit> {
                 cell.setBackground(Color.CYAN);
                 cell.setForeground(Color.BLACK);
             }
+
         }
     }
 
