@@ -64,14 +64,12 @@ public class IngredientDialog extends EntityDialog<Ingredient> {
 
     @Override
     public boolean valid(Ingredient ingredient) {
-        if (ingredient.getName().equals("")){
-            JOptionPane.showMessageDialog(null, "Empty Name",
-                    "Error", ERROR_MESSAGE, null);
+        if (ingredient.getName().equals("")) {
+            JOptionPane.showMessageDialog(null, "Empty Name", "Error", ERROR_MESSAGE, null);
             return false;
         }
-        if (ingredient.getUnit() == null){
-            JOptionPane.showMessageDialog(null, "Unit not selected",
-                    "Error", ERROR_MESSAGE, null);
+        if (ingredient.getUnit() == null) {
+            JOptionPane.showMessageDialog(null, "Unit not selected", "Error", ERROR_MESSAGE, null);
             return false;
         }
         if (ingredient.getCalories() == 0) {
@@ -80,8 +78,8 @@ public class IngredientDialog extends EntityDialog<Ingredient> {
         }
         if (!ingredients.stream().filter(ingredient1 -> ingredient1 != ingredient &&
                 ingredient1.getName().equals(ingredient.getName())).toList().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Duplicate name: " + ingredient.getName(),
-                    "Error", ERROR_MESSAGE, null);
+            JOptionPane.showMessageDialog(null,
+                    "Duplicate name: " + ingredient.getName(), "Error", ERROR_MESSAGE, null);
             return false;
         }
         return true;
