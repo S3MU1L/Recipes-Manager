@@ -71,6 +71,10 @@ public class UnitDialog extends EntityDialog<Unit> {
             JOptionPane.showMessageDialog(null, "Empty abbreviation", "Error", ERROR_MESSAGE, null);
             return false;
         }
+        if (unit.getConversion() == 0) {
+            JOptionPane.showMessageDialog(null, "Conversion can't not be zero", "Error", ERROR_MESSAGE, null);
+            return false;
+        }
         if (!units.stream().filter(unit1 -> unit1 != unit &&
                 unit1.getName().equals(unit.getName())).toList().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Duplicate name: " + unit.getName(), "Error", ERROR_MESSAGE, null);

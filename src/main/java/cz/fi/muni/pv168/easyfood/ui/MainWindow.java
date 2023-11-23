@@ -182,7 +182,7 @@ public class MainWindow {
         table.setAutoCreateRowSorter(true);
         table.setDefaultRenderer(Object.class, new CustomTableCellRenderer<>(model));
         table.getSelectionModel().addListSelectionListener(this::rowSelectionChanged);
-        ingredientTab = new Tab("ingredients", table, model, new IngredientDialog(units));
+        ingredientTab = new Tab("ingredients", table, model, new IngredientDialog(ingredients, units));
         return table;
     }
 
