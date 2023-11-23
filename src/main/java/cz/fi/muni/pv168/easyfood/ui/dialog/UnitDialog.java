@@ -8,7 +8,6 @@ import cz.fi.muni.pv168.easyfood.bussiness.model.Unit;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
 import java.util.List;
-import java.util.Objects;
 
 public class UnitDialog extends EntityDialog<Unit> {
     private final JTextField nameField = new JTextField();
@@ -36,6 +35,7 @@ public class UnitDialog extends EntityDialog<Unit> {
         for (BaseUnit baseUnit : BaseUnit.values()) {
             baseUnitField.addItem(baseUnit);
         }
+        baseUnitField.setSelectedItem(unit.getBaseUnit());
     }
 
     private void addFields() {
@@ -49,7 +49,7 @@ public class UnitDialog extends EntityDialog<Unit> {
     public Unit getEntity() {
         String name = nameField.getText();
         String abbreviation = abbreviationField.getText();
-        BaseUnit baseUnit = BaseUnit.getBaseUnitFormSymbol(Objects.requireNonNull(baseUnitField.getSelectedItem()).toString());
+        BaseUnit baseUnit = (BaseUnit) baseUnitField.getSelectedItem();
         double conversion = Double.parseDouble(conversionRatio.getText());
         return new Unit(name, abbreviation, baseUnit, conversion);
     }

@@ -1,7 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="d9696904-9156-45bd-9961-007d0438b7a2" name="Changes" comment="" />
+    <list default="true" id="d9696904-9156-45bd-9961-007d0438b7a2" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/java/cz/fi/muni/pv168/easyfood/storage/sql/db/DatabaseManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/java/cz/fi/muni/pv168/easyfood/storage/sql/db/DatabaseManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/java/cz/fi/muni/pv168/easyfood/ui/MainWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/java/cz/fi/muni/pv168/easyfood/ui/MainWindow.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/java/cz/fi/muni/pv168/easyfood/ui/column/Column.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/java/cz/fi/muni/pv168/easyfood/ui/model/Column.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/java/cz/fi/muni/pv168/easyfood/ui/column/EditableColumn.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/java/cz/fi/muni/pv168/easyfood/ui/column/UneditableColumn.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/java/cz/fi/muni/pv168/easyfood/ui/model/tablemodel/BaseUnitModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/java/cz/fi/muni/pv168/easyfood/ui/model/tablemodel/BaseUnitModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/java/cz/fi/muni/pv168/easyfood/ui/model/tablemodel/CategoryTableModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/java/cz/fi/muni/pv168/easyfood/ui/model/tablemodel/CategoryTableModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/java/cz/fi/muni/pv168/easyfood/ui/model/tablemodel/EntityTableModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/java/cz/fi/muni/pv168/easyfood/ui/model/tablemodel/EntityTableModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/java/cz/fi/muni/pv168/easyfood/ui/model/tablemodel/IngredientTableModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/java/cz/fi/muni/pv168/easyfood/ui/model/tablemodel/IngredientTableModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/java/cz/fi/muni/pv168/easyfood/ui/model/tablemodel/RecipeTableModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/java/cz/fi/muni/pv168/easyfood/ui/model/tablemodel/RecipeTableModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/java/cz/fi/muni/pv168/easyfood/ui/model/tablemodel/UnitTableModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/java/cz/fi/muni/pv168/easyfood/ui/model/tablemodel/UnitTableModel.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -10,9 +23,9 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 6
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 6
+}</component>
   <component name="ProjectId" id="2YaG8YyKA25noPrB0EJ3cgvhWtj" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -38,6 +51,8 @@
       <option name="presentableId" value="Default" />
       <updated>1700756117898</updated>
       <workItem from="1700756118891" duration="274000" />
+      <workItem from="1700775774286" duration="36000" />
+      <workItem from="1700775840158" duration="5000" />
     </task>
     <servers />
   </component>

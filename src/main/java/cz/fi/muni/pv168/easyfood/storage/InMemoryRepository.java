@@ -1,4 +1,4 @@
-package cz.fi.muni.pv168.easyfood.storage.memory;
+package cz.fi.muni.pv168.easyfood.storage;
 
 
 import cz.fi.muni.pv168.easyfood.bussiness.model.Entity;
