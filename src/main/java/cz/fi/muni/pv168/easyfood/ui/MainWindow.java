@@ -1,12 +1,11 @@
 package cz.fi.muni.pv168.easyfood.ui;
 
 
-import cz.fi.muni.pv168.easyfood.data.TestDataGenerator;
-import cz.fi.muni.pv168.easyfood.bussiness.model.BaseUnit;
 import cz.fi.muni.pv168.easyfood.bussiness.model.Category;
 import cz.fi.muni.pv168.easyfood.bussiness.model.Ingredient;
 import cz.fi.muni.pv168.easyfood.bussiness.model.Recipe;
 import cz.fi.muni.pv168.easyfood.bussiness.model.Unit;
+import cz.fi.muni.pv168.easyfood.data.TestDataGenerator;
 import cz.fi.muni.pv168.easyfood.ui.action.AddAction;
 import cz.fi.muni.pv168.easyfood.ui.action.DeleteAction;
 import cz.fi.muni.pv168.easyfood.ui.action.EditAction;
@@ -23,7 +22,6 @@ import cz.fi.muni.pv168.easyfood.ui.dialog.UnitDialog;
 import cz.fi.muni.pv168.easyfood.ui.renderers.CustomTableCellRenderer;
 import cz.fi.muni.pv168.easyfood.ui.tab.Tab;
 import cz.fi.muni.pv168.easyfood.ui.tab.TabContainer;
-import cz.fi.muni.pv168.easyfood.ui.tablemodel.BaseUnitModel;
 import cz.fi.muni.pv168.easyfood.ui.tablemodel.CategoryTableModel;
 import cz.fi.muni.pv168.easyfood.ui.tablemodel.IngredientTableModel;
 import cz.fi.muni.pv168.easyfood.ui.tablemodel.RecipeTableModel;
@@ -206,15 +204,7 @@ public class MainWindow {
         unitTable.getSelectionModel().addListSelectionListener(this::rowSelectionChanged);
         unitTab = new Tab("units", unitTable, unitModel, new UnitDialog());
 
-        var baseUnitModel = new BaseUnitModel(List.of(BaseUnit.GRAM, BaseUnit.MILLILITER, BaseUnit.PIECE));
-        var baseUnitTable = new JTable(baseUnitModel);
-        baseUnitTable.setDefaultRenderer(Object.class, new CustomTableCellRenderer<>(baseUnitModel));
-        baseUnitTable.setCellSelectionEnabled(false);
-
         Box tables = Box.createVerticalBox();
-        tables.add(baseUnitTable.getTableHeader());
-        tables.add(baseUnitTable);
-        tables.add(new JLabel(" "));
         tables.add((unitTable.getTableHeader()));
         tables.add(unitTable);
 
