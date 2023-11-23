@@ -5,7 +5,7 @@ import cz.fi.muni.pv168.easyfood.bussiness.model.Ingredient;
 import cz.fi.muni.pv168.easyfood.bussiness.model.IngredientWithAmount;
 import cz.fi.muni.pv168.easyfood.bussiness.model.Recipe;
 import cz.fi.muni.pv168.easyfood.bussiness.model.Unit;
-import cz.fi.muni.pv168.easyfood.ui.tablemodel.IngredientWithAmountTableModel;
+import cz.fi.muni.pv168.easyfood.ui.model.tablemodel.IngredientWithAmountTableModel;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;

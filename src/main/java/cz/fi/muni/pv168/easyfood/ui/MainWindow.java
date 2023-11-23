@@ -23,11 +23,11 @@ import cz.fi.muni.pv168.easyfood.ui.dialog.UnitDialog;
 import cz.fi.muni.pv168.easyfood.ui.renderers.CustomTableCellRenderer;
 import cz.fi.muni.pv168.easyfood.ui.tab.Tab;
 import cz.fi.muni.pv168.easyfood.ui.tab.TabContainer;
-import cz.fi.muni.pv168.easyfood.ui.tablemodel.BaseUnitModel;
-import cz.fi.muni.pv168.easyfood.ui.tablemodel.CategoryTableModel;
-import cz.fi.muni.pv168.easyfood.ui.tablemodel.IngredientTableModel;
-import cz.fi.muni.pv168.easyfood.ui.tablemodel.RecipeTableModel;
-import cz.fi.muni.pv168.easyfood.ui.tablemodel.UnitTableModel;
+import cz.fi.muni.pv168.easyfood.ui.model.tablemodel.BaseUnitModel;
+import cz.fi.muni.pv168.easyfood.ui.model.tablemodel.CategoryTableModel;
+import cz.fi.muni.pv168.easyfood.ui.model.tablemodel.IngredientTableModel;
+import cz.fi.muni.pv168.easyfood.ui.model.tablemodel.RecipeTableModel;
+import cz.fi.muni.pv168.easyfood.ui.model.tablemodel.UnitTableModel;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -77,6 +77,7 @@ public class MainWindow {
 
     public MainWindow() {
         frame = createFrame();
+
         var testDataGenerator = new TestDataGenerator();
         List<Recipe> recipes = new ArrayList<>();
         List<Ingredient> ingredients = new ArrayList<>();
@@ -90,10 +91,13 @@ public class MainWindow {
 
         UnitTableModel unitModel = (UnitTableModel) unitTable.getModel();
         testDataGenerator.createTestUnits(3).forEach(unitModel::addRow);
+
         IngredientTableModel ingredientModel = (IngredientTableModel) ingredientTable.getModel();
         testDataGenerator.createTestIngredients(5, units).forEach(ingredientModel::addRow);
+
         CategoryTableModel categoryModel = (CategoryTableModel) categoryTable.getModel();
         testDataGenerator.createTestCategories(10).forEach(categoryModel::addRow);
+
         RecipeTableModel recipeModel = (RecipeTableModel) recipeTable.getModel();
         testDataGenerator.createTestRecipes(5, ingredients, categories).forEach(recipeModel::addRow);
 

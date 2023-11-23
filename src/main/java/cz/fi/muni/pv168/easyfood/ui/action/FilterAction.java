@@ -10,7 +10,7 @@ import cz.fi.muni.pv168.easyfood.ui.Icons;
 import cz.fi.muni.pv168.easyfood.ui.MainWindow;
 import cz.fi.muni.pv168.easyfood.ui.dialog.FilterDialog;
 import cz.fi.muni.pv168.easyfood.ui.tab.TabContainer;
-import cz.fi.muni.pv168.easyfood.ui.tablemodel.RecipeTableModel;
+import cz.fi.muni.pv168.easyfood.ui.model.tablemodel.RecipeTableModel;
 
 import javax.swing.AbstractAction;
 import javax.swing.JTable;

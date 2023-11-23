@@ -1,4 +1,4 @@
-package cz.fi.muni.pv168.easyfood.ui.tablemodel;
+package cz.fi.muni.pv168.easyfood.ui.model.tablemodel;
 
 import cz.fi.muni.pv168.easyfood.bussiness.model.Recipe;
 import cz.fi.muni.pv168.easyfood.ui.column.Column;

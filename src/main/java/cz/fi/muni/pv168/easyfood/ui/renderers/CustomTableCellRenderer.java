@@ -1,6 +1,6 @@
 package cz.fi.muni.pv168.easyfood.ui.renderers;
 
-import cz.fi.muni.pv168.easyfood.ui.tablemodel.EntityTableModel;
+import cz.fi.muni.pv168.easyfood.ui.model.tablemodel.EntityTableModel;
 
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
