@@ -35,24 +35,33 @@ public abstract class EntityDialog<E> {
     }
 
     public abstract E getEntity();
+    public abstract boolean valid(E entity);
 
     public abstract EntityDialog<?> createNewDialog(List<Ingredient> ingredients, List<Category> categories, List<Unit> units);
 
     public abstract EntityDialog<E> createNewDialog(E entity, List<Ingredient> ingredients, List<Category> categories, List<Unit> units);
+    //public abstract void changeEntityInDialog(E entity);
 
     public Optional<E> show(JComponent parentComponent, String title) {
-        int result = JOptionPane.showOptionDialog(parentComponent, panel, title,
-                OK_CANCEL_OPTION, PLAIN_MESSAGE, null, null, null);
-        if (result == OK_OPTION) {
-            var entity = getEntity();
+        do {
+            int result = JOptionPane.showOptionDialog(parentComponent, panel, title,
+                    OK_CANCEL_OPTION, PLAIN_MESSAGE, null, null, null);
+            if (result == OK_OPTION) {
+                var entity = getEntity();
 
-            if (entity == null) {
+                if (entity == null) {
+                    return Optional.empty();
+                }
+                if (!valid(entity)){
+                   //changeEntityInDialog(entity);
+                    continue;
+                }
+
+                return Optional.of(entity);
+            } else {
                 return Optional.empty();
             }
+        } while (true);
 
-            return Optional.of(entity);
-        } else {
-            return Optional.empty();
-        }
     }
 }

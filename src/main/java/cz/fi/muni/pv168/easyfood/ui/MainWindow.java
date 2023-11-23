@@ -202,7 +202,7 @@ public class MainWindow {
         unitTable.setAutoCreateRowSorter(true);
         unitTable.setDefaultRenderer(Object.class, new CustomTableCellRenderer<>(unitModel));
         unitTable.getSelectionModel().addListSelectionListener(this::rowSelectionChanged);
-        unitTab = new Tab("units", unitTable, unitModel, new UnitDialog());
+        unitTab = new Tab("units", unitTable, unitModel, new UnitDialog(units));
 
         Box tables = Box.createVerticalBox();
         tables.add((unitTable.getTableHeader()));

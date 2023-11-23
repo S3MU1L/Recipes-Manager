@@ -172,6 +172,11 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
         return new Recipe(name, ingredientsInRecipe, descriptionText, preparationTime, portions, category);
     }
 
+    @Override
+    public boolean valid(Recipe entity) {
+        return true;
+    }
+
     private boolean validRecipe() {
         String name = nameField.getText().trim();
         if (name.isEmpty()) {

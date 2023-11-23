@@ -6,8 +6,11 @@ import cz.fi.muni.pv168.easyfood.bussiness.model.Ingredient;
 import cz.fi.muni.pv168.easyfood.bussiness.model.Unit;
 
 import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import java.util.List;
+
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
 
 public class UnitDialog extends EntityDialog<Unit> {
     private final JTextField nameField = new JTextField();
@@ -15,15 +18,17 @@ public class UnitDialog extends EntityDialog<Unit> {
     private final JTextField conversionRatio = new JTextField();
     private final JComboBox<BaseUnit> baseUnitField = new JComboBox<>();
     private final Unit unit;
+    private final List<Unit> units;
 
-    public UnitDialog(Unit unit) {
+    public UnitDialog(Unit unit, List<Unit> units) {
         this.unit = unit;
+        this.units = units;
         setValues();
         addFields();
     }
 
-    public UnitDialog() {
-        this(Unit.createEmptyUnit());
+    public UnitDialog(List<Unit> units) {
+        this(Unit.createEmptyUnit(), units);
     }
 
     private void setValues() {
@@ -47,20 +52,46 @@ public class UnitDialog extends EntityDialog<Unit> {
 
     @Override
     public Unit getEntity() {
-        String name = nameField.getText();
-        String abbreviation = abbreviationField.getText();
+        String name = nameField.getText().trim();
+        String abbreviation = abbreviationField.getText().trim();
         BaseUnit baseUnit = (BaseUnit) baseUnitField.getSelectedItem();
         double conversion = Double.parseDouble(conversionRatio.getText());
         return new Unit(name, abbreviation, baseUnit, conversion);
     }
 
     @Override
+    public boolean valid(Unit unit) {
+        if (unit.getName().equals("")){
+            JOptionPane.showMessageDialog(null, "Empty name",
+                    "Error", ERROR_MESSAGE, null);
+            return false;
+        }
+        if (unit.getAbbreviation().equals("")){
+            JOptionPane.showMessageDialog(null, "Empty abbreviation",
+                    "Error", ERROR_MESSAGE, null);
+            return false;
+        }
+        if (!units.stream().filter(unit1 -> unit1 != unit &&
+                unit1.getName().equals(unit.getName())).toList().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Duplicate name: " + unit.getName(),
+                    "Error", ERROR_MESSAGE, null);
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public EntityDialog<?> createNewDialog(List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
-        return new UnitDialog();
+        return new UnitDialog(units);
     }
 
     @Override
     public EntityDialog<Unit> createNewDialog(Unit unit, List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
-        return new UnitDialog(unit);
+        return new UnitDialog(unit, units);
     }
+
+    /*@Override
+    public void changeEntityInDialog(Unit entity) {
+
+    }*/
 }

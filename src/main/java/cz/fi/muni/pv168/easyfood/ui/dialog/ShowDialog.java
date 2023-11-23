@@ -87,6 +87,11 @@ public class ShowDialog extends EntityDialog<Recipe> {
     }
 
     @Override
+    public boolean valid(Recipe entity) {
+        return true;
+    }
+
+    @Override
     public EntityDialog<?> createNewDialog(List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
         return new ShowDialog();
     }

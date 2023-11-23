@@ -66,6 +66,11 @@ public class FilterDialog extends EntityDialog<Filter> {
     }
 
     @Override
+    public boolean valid(Filter entity) {
+        return true;
+    }
+
+    @Override
     public EntityDialog<?> createNewDialog(List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
         return new FilterDialog(categories, ingredients);
     }

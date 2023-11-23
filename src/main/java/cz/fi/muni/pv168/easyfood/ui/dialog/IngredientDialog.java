@@ -56,6 +56,11 @@ public class IngredientDialog extends EntityDialog<Ingredient> {
     }
 
     @Override
+    public boolean valid(Ingredient entity) {
+        return true;
+    }
+
+    @Override
     public EntityDialog<?> createNewDialog(List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
         return new IngredientDialog(units);
     }

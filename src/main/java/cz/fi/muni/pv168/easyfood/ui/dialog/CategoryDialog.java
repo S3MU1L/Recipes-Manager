@@ -48,6 +48,11 @@ public class CategoryDialog extends EntityDialog<Category> implements ActionList
     }
 
     @Override
+    public boolean valid(Category entity) {
+        return true;
+    }
+
+    @Override
     public EntityDialog<?> createNewDialog(List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
         return new CategoryDialog();
     }
