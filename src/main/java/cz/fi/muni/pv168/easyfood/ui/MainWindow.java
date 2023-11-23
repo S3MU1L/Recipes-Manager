@@ -192,7 +192,7 @@ public class MainWindow {
         table.setAutoCreateRowSorter(true);
         table.setDefaultRenderer(Object.class, new CustomTableCellRenderer<>(model));
         table.getSelectionModel().addListSelectionListener(this::rowSelectionChanged);
-        categoryTab = new Tab("categories", table, model, new CategoryDialog());
+        categoryTab = new Tab("categories", table, model, new CategoryDialog(categories));
         return table;
     }
 
