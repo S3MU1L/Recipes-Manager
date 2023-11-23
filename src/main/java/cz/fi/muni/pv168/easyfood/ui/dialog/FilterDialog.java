@@ -69,7 +69,7 @@ public class FilterDialog extends EntityDialog<Filter> {
     }
 
     @Override
-    public boolean valid(Filter entity) {
+    public boolean valid(Filter filter) {
         if (filter.getMaximumNutritionalValue() > filter.getMaximumNutritionalValue()) {
             JOptionPane.showMessageDialog(null, "Minimum can't be higher than maximum", "Error", ERROR_MESSAGE, null);
             return false;
