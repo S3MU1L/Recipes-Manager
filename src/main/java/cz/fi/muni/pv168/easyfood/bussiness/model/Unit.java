@@ -4,6 +4,7 @@ import java.text.DecimalFormat;
 import java.util.Objects;
 
 public class Unit {
+    private Long ID;
     private String name;
     private String abbreviation;
     private BaseUnit baseUnit;
