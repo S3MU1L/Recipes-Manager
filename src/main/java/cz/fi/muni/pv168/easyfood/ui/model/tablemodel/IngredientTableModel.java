@@ -3,29 +3,75 @@ package cz.fi.muni.pv168.easyfood.ui.model.tablemodel;
 import cz.fi.muni.pv168.easyfood.bussiness.model.Ingredient;
 import cz.fi.muni.pv168.easyfood.bussiness.model.IngredientWithAmount;
 import cz.fi.muni.pv168.easyfood.bussiness.model.Recipe;
-import cz.fi.muni.pv168.easyfood.ui.column.Column;
+import cz.fi.muni.pv168.easyfood.bussiness.service.crud.CrudService;
+import cz.fi.muni.pv168.easyfood.ui.model.Column;
 
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.table.AbstractTableModel;
 import java.awt.Component;
 import java.util.ArrayList;
 import java.util.List;
 
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 
-public class IngredientTableModel extends EntityTableModel<Ingredient> {
+public class IngredientTableModel extends AbstractTableModel implements EntityTableModel<Ingredient> {
     private final List<Ingredient> ingredients;
     private final List<Recipe> recipes;
 
-    public IngredientTableModel(List<Ingredient> ingredients, List<Recipe> recipes) {
-        super(List.of(Column.readOnly("Name", String.class, Ingredient::getName), Column.readOnly("Calories", String.class, Ingredient::getFormattedCalories)));
-        this.ingredients = ingredients;
-        this.recipes = recipes;
+    private final CrudService<Ingredient> ingredientCrudService;
+    private final CrudService<Recipe> recipeCrudService;
+
+    private final List<Column<Ingredient, ?>> columns = List.of(
+            Column.readonly("Name", String.class, Ingredient::getName),
+            Column.readonly("Calories", String.class, Ingredient::getFormattedCalories)
+    );
+
+    public IngredientTableModel(CrudService<Ingredient> ingredientCrudService, CrudService<Recipe> recipeCrudService) {
+        this.ingredientCrudService = ingredientCrudService;
+        this.recipeCrudService = recipeCrudService;
+        this.ingredients = new ArrayList<>(ingredientCrudService.findAll());
+        this.recipes = new ArrayList<>(recipeCrudService.findAll());
     }
 
     @Override
     public int getRowCount() {
         return ingredients.size();
+    }
+
+    @Override
+    public int getColumnCount() {
+        return columns.size();
+    }
+
+    @Override
+    public Object getValueAt(int rowIndex, int columnIndex) {
+        var employee = getEntity(rowIndex);
+        return columns.get(columnIndex).getValue(employee);
+    }
+
+    @Override
+    public String getColumnName(int columnIndex) {
+        return columns.get(columnIndex).getName();
+    }
+
+    @Override
+    public Class<?> getColumnClass(int columnIndex) {
+        return columns.get(columnIndex).getColumnType();
+    }
+
+    @Override
+    public boolean isCellEditable(int rowIndex, int columnIndex) {
+        return columns.get(columnIndex).isEditable();
+    }
+
+    @Override
+    public void setValueAt(Object value, int rowIndex, int columnIndex) {
+        if (value != null) {
+            var ingredient = getEntity(rowIndex);
+            columns.get(columnIndex).setValue(value, ingredient);
+            updateRow(ingredient, (Ingredient) value);
+        }
     }
 
     public void addRow(Ingredient ingredient) {
@@ -39,6 +85,7 @@ public class IngredientTableModel extends EntityTableModel<Ingredient> {
         ingredients.add(ingredient);
         fireTableRowsInserted(newRowIndex, newRowIndex);
     }
+
 
     public void updateRow(Ingredient oldIngredient, Ingredient newIngredient) {
         if (!ingredients.stream().filter(ingredient -> ingredient != oldIngredient &&
@@ -67,12 +114,10 @@ public class IngredientTableModel extends EntityTableModel<Ingredient> {
         return ingredients.get(rowIndex);
     }
 
-    @Override
     protected void updateEntity(Ingredient entity) {
 
     }
 
-    @Override
     public void deleteRow(int rowIndex) {
         Ingredient removedIngredient = ingredients.get(rowIndex);
         List<Recipe> usedIn = new ArrayList<>();
@@ -86,7 +131,7 @@ public class IngredientTableModel extends EntityTableModel<Ingredient> {
         if (usedIn.size() > 0) {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append("Unable to delete Ingredient : ").append(removedIngredient.getName()).append("\nIt is used in Recipes: ");
-            for (Recipe recipe : usedIn){
+            for (Recipe recipe : usedIn) {
                 stringBuilder.append(" ").append(recipe.getName()).append(",");
             }
             stringBuilder.deleteCharAt(stringBuilder.length() - 1);

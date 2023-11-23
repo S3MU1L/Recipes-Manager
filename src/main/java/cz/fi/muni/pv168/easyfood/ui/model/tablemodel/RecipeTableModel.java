@@ -1,30 +1,63 @@
 package cz.fi.muni.pv168.easyfood.ui.model.tablemodel;
 
 import cz.fi.muni.pv168.easyfood.bussiness.model.Recipe;
-import cz.fi.muni.pv168.easyfood.ui.column.Column;
+import cz.fi.muni.pv168.easyfood.bussiness.service.crud.CrudService;
+import cz.fi.muni.pv168.easyfood.ui.model.Column;
 
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.table.AbstractTableModel;
 import java.awt.Component;
+import java.util.ArrayList;
 import java.util.List;
 
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
+import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
 
-public class RecipeTableModel extends EntityTableModel<Recipe> {
+public class RecipeTableModel extends AbstractTableModel implements EntityTableModel<Recipe> {
     private final List<Recipe> recipes;
+    private final CrudService<Recipe> recipeCrudService;
 
-    public RecipeTableModel(List<Recipe> recipes) {
-        super(List.of(
-                Column.readOnly("Name", String.class, Recipe::getName),
-                Column.readOnly("Calories", String.class, Recipe::getFormattedCalories),
-                Column.readOnly("Preparation time", String.class, Recipe::getFormattedPreparationTime)
-        ));
-        this.recipes = recipes;
+    private final List<Column<Recipe, ?>> columns = List.of(
+            Column.readonly("Name", String.class, Recipe::getName),
+            Column.readonly("Calories", String.class, Recipe::getFormattedCalories),
+            Column.readonly("Preparation time", String.class, Recipe::getFormattedPreparationTime)
+    );
+
+    public RecipeTableModel(CrudService<Recipe> recipeCrudService) {
+        this.recipeCrudService = recipeCrudService;
+        this.recipes = new ArrayList<>(recipeCrudService.findAll());
     }
 
     @Override
     public int getRowCount() {
         return recipes.size();
+    }
+
+    @Override
+    public int getColumnCount() {
+        return columns.size();
+    }
+
+    @Override
+    public String getColumnName(int columnIndex) {
+        return columns.get(columnIndex).getName();
+    }
+
+    @Override
+    public Class<?> getColumnClass(int columnIndex) {
+        return columns.get(columnIndex).getColumnType();
+    }
+
+    @Override
+    public boolean isCellEditable(int rowIndex, int columnIndex) {
+        return columns.get(columnIndex).isEditable();
+    }
+
+    @Override
+    public Object getValueAt(int rowIndex, int columnIndex) {
+        var recipe = getEntity(rowIndex);
+        return columns.get(columnIndex).getValue(recipe);
     }
 
     public void addRow(Recipe recipe) {
@@ -50,12 +83,10 @@ public class RecipeTableModel extends EntityTableModel<Recipe> {
         fireTableRowsUpdated(rowIndex, rowIndex);
     }
 
-    @Override
     public void customizeTableCell(Component cell, Object value, int row, JTable table) {
 
     }
 
-    @Override
     public void customizeTable(JTable table) {
 
     }
@@ -64,12 +95,10 @@ public class RecipeTableModel extends EntityTableModel<Recipe> {
         return recipes.get(rowIndex);
     }
 
-    @Override
     protected void updateEntity(Recipe entity) {
 
     }
 
-    @Override
     public void deleteRow(int rowIndex) {
         recipes.remove(rowIndex);
         fireTableRowsDeleted(rowIndex, rowIndex);

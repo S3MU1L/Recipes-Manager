@@ -1,21 +1,23 @@
 package cz.fi.muni.pv168.easyfood.ui.model.tablemodel;
 
 import cz.fi.muni.pv168.easyfood.bussiness.model.IngredientWithAmount;
-import cz.fi.muni.pv168.easyfood.ui.column.Column;
+import cz.fi.muni.pv168.easyfood.ui.model.Column;
 
 import javax.swing.JTable;
+import javax.swing.table.AbstractTableModel;
 import java.awt.Component;
 import java.util.ArrayList;
 import java.util.List;
 
-public class IngredientWithAmountTableModel extends EntityTableModel<IngredientWithAmount> {
+public class IngredientWithAmountTableModel extends AbstractTableModel implements EntityTableModel<IngredientWithAmount> {
     private final List<IngredientWithAmount> ingredients;
 
+    private final List<Column<IngredientWithAmount, ?>> columns = List.of(
+            Column.readonly("Name", String.class, IngredientWithAmount::getName),
+            Column.readonly("Amount", String.class, IngredientWithAmount::getFormattedAmount)
+    );
+
     public IngredientWithAmountTableModel(List<IngredientWithAmount> ingredients) {
-        super(List.of(
-                Column.readOnly("Name", String.class, IngredientWithAmount::getName),
-                Column.readOnly("Amount", String.class, IngredientWithAmount::getFormattedAmount)
-        ));
         this.ingredients = new ArrayList<>(ingredients);
     }
 
@@ -24,13 +26,23 @@ public class IngredientWithAmountTableModel extends EntityTableModel<IngredientW
         return ingredients.size();
     }
 
+    @Override
+    public int getColumnCount() {
+        return 0;
+    }
+
+    @Override
+    public Object getValueAt(int rowIndex, int columnIndex) {
+        return null;
+    }
+
     public void addRow(IngredientWithAmount ingredient) {
         int newRowIndex = ingredients.size();
         ingredients.add(ingredient);
         fireTableRowsInserted(newRowIndex, newRowIndex);
     }
 
-    @Override
+
     public void updateRow(IngredientWithAmount oldIngredient, IngredientWithAmount newIngredient) {
         int rowIndex = ingredients.indexOf(oldIngredient);
         fireTableRowsUpdated(rowIndex, rowIndex);
@@ -50,12 +62,10 @@ public class IngredientWithAmountTableModel extends EntityTableModel<IngredientW
         return ingredients.get(rowIndex);
     }
 
-    @Override
     protected void updateEntity(IngredientWithAmount entity) {
 
     }
 
-    @Override
     public void deleteRow(int rowIndex) {
         ingredients.remove(rowIndex);
         fireTableRowsDeleted(rowIndex, rowIndex);
