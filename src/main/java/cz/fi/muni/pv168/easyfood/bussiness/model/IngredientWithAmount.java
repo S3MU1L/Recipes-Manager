@@ -87,4 +87,12 @@ public class IngredientWithAmount extends Entity {
     public int hashCode() {
         return Objects.hash(ingredient);
     }
+
+    @Override
+    public String toString() {
+        return "IngredientWithAmount{" +
+                "ingredient=" + ingredient +
+                ", amount=" + amount +
+                '}';
+    }
 }

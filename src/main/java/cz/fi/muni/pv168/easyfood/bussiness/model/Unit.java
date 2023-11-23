@@ -78,4 +78,14 @@ public class Unit extends Entity {
     public void setAbbreviation(String abbreviation) {
         this.abbreviation = Objects.requireNonNull(abbreviation, "abbreviation must not be null");
     }
+
+    @Override
+    public String toString() {
+        return "Unit{" +
+                "name='" + name + '\'' +
+                ", abbreviation='" + abbreviation + '\'' +
+                ", baseUnit=" + baseUnit +
+                ", conversion=" + conversion +
+                '}';
+    }
 }

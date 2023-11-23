@@ -82,4 +82,12 @@ public class Ingredient extends Entity {
         return Objects.hash(name, calories, unit);
     }
 
+    @Override
+    public String toString() {
+        return "Ingredient{" +
+                "name='" + name + '\'' +
+                ", calories=" + calories +
+                ", unit=" + unit +
+                '}';
+    }
 }
