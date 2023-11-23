@@ -29,27 +29,13 @@ public class IngredientTableModel extends EntityTableModel<Ingredient> {
     }
 
     public void addRow(Ingredient ingredient) {
-        if (!ingredients.stream().filter(ingredient1 -> ingredient1.getName().equals(ingredient.getName())).toList().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Duplicate name: " + ingredient.getName(),
-                    "Error", ERROR_MESSAGE, null);
-            return;
-        }
-
         int newRowIndex = ingredients.size();
         ingredients.add(ingredient);
         fireTableRowsInserted(newRowIndex, newRowIndex);
     }
 
-    public void updateRow(Ingredient oldIngredient, Ingredient newIngredient) {
-        if (!ingredients.stream().filter(ingredient -> ingredient != oldIngredient &&
-                ingredient.getName().equals(newIngredient.getName())).toList().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Duplicate name: " + newIngredient.getName(),
-                    "Error", ERROR_MESSAGE, null);
-            return;
-        }
-
-        int rowIndex = ingredients.indexOf(oldIngredient);
-        ingredients.set(rowIndex, newIngredient);
+    public void updateRow(Ingredient ingredient) {
+        int rowIndex = ingredients.indexOf(ingredient);
         fireTableRowsUpdated(rowIndex, rowIndex);
     }
 
