@@ -3,14 +3,31 @@ package cz.fi.muni.pv168.easyfood.bussiness.model;
 import java.text.DecimalFormat;
 import java.util.Objects;
 
-public class Unit {
-    private Long ID;
+public class Unit extends Entity {
     private String name;
     private String abbreviation;
     private BaseUnit baseUnit;
     private double conversion;
 
-    public Unit(String name, String abbreviation, BaseUnit baseUnit, double conversion) {
+    public Unit(
+            String guid,
+            String name,
+            String abbreviation,
+            BaseUnit baseUnit,
+            double conversion
+    ) {
+        super(guid);
+        this.name = name;
+        this.abbreviation = abbreviation;
+        this.baseUnit = baseUnit;
+        this.conversion = conversion;
+    }
+
+    public Unit(
+            String name,
+            String abbreviation,
+            BaseUnit baseUnit,
+            double conversion) {
         this.name = name;
         this.baseUnit = baseUnit;
         this.abbreviation = abbreviation;
