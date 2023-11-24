@@ -31,7 +31,13 @@ public final class FilterAction extends AbstractAction {
 
     private final MainWindow mainWindow;
 
-    public FilterAction(MainWindow mainWindow, TabContainer tabContainer, TabContainer filterContainer, List<Recipe> recipes, List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
+    public FilterAction(MainWindow mainWindow,
+                        TabContainer tabContainer,
+                        TabContainer filterContainer,
+                        List<Recipe> recipes,
+                        List<Ingredient> ingredients,
+                        List<Category> categories,
+                        List<Unit> units) {
         super("Filter", Icons.FILTER_ICON);
         this.mainWindow = mainWindow;
         this.tabContainer = tabContainer;

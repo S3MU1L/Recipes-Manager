@@ -23,7 +23,11 @@ public final class AddAction extends AbstractAction {
 
     private final MainWindow mainWindow;
 
-    public AddAction(MainWindow mainWindow, TabContainer tabContainer, List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
+    public AddAction(MainWindow mainWindow,
+                     TabContainer tabContainer,
+                     List<Ingredient> ingredients,
+                     List<Category> categories,
+                     List<Unit> units) {
         super("Add", Icons.ADD_ICON);
         this.mainWindow = mainWindow;
         this.tabContainer = tabContainer;

@@ -20,7 +20,10 @@ public final class EditAction extends AbstractAction {
     private final List<Category> categories;
     private final List<Unit> units;
 
-    public EditAction(TabContainer tabContainer, List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
+    public EditAction(TabContainer tabContainer,
+                      List<Ingredient> ingredients,
+                      List<Category> categories,
+                      List<Unit> units) {
         super("Edit", Icons.EDIT_ICON);
         this.tabContainer = tabContainer;
         this.ingredients = ingredients;
