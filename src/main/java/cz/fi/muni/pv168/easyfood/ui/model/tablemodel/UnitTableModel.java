@@ -9,8 +9,10 @@ import cz.fi.muni.pv168.easyfood.ui.model.Column;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
+import java.awt.Color;
 import java.awt.Component;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
@@ -46,8 +48,24 @@ public class UnitTableModel extends AbstractTableModel implements EntityTableMod
 
     @Override
     public void customizeTableCell(Component cell, Object value, int row, JTable table) {
-
+        Object fstCol = table.getValueAt(row, 0);
+        List<String> baseUnitsNames = Arrays.stream(BaseUnit.values()).map(BaseUnit::toString).toList();
+        if (fstCol instanceof String) {
+            Unit unit = findUnitByName((String) fstCol);
+            if (baseUnitsNames.contains(unit.getName())) {
+                cell.setBackground(Color.CYAN);
+                cell.setForeground(Color.BLACK);
+            }
+        }
     }
+
+    private Unit findUnitByName(String unitName) {
+        return units.stream()
+                .filter(category -> category.getName().equals(unitName))
+                .findFirst()
+                .orElse(null);
+    }
+
 
     @Override
     public void customizeTable(JTable table) {
@@ -86,6 +104,7 @@ public class UnitTableModel extends AbstractTableModel implements EntityTableMod
     }
 
 
+    @Override
     public void addRow(Unit unit) {
         if (!units.stream().filter(unit1 -> unit1.getName().equals(unit.getName())).toList().isEmpty()) {
             JOptionPane.showMessageDialog(null,
