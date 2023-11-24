@@ -173,12 +173,6 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
             JOptionPane.showMessageDialog(null, "Please enter a valid name", "Error", ERROR_MESSAGE, null);
             return false;
         }
-        if (!recipes.stream().filter(recipe1 -> recipe1 != recipe &&
-                recipe1.getName().equals(recipe.getName())).toList().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Duplicate name: " + recipe.getName(), "Error", ERROR_MESSAGE, null);
-            return false;
-        }
-
         if (recipe.getPreparationTime() == 0) {
             JOptionPane.showMessageDialog(null, "Preparation time can't be zero", "Error", ERROR_MESSAGE, null);
             return false;
@@ -186,6 +180,12 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
 
         if (recipe.getPortions() == 0) {
             JOptionPane.showMessageDialog(null, "Portions can't be zero", "Error", ERROR_MESSAGE, null);
+            return false;
+        }
+
+        if (!recipes.stream().filter(recipe1 -> recipe1 != recipe &&
+                recipe1.getName().equals(recipe.getName())).toList().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Duplicate name: " + recipe.getName(), "Error", ERROR_MESSAGE, null);
             return false;
         }
 

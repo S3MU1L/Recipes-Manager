@@ -4,15 +4,11 @@ import cz.fi.muni.pv168.easyfood.bussiness.model.Recipe;
 import cz.fi.muni.pv168.easyfood.bussiness.service.crud.CrudService;
 import cz.fi.muni.pv168.easyfood.ui.model.Column;
 
-import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 import java.awt.Component;
 import java.util.ArrayList;
 import java.util.List;
-
-import static javax.swing.JOptionPane.ERROR_MESSAGE;
-import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
 
 public class RecipeTableModel extends AbstractTableModel implements EntityTableModel<Recipe> {
     private final List<Recipe> recipes;
@@ -67,8 +63,9 @@ public class RecipeTableModel extends AbstractTableModel implements EntityTableM
 
     }
 
-    public void updateRow(Recipe recipe) {
-        int rowIndex = recipes.indexOf(recipe);
+    public void updateRow(Recipe oldRecipe, Recipe newRecipe) {
+        int rowIndex = recipes.indexOf(oldRecipe);
+        recipes.set(rowIndex, newRecipe);
         fireTableRowsUpdated(rowIndex, rowIndex);
     }
 

@@ -18,7 +18,7 @@ import java.util.List;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 
 public class UnitTableModel extends AbstractTableModel implements EntityTableModel<Unit> {
-    private List<Unit> units;
+    private final List<Unit> units;
     private final List<Ingredient> ingredients;
 
     private final CrudService<Unit> unitCrudService;
@@ -52,13 +52,14 @@ public class UnitTableModel extends AbstractTableModel implements EntityTableMod
         List<String> baseUnitsNames = Arrays.stream(BaseUnit.values()).map(BaseUnit::toString).toList();
         if (fstCol instanceof String) {
             Unit unit = findUnitByName((String) fstCol);
-            if (baseUnitsNames.contains(unit.getName())){
+            if (baseUnitsNames.contains(unit.getName())) {
                 cell.setBackground(Color.CYAN);
                 cell.setForeground(Color.BLACK);
             }
 
         }
     }
+
     private Unit findUnitByName(String unitName) {
         return units.stream()
                 .filter(category -> category.getName().equals(unitName))
@@ -111,8 +112,9 @@ public class UnitTableModel extends AbstractTableModel implements EntityTableMod
     }
 
     @Override
-    public void updateRow(Unit unit) {
-        int rowIndex = units.indexOf(unit);
+    public void updateRow(Unit oldUnit, Unit newUnit) {
+        units.set(units.indexOf(oldUnit), newUnit);
+        int rowIndex = units.indexOf(oldUnit);
         fireTableRowsUpdated(rowIndex, rowIndex);
     }
 

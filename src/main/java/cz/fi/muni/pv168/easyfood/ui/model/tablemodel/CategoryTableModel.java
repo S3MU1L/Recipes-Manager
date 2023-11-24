@@ -73,8 +73,9 @@ public class CategoryTableModel extends AbstractTableModel implements EntityTabl
         fireTableRowsInserted(newRowIndex, newRowIndex);
     }
 
-    public void updateRow(Category category) {
-        int rowIndex = categories.indexOf(category);
+    public void updateRow(Category oldCategory, Category newCategory) {
+        int rowIndex = categories.indexOf(oldCategory);
+        categories.set(rowIndex, newCategory);
         fireTableRowsUpdated(rowIndex, rowIndex);
     }
 

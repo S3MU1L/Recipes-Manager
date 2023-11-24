@@ -71,8 +71,9 @@ public class IngredientTableModel extends AbstractTableModel implements EntityTa
         fireTableRowsInserted(newRowIndex, newRowIndex);
     }
 
-    public void updateRow(Ingredient ingredient) {
-        int rowIndex = ingredients.indexOf(ingredient);
+    public void updateRow(Ingredient oldIngredient, Ingredient newIngredient) {
+        int rowIndex = ingredients.indexOf(oldIngredient);
+        ingredients.set(rowIndex, newIngredient);
         fireTableRowsUpdated(rowIndex, rowIndex);
     }
 
