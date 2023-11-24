@@ -19,8 +19,6 @@ import static javax.swing.JOptionPane.ERROR_MESSAGE;
 
 public class UnitTableModel extends AbstractTableModel implements EntityTableModel<Unit> {
     private final List<Unit> units;
-    private final List<Ingredient> ingredients;
-
     private final CrudService<Unit> unitCrudService;
     private final CrudService<Ingredient> ingredientCrudService;
 
@@ -34,7 +32,6 @@ public class UnitTableModel extends AbstractTableModel implements EntityTableMod
         this.unitCrudService = unitCrudService;
         this.ingredientCrudService = ingredientCrudService;
         this.units = new ArrayList<>(unitCrudService.findAll());
-        this.ingredients = new ArrayList<>(ingredientCrudService.findAll());
     }
 
     public int getSize() {
@@ -108,11 +105,14 @@ public class UnitTableModel extends AbstractTableModel implements EntityTableMod
     public void addRow(Unit unit) {
         int newRowIndex = units.size();
         units.add(unit);
+        unitCrudService.create(unit);
         fireTableRowsInserted(newRowIndex, newRowIndex);
     }
 
     @Override
     public void updateRow(Unit oldUnit, Unit newUnit) {
+        unitCrudService.deleteByGuid(oldUnit.getGuid());
+        unitCrudService.create(newUnit);
         units.set(units.indexOf(oldUnit), newUnit);
         int rowIndex = units.indexOf(oldUnit);
         fireTableRowsUpdated(rowIndex, rowIndex);
@@ -148,6 +148,8 @@ public class UnitTableModel extends AbstractTableModel implements EntityTableMod
             return;
         }
 
+        Unit unit = units.get(rowIndex);
+        unitCrudService.deleteByGuid(unit.getGuid());
         units.remove(rowIndex);
         fireTableRowsDeleted(rowIndex, rowIndex);
     }

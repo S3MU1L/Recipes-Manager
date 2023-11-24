@@ -59,6 +59,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Toolkit;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainWindow {
@@ -97,10 +98,10 @@ public class MainWindow {
 
         var testDataGenerator = new TestDataGenerator();
 
-        List<Unit> units = testDataGenerator.createTestUnits(100);
-        List<Category> categories = testDataGenerator.createTestCategories(100);
-        List<Ingredient> ingredients = testDataGenerator.createTestIngredients(100, units);
-        List<Recipe> recipes = testDataGenerator.createTestRecipes(100, ingredients, categories);
+        List<Unit> units = new ArrayList<>();
+        List<Category> categories = new ArrayList<>();
+        List<Ingredient> ingredients = new ArrayList<>();
+        List<Recipe> recipes = new ArrayList<>();
 
         var recipeRepository = new InMemoryRepository<>(recipes);
         var ingredientRepository = new InMemoryRepository<>(ingredients);
@@ -128,18 +129,19 @@ public class MainWindow {
         categoryTable = createCategoryTable(categoryTableModel);
         recipeTable = createRecipeTable(recipeTableModel);
 
-//        UnitTableModel unitModel = (UnitTableModel) unitTable.getModel();
-//        testDataGenerator.createTestUnits(3).forEach(unitModel::addRow);
-//
-//        IngredientTableModel ingredientModel = (IngredientTableModel) ingredientTable.getModel();
-//        testDataGenerator.createTestIngredients(5, units).forEach(ingredientModel::addRow);
-//
-//        CategoryTableModel categoryModel = (CategoryTableModel) categoryTable.getModel();
-//        testDataGenerator.createTestCategories(10).forEach(categoryModel::addRow);
-//
-//        RecipeTableModel recipeModel = (RecipeTableModel) recipeTable.getModel();
-//        testDataGenerator.createTestRecipes(5, ingredients, categories).forEach(recipeModel::addRow);
+        UnitTableModel unitModel = (UnitTableModel) unitTable.getModel();
+        testDataGenerator.createTestUnits(100).forEach(unitModel::addRow);
+        System.out.println(units);
 
+        IngredientTableModel ingredientModel = (IngredientTableModel) ingredientTable.getModel();
+        testDataGenerator.createTestIngredients(100, unitCrudService.findAll()).forEach(ingredientModel::addRow);
+/*
+        CategoryTableModel categoryModel = (CategoryTableModel) categoryTable.getModel();
+        testDataGenerator.createTestCategories(100).forEach(categoryModel::addRow);
+
+        RecipeTableModel recipeModel = (RecipeTableModel) recipeTable.getModel();
+        testDataGenerator.createTestRecipes(100, ingredientCrudService.findAll(), categoryCrudService.findAll()).forEach(recipeModel::addRow);
+*/
         tabContainer = new TabContainer();
         tabContainer.addTab(recipeTab);
         tabContainer.addTab(ingredientTab);
