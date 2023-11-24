@@ -10,6 +10,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JSpinner;
@@ -21,6 +22,8 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Set;
+
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
 
 public class FilterDialog extends EntityDialog<Filter> {
     private final Filter filter;
@@ -63,6 +66,15 @@ public class FilterDialog extends EntityDialog<Filter> {
         filter.setMaximumNutritionalValue((int) maxNutritionalValueField.getValue());
         filter.setPortions(portionsField.getValue());
         return filter;
+    }
+
+    @Override
+    public boolean valid(Filter filter) {
+        if (filter.getMaximumNutritionalValue() > filter.getMaximumNutritionalValue()) {
+            JOptionPane.showMessageDialog(null, "Minimum can't be higher than maximum", "Error", ERROR_MESSAGE, null);
+            return false;
+        }
+        return true;
     }
 
     @Override

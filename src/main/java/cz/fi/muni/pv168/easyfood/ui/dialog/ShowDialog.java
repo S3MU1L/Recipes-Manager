@@ -38,7 +38,7 @@ public class ShowDialog extends EntityDialog<Recipe> {
         this.recipe = recipe;
         List<IngredientWithAmount> ingredients = recipe.getIngredients();
         var model = new IngredientWithAmountTableModel(ingredients);
-         var table = new JTable(model);
+        var table = new JTable(model);
         table.setAutoCreateRowSorter(true);
         table.setCellSelectionEnabled(false);
         ingredientsTable = new JScrollPane(table);
@@ -84,6 +84,11 @@ public class ShowDialog extends EntityDialog<Recipe> {
     @Override
     public Recipe getEntity() {
         return recipe;
+    }
+
+    @Override
+    public boolean valid(Recipe entity) {
+        return true;
     }
 
     @Override

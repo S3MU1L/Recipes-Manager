@@ -6,8 +6,8 @@ import cz.fi.muni.pv168.easyfood.bussiness.model.IngredientWithAmount;
 import cz.fi.muni.pv168.easyfood.bussiness.model.Recipe;
 import cz.fi.muni.pv168.easyfood.bussiness.model.Unit;
 import cz.fi.muni.pv168.easyfood.ui.Icons;
-import cz.fi.muni.pv168.easyfood.ui.renderers.CategoryListCellRenderer;
 import cz.fi.muni.pv168.easyfood.ui.model.tablemodel.IngredientWithAmountTableModel;
+import cz.fi.muni.pv168.easyfood.ui.renderers.CategoryListCellRenderer;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Vector;
 
 import static java.lang.Math.round;
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
 
 
 public final class RecipeDialog extends EntityDialog<Recipe> {
@@ -145,24 +146,16 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
 
     @Override
     public Recipe getEntity() {
-        if (!validRecipe()) {
-            return null;
-        }
-
         int preparationTime = (Integer) prepTimeField.getValue();
         int portions = (Integer) portionField.getValue();
-        String name = nameField.getText();
+        String name = nameField.getText().trim();
         String descriptionText = descriptionArea.getText();
         JList<String> categoriesNames = (JList<String>) categoriesPane.getViewport().getView();
         String categoryName = categoriesNames.getSelectedValue();
 
-        if (categoryName == null) {
-            JOptionPane.showMessageDialog(null, "Please pick a category");
-            return null;
-        }
-
         List<IngredientWithAmount> ingredientsInRecipe = new ArrayList<>();
-        List<Category> categorySelected = categories.stream().filter(category1 -> category1.getName().equals(categoryName)).toList();
+        List<Category> categorySelected =
+                categories.stream().filter(category1 -> category1.getName().equals(categoryName)).toList();
         Category category = categorySelected.size() > 0 ? categorySelected.get(0) : Category.createEmptyCategory();
 
         int rows = model.getRowCount();
@@ -172,35 +165,35 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
         return new Recipe(name, ingredientsInRecipe, descriptionText, preparationTime, portions, category);
     }
 
-    private boolean validRecipe() {
+    @Override
+    public boolean valid(Recipe entity) {
         String name = nameField.getText().trim();
         if (name.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Please enter a valid name");
+            JOptionPane.showMessageDialog(null, "Please enter a valid name", "Error", ERROR_MESSAGE, null);
             return false;
         }
 
         try {
             int preparationTime = Integer.parseInt(prepTimeField.getValue().toString());
             if (preparationTime < 0) {
-                JOptionPane.showMessageDialog(null, "Preparation time must be a non-negative integer");
+                JOptionPane.showMessageDialog(null, "Preparation time must be a non-negative integer", "Error", ERROR_MESSAGE, null);
                 return false;
             }
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, "Please enter a valid preparation time");
+            JOptionPane.showMessageDialog(null, "Please enter a valid preparation time", "Error", ERROR_MESSAGE, null);
             return false;
         }
 
         try {
             int portions = Integer.parseInt(portionField.getValue().toString());
             if (portions <= 0) {
-                JOptionPane.showMessageDialog(null, "Portions must be a positive integer");
+                JOptionPane.showMessageDialog(null, "Portions must be a positive integer", "Error", ERROR_MESSAGE, null);
                 return false;
             }
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, "Please enter a valid number of portions");
+            JOptionPane.showMessageDialog(null, "Please enter a valid number of portions", "Error", ERROR_MESSAGE, null);
             return false;
         }
-
         return true;
     }
 

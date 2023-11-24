@@ -52,13 +52,13 @@ public class UnitTableModel extends AbstractTableModel implements EntityTableMod
         List<String> baseUnitsNames = Arrays.stream(BaseUnit.values()).map(BaseUnit::toString).toList();
         if (fstCol instanceof String) {
             Unit unit = findUnitByName((String) fstCol);
-            if (baseUnitsNames.contains(unit.getName())) {
+            if (baseUnitsNames.contains(unit.getName())){
                 cell.setBackground(Color.CYAN);
                 cell.setForeground(Color.BLACK);
             }
+
         }
     }
-
     private Unit findUnitByName(String unitName) {
         return units.stream()
                 .filter(category -> category.getName().equals(unitName))
