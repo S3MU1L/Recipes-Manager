@@ -72,7 +72,7 @@ public class UnitDialog extends EntityDialog<Unit> {
             return false;
         }
         if (unit.getConversion() == 0) {
-            JOptionPane.showMessageDialog(null, "Conversion can't not be zero", "Error", ERROR_MESSAGE, null);
+            JOptionPane.showMessageDialog(null, "Conversion can't be zero", "Error", ERROR_MESSAGE, null);
             return false;
         }
         if (!units.stream().filter(unit1 -> unit1 != unit &&
