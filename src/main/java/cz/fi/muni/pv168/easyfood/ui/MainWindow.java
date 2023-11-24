@@ -61,7 +61,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Toolkit;
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainWindow {
@@ -231,7 +230,7 @@ public class MainWindow {
         table.setAutoCreateRowSorter(true);
         table.setDefaultRenderer(Object.class, new CustomTableCellRenderer<>(ingredientTableModel));
         table.getSelectionModel().addListSelectionListener(this::rowSelectionChanged);
-        ingredientTab = new Tab("ingredients", table, ingredientTableModel, new IngredientDialog(unitCrudService.findAll()));
+        ingredientTab = new Tab("ingredients", table, ingredientTableModel, new IngredientDialog(ingredientCrudService.findAll(), unitCrudService.findAll()));
         return table;
     }
 
@@ -240,7 +239,7 @@ public class MainWindow {
         table.setAutoCreateRowSorter(true);
         table.setDefaultRenderer(Object.class, new CustomTableCellRenderer<>(categoryTableModel));
         table.getSelectionModel().addListSelectionListener(this::rowSelectionChanged);
-        categoryTab = new Tab("categories", table, categoryTableModel, new CategoryDialog());
+        categoryTab = new Tab("categories", table, categoryTableModel, new CategoryDialog(categoryCrudService.findAll()));
         return table;
     }
 
@@ -249,7 +248,7 @@ public class MainWindow {
         unitTable.setAutoCreateRowSorter(true);
         unitTable.setDefaultRenderer(Object.class, new CustomTableCellRenderer<>(unitTableModel));
         unitTable.getSelectionModel().addListSelectionListener(this::rowSelectionChanged);
-        unitTab = new Tab("units", unitTable, unitTableModel, new UnitDialog());
+        unitTab = new Tab("units", unitTable, unitTableModel, new UnitDialog(unitCrudService.findAll()));
         Box tables = Box.createVerticalBox();
         tables.add(new JLabel(" "));
         tables.add((unitTable.getTableHeader()));

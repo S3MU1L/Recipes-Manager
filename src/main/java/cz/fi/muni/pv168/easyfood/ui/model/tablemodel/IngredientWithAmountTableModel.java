@@ -28,13 +28,30 @@ public class IngredientWithAmountTableModel extends AbstractTableModel implement
 
     @Override
     public int getColumnCount() {
-        return 0;
+        return columns.size();
     }
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        return null;
+        var ingredient = getEntity(rowIndex);
+        return columns.get(columnIndex).getValue(ingredient);
     }
+
+    @Override
+    public String getColumnName(int columnIndex) {
+        return columns.get(columnIndex).getName();
+    }
+
+    @Override
+    public Class<?> getColumnClass(int columnIndex) {
+        return columns.get(columnIndex).getColumnType();
+    }
+
+    @Override
+    public boolean isCellEditable(int rowIndex, int columnIndex) {
+        return columns.get(columnIndex).isEditable();
+    }
+
 
     public void addRow(IngredientWithAmount ingredient) {
         int newRowIndex = ingredients.size();

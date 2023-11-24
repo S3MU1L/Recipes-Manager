@@ -222,6 +222,7 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
         var ingredientAndAmount = new IngredientWithAmount(ingredient, amount);
         model.addRow(ingredientAndAmount);
         amountField.setValue(0.0);
+        System.out.println("Adding ingredient into recipe");
     }
 
     private boolean validAddIngredient() {
@@ -231,7 +232,7 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
             JOptionPane.showMessageDialog(null, "Invalid amount of ingredient");
             return false;
         }
-
+        System.out.println("Ingredient Name " + selectedIngredient.getName());
         IngredientWithAmount ingredient = new IngredientWithAmount(selectedIngredient, (Double) amountField.getValue());
         int rows = model.getRowCount();
 
