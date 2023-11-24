@@ -1,7 +1,7 @@
 package cz.fi.muni.pv168.easyfood.ui.tab;
 
 import cz.fi.muni.pv168.easyfood.ui.dialog.EntityDialog;
-import cz.fi.muni.pv168.easyfood.ui.tablemodel.EntityTableModel;
+import cz.fi.muni.pv168.easyfood.ui.model.tablemodel.EntityTableModel;
 
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;

@@ -148,4 +148,16 @@ public class Recipe extends Entity {
     public int hashCode() {
         return Objects.hash(name, ingredients, description, preparationTime, portions);
     }
+
+    @Override
+    public String toString() {
+        return "Recipe{" +
+                "name='" + name + '\'' +
+                ", ingredients=" + ingredients +
+                ", description='" + description + '\'' +
+                ", preparationTime=" + preparationTime +
+                ", portions=" + portions +
+                ", category=" + category +
+                '}';
+    }
 }

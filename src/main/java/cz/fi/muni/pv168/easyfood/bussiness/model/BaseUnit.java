@@ -1,45 +1,22 @@
 package cz.fi.muni.pv168.easyfood.bussiness.model;
 
 public enum BaseUnit {
-    MILLILITER("Milliliter"),
-    GRAM("Gram"),
-    PIECE("Piece");
+    MILLILITER("Milliliter", "ml"),
+    GRAM("Gram", "g"),
+    PIECE("Piece", "pc");
 
     private final String symbol;
+    private final String abbreviation;
 
-    BaseUnit(String symbol) {
+    BaseUnit(String symbol, String abbreviation) {
         this.symbol = symbol;
-    }
-
-    public static BaseUnit getBaseUnitFormSymbol(String symbol) {
-        switch (symbol) {
-            case "Milliliter" -> {
-                return MILLILITER;
-            }
-            case "Gram" -> {
-                return GRAM;
-            }
-            case "Piece" -> {
-                return PIECE;
-            }
-            default -> throw new RuntimeException("Unexpected symbol");
-        }
+        this.abbreviation = abbreviation;
     }
 
     public static String getAbbreviation(BaseUnit baseUnit) {
-        switch (baseUnit) {
-            case MILLILITER -> {
-                return "ml";
-            }
-            case GRAM -> {
-                return "g";
-            }
-            case PIECE -> {
-                return "pc";
-            }
-            default -> throw new RuntimeException("Unexpected symbol");
-        }
+        return baseUnit.abbreviation;
     }
+
 
     @Override
     public String toString() {

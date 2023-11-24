@@ -1,28 +1,34 @@
 package cz.fi.muni.pv168.easyfood.bussiness.model;
 
 import java.util.Objects;
-import java.util.UUID;
 
 public class Ingredient extends Entity {
     private String name;
     private double calories;
     private Unit unit;
 
-    public Ingredient(String name, double calories, Unit unit) {
-        super(UUID.randomUUID().toString());
+    public Ingredient(
+            String guid,
+            String name,
+            double calories,
+            Unit unit) {
+        super(guid);
         this.name = name;
         this.calories = calories;
         this.unit = unit;
     }
 
-    public Ingredient(String name, double calories) {
-        UUID.randomUUID().toString();
+    public Ingredient(
+            String name,
+            double calories,
+            Unit unit) {
         this.name = name;
         this.calories = calories;
+        this.unit = unit;
     }
 
     public static Ingredient createEmptyIngredient() {
-        return new Ingredient("", 0);
+        return new Ingredient("", 0, Unit.createEmptyUnit());
     }
 
     public String getName() {
@@ -76,4 +82,12 @@ public class Ingredient extends Entity {
         return Objects.hash(name, calories, unit);
     }
 
+    @Override
+    public String toString() {
+        return "Ingredient{" +
+                "name='" + name + '\'' +
+                ", calories=" + calories +
+                ", unit=" + unit +
+                '}';
+    }
 }

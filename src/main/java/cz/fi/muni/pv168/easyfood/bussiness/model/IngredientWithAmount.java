@@ -7,14 +7,38 @@ public class IngredientWithAmount extends Entity {
     private Ingredient ingredient;
     private double amount;
 
-    public IngredientWithAmount(String name, double calories, Unit unit, double amount) {
-        super(UUID.randomUUID().toString());
+    public IngredientWithAmount(
+            String guid,
+            String name,
+            double calories,
+            Unit unit,
+            double amount) {
+        super(guid);
         this.ingredient = new Ingredient(name, calories, unit);
         this.amount = amount;
     }
 
-    public IngredientWithAmount(Ingredient ingredient, double amount) {
-        super(UUID.randomUUID().toString());
+    public IngredientWithAmount(
+            String name,
+            double calories,
+            Unit unit,
+            double amount) {
+        this.ingredient = new Ingredient(name, calories, unit);
+        this.amount = amount;
+    }
+
+    public IngredientWithAmount(
+            String guid,
+            Ingredient ingredient,
+            double amount) {
+        super(guid);
+        this.ingredient = new Ingredient(ingredient.getName(), ingredient.getCalories(), ingredient.getUnit());
+        this.amount = amount;
+    }
+
+    public IngredientWithAmount(
+            Ingredient ingredient,
+            double amount) {
         this.ingredient = new Ingredient(ingredient.getName(), ingredient.getCalories(), ingredient.getUnit());
         this.amount = amount;
     }
@@ -62,5 +86,13 @@ public class IngredientWithAmount extends Entity {
     @Override
     public int hashCode() {
         return Objects.hash(ingredient);
+    }
+
+    @Override
+    public String toString() {
+        return "IngredientWithAmount{" +
+                "ingredient=" + ingredient +
+                ", amount=" + amount +
+                '}';
     }
 }

@@ -5,7 +5,7 @@ import cz.fi.muni.pv168.easyfood.bussiness.model.Ingredient;
 import cz.fi.muni.pv168.easyfood.bussiness.model.IngredientWithAmount;
 import cz.fi.muni.pv168.easyfood.bussiness.model.Recipe;
 import cz.fi.muni.pv168.easyfood.bussiness.model.Unit;
-import cz.fi.muni.pv168.easyfood.ui.tablemodel.IngredientWithAmountTableModel;
+import cz.fi.muni.pv168.easyfood.ui.model.tablemodel.IngredientWithAmountTableModel;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -38,7 +38,7 @@ public class ShowDialog extends EntityDialog<Recipe> {
         this.recipe = recipe;
         List<IngredientWithAmount> ingredients = recipe.getIngredients();
         var model = new IngredientWithAmountTableModel(ingredients);
-         var table = new JTable(model);
+        var table = new JTable(model);
         table.setAutoCreateRowSorter(true);
         table.setCellSelectionEnabled(false);
         ingredientsTable = new JScrollPane(table);
@@ -87,12 +87,17 @@ public class ShowDialog extends EntityDialog<Recipe> {
     }
 
     @Override
-    public EntityDialog<?> createNewDialog(List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
+    public boolean valid(Recipe entity) {
+        return true;
+    }
+
+    @Override
+    public EntityDialog<?> createNewDialog(List<Recipe> recipes, List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
         return new ShowDialog();
     }
 
     @Override
-    public EntityDialog<Recipe> createNewDialog(Recipe recipe, List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
+    public EntityDialog<Recipe> createNewDialog(Recipe recipe, List<Recipe> recipes, List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
         return new ShowDialog(recipe);
     }
 

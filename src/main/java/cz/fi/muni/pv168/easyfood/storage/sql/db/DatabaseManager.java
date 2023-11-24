@@ -17,7 +17,7 @@ import java.sql.SQLException;
  */
 public final class DatabaseManager {
 
-    private static final String PROJECT_NAME = "employee-records";
+    private static final String PROJECT_NAME = "easy-food";
     private static final String DB_PROPERTIES_STRING = "DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=false";
 
     private final DataSource dataSource;

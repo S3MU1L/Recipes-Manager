@@ -3,6 +3,7 @@ package cz.fi.muni.pv168.easyfood.ui.dialog;
 import cz.fi.muni.pv168.easyfood.bussiness.model.Category;
 import cz.fi.muni.pv168.easyfood.bussiness.model.Filter;
 import cz.fi.muni.pv168.easyfood.bussiness.model.Ingredient;
+import cz.fi.muni.pv168.easyfood.bussiness.model.Recipe;
 import cz.fi.muni.pv168.easyfood.bussiness.model.Unit;
 
 import javax.swing.Box;
@@ -10,6 +11,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JSpinner;
@@ -21,6 +23,8 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Set;
+
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
 
 public class FilterDialog extends EntityDialog<Filter> {
     private final Filter filter;
@@ -66,12 +70,21 @@ public class FilterDialog extends EntityDialog<Filter> {
     }
 
     @Override
-    public EntityDialog<?> createNewDialog(List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
+    public boolean valid(Filter filter) {
+        if (filter.getMaximumNutritionalValue() > filter.getMaximumNutritionalValue()) {
+            JOptionPane.showMessageDialog(null, "Minimum can't be higher than maximum", "Error", ERROR_MESSAGE, null);
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public EntityDialog<?> createNewDialog(List<Recipe> recipes, List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
         return new FilterDialog(categories, ingredients);
     }
 
     @Override
-    public EntityDialog<Filter> createNewDialog(Filter entity, List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
+    public EntityDialog<Filter> createNewDialog(Filter entity, List<Recipe> recipes, List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
         return new FilterDialog(categories, ingredients, filter);
     }
 
