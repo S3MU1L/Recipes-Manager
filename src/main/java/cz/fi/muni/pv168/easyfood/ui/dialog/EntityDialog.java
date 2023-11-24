@@ -2,6 +2,7 @@ package cz.fi.muni.pv168.easyfood.ui.dialog;
 
 import cz.fi.muni.pv168.easyfood.bussiness.model.Category;
 import cz.fi.muni.pv168.easyfood.bussiness.model.Ingredient;
+import cz.fi.muni.pv168.easyfood.bussiness.model.Recipe;
 import cz.fi.muni.pv168.easyfood.bussiness.model.Unit;
 import net.miginfocom.swing.MigLayout;
 
@@ -37,9 +38,9 @@ public abstract class EntityDialog<E> {
     public abstract E getEntity();
     public abstract boolean valid(E entity);
 
-    public abstract EntityDialog<?> createNewDialog(List<Ingredient> ingredients, List<Category> categories, List<Unit> units);
+    public abstract EntityDialog<?> createNewDialog(List<Recipe> recipes, List<Ingredient> ingredients, List<Category> categories, List<Unit> units);
 
-    public abstract EntityDialog<E> createNewDialog(E entity, List<Ingredient> ingredients, List<Category> categories, List<Unit> units);
+    public abstract EntityDialog<E> createNewDialog(E entity, List<Recipe> recipes, List<Ingredient> ingredients, List<Category> categories, List<Unit> units);
     //public abstract void changeEntityInDialog(E entity);
 
     public Optional<E> show(JComponent parentComponent, String title) {

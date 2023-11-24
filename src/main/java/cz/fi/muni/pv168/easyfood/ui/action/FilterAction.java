@@ -9,8 +9,8 @@ import cz.fi.muni.pv168.easyfood.bussiness.model.Unit;
 import cz.fi.muni.pv168.easyfood.ui.Icons;
 import cz.fi.muni.pv168.easyfood.ui.MainWindow;
 import cz.fi.muni.pv168.easyfood.ui.dialog.FilterDialog;
-import cz.fi.muni.pv168.easyfood.ui.tab.TabContainer;
 import cz.fi.muni.pv168.easyfood.ui.model.tablemodel.RecipeTableModel;
+import cz.fi.muni.pv168.easyfood.ui.tab.TabContainer;
 
 import javax.swing.AbstractAction;
 import javax.swing.JTable;
@@ -54,12 +54,13 @@ public final class FilterAction extends AbstractAction {
     @Override
     public void actionPerformed(ActionEvent e) {
         var dialog =
-                (FilterDialog) filterContainer.getSelectedTab().getDialog().createNewDialog(Filter.createEmptyFilter(), ingredients, categories, units);
+                (FilterDialog) filterContainer.getSelectedTab().getDialog().createNewDialog(Filter.createEmptyFilter(), recipes, ingredients, categories, units);
         Filter filter = dialog.show(filterContainer.getComponent(), "Filter").orElse(null);
         JTable recipeTable = tabContainer.getSelectedTab().getTable();
         RecipeTableModel recipeTableModel = (RecipeTableModel) recipeTable.getModel();
 
-        if (filter != null && filter.getName().equals("") && filter.getCategories().size() == 0 && filter.getIngredients().size() == 0 &&
+        if (filter != null && filter.getName().equals("") && filter.getCategories().size() == 0 &&
+                filter.getIngredients().size() == 0 &&
                 filter.getPreparationTime() == 0 && filter.getMinimumNutritionalValue() == 0 &&
                 filter.getMaximumNutritionalValue() == 0 && filter.getPortions() == 0) {
             recipeTableModel.clear();

@@ -3,6 +3,7 @@ package cz.fi.muni.pv168.easyfood.ui.dialog;
 import cz.fi.muni.pv168.easyfood.bussiness.model.BaseUnit;
 import cz.fi.muni.pv168.easyfood.bussiness.model.Category;
 import cz.fi.muni.pv168.easyfood.bussiness.model.Ingredient;
+import cz.fi.muni.pv168.easyfood.bussiness.model.Recipe;
 import cz.fi.muni.pv168.easyfood.bussiness.model.Unit;
 
 import javax.swing.JComboBox;
@@ -84,12 +85,12 @@ public class UnitDialog extends EntityDialog<Unit> {
     }
 
     @Override
-    public EntityDialog<?> createNewDialog(List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
+    public EntityDialog<?> createNewDialog(List<Recipe> recipes, List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
         return new UnitDialog(units);
     }
 
     @Override
-    public EntityDialog<Unit> createNewDialog(Unit unit, List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
+    public EntityDialog<Unit> createNewDialog(Unit unit, List<Recipe> recipes, List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
         return new UnitDialog(unit, units);
     }
 

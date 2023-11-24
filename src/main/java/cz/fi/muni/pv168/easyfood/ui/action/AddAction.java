@@ -3,6 +3,7 @@ package cz.fi.muni.pv168.easyfood.ui.action;
 
 import cz.fi.muni.pv168.easyfood.bussiness.model.Category;
 import cz.fi.muni.pv168.easyfood.bussiness.model.Ingredient;
+import cz.fi.muni.pv168.easyfood.bussiness.model.Recipe;
 import cz.fi.muni.pv168.easyfood.bussiness.model.Unit;
 import cz.fi.muni.pv168.easyfood.ui.Icons;
 import cz.fi.muni.pv168.easyfood.ui.MainWindow;
@@ -17,6 +18,7 @@ import java.util.List;
 public final class AddAction extends AbstractAction {
 
     private final TabContainer tabContainer;
+    private final List<Recipe> recipes;
     private final List<Ingredient> ingredients;
     private final List<Category> categories;
     private final List<Unit> units;
@@ -25,12 +27,14 @@ public final class AddAction extends AbstractAction {
 
     public AddAction(MainWindow mainWindow,
                      TabContainer tabContainer,
+                     List<Recipe> recipes,
                      List<Ingredient> ingredients,
                      List<Category> categories,
                      List<Unit> units) {
         super("Add", Icons.ADD_ICON);
         this.mainWindow = mainWindow;
         this.tabContainer = tabContainer;
+        this.recipes = recipes;
         this.ingredients = ingredients;
         this.categories = categories;
         this.units = units;
@@ -47,7 +51,7 @@ public final class AddAction extends AbstractAction {
         StringBuilder title = new StringBuilder("Add ").append(tabContainer.getSelectedTab().getTitle());
         title.deleteCharAt(title.length() - 1);
 
-        var dialog = tabContainer.getSelectedTab().getDialog().createNewDialog(ingredients, categories, units);
+        var dialog = tabContainer.getSelectedTab().getDialog().createNewDialog(recipes, ingredients, categories, units);
         var result = dialog.show(table, title.toString());
 
         result.ifPresent(recipe -> {

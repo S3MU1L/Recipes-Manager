@@ -92,12 +92,12 @@ public class ShowDialog extends EntityDialog<Recipe> {
     }
 
     @Override
-    public EntityDialog<?> createNewDialog(List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
+    public EntityDialog<?> createNewDialog(List<Recipe> recipes, List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
         return new ShowDialog();
     }
 
     @Override
-    public EntityDialog<Recipe> createNewDialog(Recipe recipe, List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
+    public EntityDialog<Recipe> createNewDialog(Recipe recipe, List<Recipe> recipes, List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
         return new ShowDialog(recipe);
     }
 

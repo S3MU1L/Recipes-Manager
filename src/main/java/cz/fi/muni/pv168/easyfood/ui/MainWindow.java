@@ -1,6 +1,10 @@
 package cz.fi.muni.pv168.easyfood.ui;
 
 
+import cz.fi.muni.pv168.easyfood.bussiness.model.Category;
+import cz.fi.muni.pv168.easyfood.bussiness.model.Ingredient;
+import cz.fi.muni.pv168.easyfood.bussiness.model.Recipe;
+import cz.fi.muni.pv168.easyfood.bussiness.model.Unit;
 import cz.fi.muni.pv168.easyfood.bussiness.model.UuidGuidProvider;
 import cz.fi.muni.pv168.easyfood.bussiness.service.crud.CategoryCrudService;
 import cz.fi.muni.pv168.easyfood.bussiness.service.crud.CrudService;
@@ -12,11 +16,6 @@ import cz.fi.muni.pv168.easyfood.bussiness.service.validation.IngredientValidato
 import cz.fi.muni.pv168.easyfood.bussiness.service.validation.RecipeValidator;
 import cz.fi.muni.pv168.easyfood.bussiness.service.validation.UnitValidator;
 import cz.fi.muni.pv168.easyfood.data.TestDataGenerator;
-import cz.fi.muni.pv168.easyfood.bussiness.model.BaseUnit;
-import cz.fi.muni.pv168.easyfood.bussiness.model.Category;
-import cz.fi.muni.pv168.easyfood.bussiness.model.Ingredient;
-import cz.fi.muni.pv168.easyfood.bussiness.model.Recipe;
-import cz.fi.muni.pv168.easyfood.bussiness.model.Unit;
 import cz.fi.muni.pv168.easyfood.storage.InMemoryRepository;
 import cz.fi.muni.pv168.easyfood.ui.action.AddAction;
 import cz.fi.muni.pv168.easyfood.ui.action.DeleteAction;
@@ -31,15 +30,14 @@ import cz.fi.muni.pv168.easyfood.ui.dialog.FilterDialog;
 import cz.fi.muni.pv168.easyfood.ui.dialog.IngredientDialog;
 import cz.fi.muni.pv168.easyfood.ui.dialog.RecipeDialog;
 import cz.fi.muni.pv168.easyfood.ui.dialog.UnitDialog;
-import cz.fi.muni.pv168.easyfood.ui.renderers.CustomTableCellRenderer;
-import cz.fi.muni.pv168.easyfood.ui.tab.Tab;
-import cz.fi.muni.pv168.easyfood.ui.tab.TabContainer;
 import cz.fi.muni.pv168.easyfood.ui.model.tablemodel.CategoryTableModel;
 import cz.fi.muni.pv168.easyfood.ui.model.tablemodel.IngredientTableModel;
 import cz.fi.muni.pv168.easyfood.ui.model.tablemodel.RecipeTableModel;
 import cz.fi.muni.pv168.easyfood.ui.model.tablemodel.UnitTableModel;
+import cz.fi.muni.pv168.easyfood.ui.renderers.CustomTableCellRenderer;
+import cz.fi.muni.pv168.easyfood.ui.tab.Tab;
+import cz.fi.muni.pv168.easyfood.ui.tab.TabContainer;
 
-import javax.lang.model.type.UnionType;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JFrame;
@@ -155,9 +153,9 @@ public class MainWindow {
         Tab filterTab = new Tab("Filter", table, model, new FilterDialog(categories, ingredients));
         filterContainer.addTab(filterTab);
 
-        addAction = new AddAction(this, tabContainer, ingredients, categories, units);
+        addAction = new AddAction(this, tabContainer, recipes, ingredients, categories, units);
         deleteAction = new DeleteAction(this, tabContainer);
-        editAction = new EditAction(tabContainer, ingredients, categories, units);
+        editAction = new EditAction(tabContainer, recipes, ingredients, categories, units);
         showAction = new ShowAction(tabContainer);
         filterAction = new FilterAction(this, tabContainer, filterContainer, recipes, ingredients, categories, units);
         importAction = new ImportAction();
@@ -220,6 +218,7 @@ public class MainWindow {
         recipeTab =
                 new Tab("recipes", table, recipeTableModel,
                         new RecipeDialog(Recipe.createEmptyRecipe(),
+                                recipeCrudService.findAll(),
                                 ingredientCrudService.findAll(),
                                 categoryCrudService.findAll()));
         return table;
