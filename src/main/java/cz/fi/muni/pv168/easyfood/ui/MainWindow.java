@@ -121,7 +121,7 @@ public class MainWindow {
 
         recipeTableModel = new RecipeTableModel(recipeCrudService);
         ingredientTableModel = new IngredientTableModel(ingredientCrudService, recipeCrudService);
-        categoryTableModel = new CategoryTableModel(categoryCrudService, recipeCrudService);
+        categoryTableModel = new CategoryTableModel(categoryCrudService, recipes, categories);
         unitTableModel = new UnitTableModel(unitCrudService, ingredientCrudService);
 
         unitTable = createUnitTable(unitTableModel);
@@ -135,10 +135,10 @@ public class MainWindow {
 
         IngredientTableModel ingredientModel = (IngredientTableModel) ingredientTable.getModel();
         testDataGenerator.createTestIngredients(100, unitCrudService.findAll()).forEach(ingredientModel::addRow);
-/*
+
         CategoryTableModel categoryModel = (CategoryTableModel) categoryTable.getModel();
         testDataGenerator.createTestCategories(100).forEach(categoryModel::addRow);
-
+/*
         RecipeTableModel recipeModel = (RecipeTableModel) recipeTable.getModel();
         testDataGenerator.createTestRecipes(100, ingredientCrudService.findAll(), categoryCrudService.findAll()).forEach(recipeModel::addRow);
 */
