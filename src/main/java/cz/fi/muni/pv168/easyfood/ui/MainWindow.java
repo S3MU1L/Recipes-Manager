@@ -124,10 +124,10 @@ public class MainWindow {
         categoryTableModel = new CategoryTableModel(categoryCrudService, recipes, categories);
         unitTableModel = new UnitTableModel(unitCrudService, ingredients, units);
 
-        unitTable = createUnitTable(unitTableModel);
-        ingredientTable = createIngredientTable(ingredientTableModel);
-        categoryTable = createCategoryTable(categoryTableModel);
-        recipeTable = createRecipeTable(recipeTableModel);
+        unitTable = createUnitTable(unitTableModel, units);
+        ingredientTable = createIngredientTable(ingredientTableModel, ingredients, units);
+        categoryTable = createCategoryTable(categoryTableModel, categories);
+        recipeTable = createRecipeTable(recipeTableModel, recipes, ingredients, categories);
 
         UnitTableModel unitModel = (UnitTableModel) unitTable.getModel();
         testDataGenerator.createTestUnits(100).forEach(unitModel::addRow);
@@ -140,7 +140,8 @@ public class MainWindow {
         testDataGenerator.createTestCategories(100).forEach(categoryModel::addRow);
 
         RecipeTableModel recipeModel = (RecipeTableModel) recipeTable.getModel();
-        testDataGenerator.createTestRecipes(100, ingredientCrudService.findAll(), categoryCrudService.findAll()).forEach(recipeModel::addRow);
+        testDataGenerator.createTestRecipes(100, ingredientCrudService.findAll(), categoryCrudService.findAll())
+                         .forEach(recipeModel::addRow);
 
         tabContainer = new TabContainer();
         tabContainer.addTab(recipeTab);
@@ -212,44 +213,42 @@ public class MainWindow {
         return footerPanel;
     }
 
-    private JTable createRecipeTable(RecipeTableModel recipeTableModel) {
+    private JTable createRecipeTable(RecipeTableModel recipeTableModel, List<Recipe> recipes,
+                                     List<Ingredient> ingredients, List<Category> categories) {
         var table = new JTable(recipeTableModel);
         table.setAutoCreateRowSorter(true);
         table.setDefaultRenderer(Object.class, new CustomTableCellRenderer<>(recipeTableModel));
         table.getSelectionModel().addListSelectionListener(this::rowSelectionChanged);
-        recipeTab =
-                new Tab("recipes", table, recipeTableModel,
-                        new RecipeDialog(Recipe.createEmptyRecipe(),
-                                recipeCrudService.findAll(),
-                                ingredientCrudService.findAll(),
-                                categoryCrudService.findAll()));
+        recipeTab = new Tab("recipes", table, recipeTableModel,
+                            new RecipeDialog(Recipe.createEmptyRecipe(), recipes, ingredients, categories));
         return table;
     }
 
-    private JTable createIngredientTable(IngredientTableModel ingredientTableModel) {
+    private JTable createIngredientTable(IngredientTableModel ingredientTableModel, List<Ingredient> ingredients,
+                                         List<Unit> units) {
         var table = new JTable(ingredientTableModel);
         table.setAutoCreateRowSorter(true);
         table.setDefaultRenderer(Object.class, new CustomTableCellRenderer<>(ingredientTableModel));
         table.getSelectionModel().addListSelectionListener(this::rowSelectionChanged);
-        ingredientTab = new Tab("ingredients", table, ingredientTableModel, new IngredientDialog(ingredientCrudService.findAll(), unitCrudService.findAll()));
+        ingredientTab = new Tab("ingredients", table, ingredientTableModel, new IngredientDialog(ingredients, units));
         return table;
     }
 
-    private JTable createCategoryTable(CategoryTableModel categoryTableModel) {
+    private JTable createCategoryTable(CategoryTableModel categoryTableModel, List<Category> categories) {
         var table = new JTable(categoryTableModel);
         table.setAutoCreateRowSorter(true);
         table.setDefaultRenderer(Object.class, new CustomTableCellRenderer<>(categoryTableModel));
         table.getSelectionModel().addListSelectionListener(this::rowSelectionChanged);
-        categoryTab = new Tab("categories", table, categoryTableModel, new CategoryDialog(categoryCrudService.findAll()));
+        categoryTab = new Tab("categories", table, categoryTableModel, new CategoryDialog(categories));
         return table;
     }
 
-    private JTable createUnitTable(UnitTableModel unitTableModel) {
+    private JTable createUnitTable(UnitTableModel unitTableModel, List<Unit> units) {
         var unitTable = new JTable(unitTableModel);
         unitTable.setAutoCreateRowSorter(true);
         unitTable.setDefaultRenderer(Object.class, new CustomTableCellRenderer<>(unitTableModel));
         unitTable.getSelectionModel().addListSelectionListener(this::rowSelectionChanged);
-        unitTab = new Tab("units", unitTable, unitTableModel, new UnitDialog(unitCrudService.findAll()));
+        unitTab = new Tab("units", unitTable, unitTableModel, new UnitDialog(units));
         Box tables = Box.createVerticalBox();
         tables.add(new JLabel(" "));
         tables.add((unitTable.getTableHeader()));
