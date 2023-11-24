@@ -119,7 +119,7 @@ public class MainWindow {
         categoryCrudService = new CategoryCrudService(categoryRepository, categoryValidator, guidProvider);
         unitCrudService = new UnitCrudService(unitRepository, unitValidator, guidProvider);
 
-        recipeTableModel = new RecipeTableModel(recipeCrudService);
+        recipeTableModel = new RecipeTableModel(recipeCrudService, recipes);
         ingredientTableModel = new IngredientTableModel(ingredientCrudService, recipes, ingredients);
         categoryTableModel = new CategoryTableModel(categoryCrudService, recipes, categories);
         unitTableModel = new UnitTableModel(unitCrudService, ingredients, units);
@@ -138,10 +138,10 @@ public class MainWindow {
 
         CategoryTableModel categoryModel = (CategoryTableModel) categoryTable.getModel();
         testDataGenerator.createTestCategories(100).forEach(categoryModel::addRow);
-/*
+
         RecipeTableModel recipeModel = (RecipeTableModel) recipeTable.getModel();
         testDataGenerator.createTestRecipes(100, ingredientCrudService.findAll(), categoryCrudService.findAll()).forEach(recipeModel::addRow);
-*/
+
         tabContainer = new TabContainer();
         tabContainer.addTab(recipeTab);
         tabContainer.addTab(ingredientTab);
@@ -150,7 +150,7 @@ public class MainWindow {
         tabContainer.addChangeListener(this::tabChangeListener);
 
         TabContainer filterContainer = new TabContainer();
-        var model = new RecipeTableModel(recipeCrudService);
+        var model = new RecipeTableModel(recipeCrudService, recipes);
         var table = new JTable(model);
         Tab filterTab = new Tab("Filter", table, model, new FilterDialog(categories, ingredients));
         filterContainer.addTab(filterTab);
