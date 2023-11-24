@@ -97,10 +97,10 @@ public class MainWindow {
 
         var testDataGenerator = new TestDataGenerator();
 
-        List<Unit> units = testDataGenerator.createTestUnits(5);
-        List<Category> categories = testDataGenerator.createTestCategories(5);
-        List<Ingredient> ingredients = testDataGenerator.createTestIngredients(5, units);
-        List<Recipe> recipes = testDataGenerator.createTestRecipes(10, ingredients, categories);
+        List<Unit> units = testDataGenerator.createTestUnits(100);
+        List<Category> categories = testDataGenerator.createTestCategories(100);
+        List<Ingredient> ingredients = testDataGenerator.createTestIngredients(100, units);
+        List<Recipe> recipes = testDataGenerator.createTestRecipes(100, ingredients, categories);
 
         var recipeRepository = new InMemoryRepository<>(recipes);
         var ingredientRepository = new InMemoryRepository<>(ingredients);
