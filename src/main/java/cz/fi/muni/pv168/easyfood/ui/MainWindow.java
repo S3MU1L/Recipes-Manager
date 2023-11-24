@@ -120,9 +120,9 @@ public class MainWindow {
         unitCrudService = new UnitCrudService(unitRepository, unitValidator, guidProvider);
 
         recipeTableModel = new RecipeTableModel(recipeCrudService);
-        ingredientTableModel = new IngredientTableModel(ingredientCrudService, recipeCrudService);
+        ingredientTableModel = new IngredientTableModel(ingredientCrudService, recipes, ingredients);
         categoryTableModel = new CategoryTableModel(categoryCrudService, recipes, categories);
-        unitTableModel = new UnitTableModel(unitCrudService, ingredientCrudService);
+        unitTableModel = new UnitTableModel(unitCrudService, ingredients, units);
 
         unitTable = createUnitTable(unitTableModel);
         ingredientTable = createIngredientTable(ingredientTableModel);

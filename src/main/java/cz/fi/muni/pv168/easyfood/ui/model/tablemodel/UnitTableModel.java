@@ -19,19 +19,19 @@ import static javax.swing.JOptionPane.ERROR_MESSAGE;
 
 public class UnitTableModel extends AbstractTableModel implements EntityTableModel<Unit> {
     private final List<Unit> units;
+    private final List<Ingredient> ingredients;
     private final CrudService<Unit> unitCrudService;
-    private final CrudService<Ingredient> ingredientCrudService;
 
-    private final List<Column<Unit, ?>> columns = List.of(
-            Column.readonly("Name", String.class, Unit::getName),
-            Column.readonly("Abbreviation", String.class, Unit::getAbbreviation),
-            Column.readonly("In Base Unit", String.class, Unit::getFormattedBaseUnit)
-    );
+    private final List<Column<Unit, ?>> columns = List.of(Column.readonly("Name", String.class, Unit::getName),
+                                                          Column.readonly("Abbreviation", String.class,
+                                                                          Unit::getAbbreviation),
+                                                          Column.readonly("In Base Unit", String.class,
+                                                                          Unit::getFormattedBaseUnit));
 
-    public UnitTableModel(CrudService<Unit> unitCrudService, CrudService<Ingredient> ingredientCrudService) {
+    public UnitTableModel(CrudService<Unit> unitCrudService, List<Ingredient> ingredients, List<Unit> units) {
         this.unitCrudService = unitCrudService;
-        this.ingredientCrudService = ingredientCrudService;
-        this.units = new ArrayList<>(unitCrudService.findAll());
+        this.ingredients = ingredients;
+        this.units = units;
     }
 
     public int getSize() {
@@ -58,15 +58,7 @@ public class UnitTableModel extends AbstractTableModel implements EntityTableMod
     }
 
     private Unit findUnitByName(String unitName) {
-        return units.stream()
-                .filter(category -> category.getName().equals(unitName))
-                .findFirst()
-                .orElse(null);
-    }
-
-    @Override
-    public void customizeTable(JTable table) {
-
+        return units.stream().filter(category -> category.getName().equals(unitName)).findFirst().orElse(null);
     }
 
     @Override
@@ -124,14 +116,14 @@ public class UnitTableModel extends AbstractTableModel implements EntityTableMod
 
         for (BaseUnit baseUnit : BaseUnit.values()) {
             if (removedUnit.getName().equals(baseUnit.toString())) {
-                JOptionPane.showMessageDialog(null,
-                        "Cannot delete Base Unit " + baseUnit, "Error", ERROR_MESSAGE, null);
+                JOptionPane.showMessageDialog(null, "Cannot delete Base Unit " + baseUnit, "Error", ERROR_MESSAGE,
+                                              null);
                 return;
             }
         }
 
         List<Ingredient> usedIn = new ArrayList<>();
-        for (Ingredient ingredient : new ArrayList<>(ingredientCrudService.findAll())) {
+        for (Ingredient ingredient : ingredients) {
             if (ingredient.getUnit().equals(removedUnit)) {
                 usedIn.add(ingredient);
             }
@@ -139,7 +131,8 @@ public class UnitTableModel extends AbstractTableModel implements EntityTableMod
 
         if (usedIn.size() > 0) {
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("Unable to delete Unit : ").append(removedUnit.getName()).append("\nIt is used in Ingredients:");
+            stringBuilder.append("Unable to delete Unit : ").append(removedUnit.getName())
+                         .append("\nIt is used in Ingredients:");
             for (Ingredient ingredient : usedIn) {
                 stringBuilder.append(" ").append(ingredient.getName()).append(",");
             }

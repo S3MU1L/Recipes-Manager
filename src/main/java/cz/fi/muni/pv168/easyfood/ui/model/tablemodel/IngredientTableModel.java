@@ -18,17 +18,15 @@ public class IngredientTableModel extends AbstractTableModel implements EntityTa
     private final List<Recipe> recipes;
 
     private final CrudService<Ingredient> ingredientCrudService;
-    private final CrudService<Recipe> recipeCrudService;
 
     private final List<Column<Ingredient, ?>> columns =
             List.of(Column.readonly("Name", String.class, Ingredient::getName),
                     Column.readonly("Calories", String.class, Ingredient::getFormattedCalories));
 
-    public IngredientTableModel(CrudService<Ingredient> ingredientCrudService, CrudService<Recipe> recipeCrudService) {
+    public IngredientTableModel(CrudService<Ingredient> ingredientCrudService, List<Recipe> recipes, List<Ingredient> ingredients) {
         this.ingredientCrudService = ingredientCrudService;
-        this.recipeCrudService = recipeCrudService;
-        this.ingredients = new ArrayList<>(ingredientCrudService.findAll());
-        this.recipes = new ArrayList<>(recipeCrudService.findAll());
+        this.ingredients = ingredients;
+        this.recipes = recipes;
     }
 
     @Override
@@ -79,10 +77,6 @@ public class IngredientTableModel extends AbstractTableModel implements EntityTa
 
     public Ingredient getEntity(int rowIndex) {
         return ingredients.get(rowIndex);
-    }
-
-    protected void updateEntity(Ingredient entity) {
-
     }
 
     public void deleteRow(int rowIndex) {
