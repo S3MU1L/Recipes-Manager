@@ -50,7 +50,7 @@ public class IngredientDialog extends EntityDialog<Ingredient> {
 
     private void addFields() {
         add("Name:", nameField);
-        add("Energy value (kJ): ", caloriesField);
+        add("Nutritional value (kJ): ", caloriesField);
         add("Unit: ", unitsField);
     }
 
@@ -73,7 +73,7 @@ public class IngredientDialog extends EntityDialog<Ingredient> {
             return false;
         }
         if (ingredient.getCalories() == 0) {
-            JOptionPane.showMessageDialog(null, "Energy value can't not be zero", "Error", ERROR_MESSAGE, null);
+            JOptionPane.showMessageDialog(null, "Nutritional value can't not be zero", "Error", ERROR_MESSAGE, null);
             return false;
         }
         if (!ingredients.stream().filter(ingredient1 -> ingredient1 != ingredient &&
