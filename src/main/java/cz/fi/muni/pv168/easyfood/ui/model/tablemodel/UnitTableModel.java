@@ -66,7 +66,6 @@ public class UnitTableModel extends AbstractTableModel implements EntityTableMod
                 .orElse(null);
     }
 
-
     @Override
     public void customizeTable(JTable table) {
 
@@ -106,29 +105,17 @@ public class UnitTableModel extends AbstractTableModel implements EntityTableMod
 
     @Override
     public void addRow(Unit unit) {
-        if (!units.stream().filter(unit1 -> unit1.getName().equals(unit.getName())).toList().isEmpty()) {
-            JOptionPane.showMessageDialog(null,
-                    "Duplicate name: " + unit.getName(), "Error", ERROR_MESSAGE, null);
-            return;
-        }
-
         int newRowIndex = units.size();
         units.add(unit);
         fireTableRowsInserted(newRowIndex, newRowIndex);
     }
 
     @Override
-    public void updateRow(Unit oldUnit, Unit newUnit) {
-        if (!units.stream().filter(unit -> unit != oldUnit &&
-                unit.getName().equals(newUnit.getName())).toList().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Duplicate name: " + newUnit.getName(),
-                    "Error", ERROR_MESSAGE, null);
-            return;
-        }
-        units.set(units.indexOf(oldUnit), newUnit);
-        int rowIndex = units.indexOf(oldUnit);
+    public void updateRow(Unit unit) {
+        int rowIndex = units.indexOf(unit);
         fireTableRowsUpdated(rowIndex, rowIndex);
     }
+
 
     public void deleteRow(int rowIndex) {
         Unit removedUnit = units.get(rowIndex);

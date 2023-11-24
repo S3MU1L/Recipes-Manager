@@ -52,8 +52,6 @@ public final class EditAction extends AbstractAction {
         var dialog = tabContainer.getSelectedTab().getDialog().createNewDialog(entity, ingredients, categories, units);
         var result = dialog.show(table, title.toString());
 
-        result.ifPresent(recipe -> {
-            model.updateRow(entity, recipe);
-        });
+        result.ifPresent(model::updateRow);
     }
 }

@@ -67,35 +67,14 @@ public class CategoryTableModel extends AbstractTableModel implements EntityTabl
         return columns.get(columnIndex).isEditable();
     }
 
-    @Override
-    public void setValueAt(Object value, int rowIndex, int columnIndex) {
-        if (value != null) {
-            var category = getEntity(rowIndex);
-            columns.get(columnIndex).setValue(value, category);
-        }
-    }
-
     public void addRow(Category category) {
-        if (!categories.stream().filter(category1 -> category1.getName().equals(category.getName())).toList().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Duplicate name: " + category.getName(),
-                    "Error", ERROR_MESSAGE, null);
-            return;
-        }
-
         int newRowIndex = categories.size();
         categories.add(category);
         fireTableRowsInserted(newRowIndex, newRowIndex);
     }
 
-
-    public void updateRow(Category oldCategory, Category newCategory) {
-        if (!categories.stream().filter(category -> category != oldCategory &&
-                category.getName().equals(newCategory.getName())).toList().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Duplicate name: " + newCategory.getName(), "Error", ERROR_MESSAGE, null);
-            return;
-        }
-        int rowIndex = categories.indexOf(oldCategory);
-        categories.set(rowIndex, newCategory);
+    public void updateRow(Category category) {
+        int rowIndex = categories.indexOf(category);
         fireTableRowsUpdated(rowIndex, rowIndex);
     }
 

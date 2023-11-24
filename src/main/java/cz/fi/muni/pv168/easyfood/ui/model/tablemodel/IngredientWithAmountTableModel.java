@@ -42,20 +42,18 @@ public class IngredientWithAmountTableModel extends AbstractTableModel implement
         fireTableRowsInserted(newRowIndex, newRowIndex);
     }
 
-
-    public void updateRow(IngredientWithAmount oldIngredient, IngredientWithAmount newIngredient) {
-        int rowIndex = ingredients.indexOf(oldIngredient);
+    @Override
+    public void updateRow(IngredientWithAmount ingredient) {
+        int rowIndex = ingredients.indexOf(ingredient);
         fireTableRowsUpdated(rowIndex, rowIndex);
     }
 
     @Override
     public void customizeTableCell(Component cell, Object value, int row, JTable table) {
-
     }
 
     @Override
     public void customizeTable(JTable table) {
-
     }
 
     public IngredientWithAmount getEntity(int rowIndex) {
@@ -63,7 +61,6 @@ public class IngredientWithAmountTableModel extends AbstractTableModel implement
     }
 
     protected void updateEntity(IngredientWithAmount entity) {
-
     }
 
     public void deleteRow(int rowIndex) {
