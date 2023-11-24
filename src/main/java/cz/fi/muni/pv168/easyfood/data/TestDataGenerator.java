@@ -17,9 +17,25 @@ import java.util.UUID;
 
 public class TestDataGenerator {
     private static final List<Category> CATEGORY =
-            List.of(new Category(UUID.randomUUID().toString(), "Soups", Color.BLUE), new Category(UUID.randomUUID().toString(), "Vegetarian", Color.RED), new Category(UUID.randomUUID().toString(), "Seafood", Color.GREEN), new Category(UUID.randomUUID().toString(), "Sweet", Color.WHITE), new Category(UUID.randomUUID().toString(), "Snack", Color.YELLOW), new Category(UUID.randomUUID().toString(), "Dessert", Color.CYAN), new Category(UUID.randomUUID().toString(), "Grilled", Color.GRAY), new Category(UUID.randomUUID().toString(), "Vegan", Color.ORANGE), new Category(UUID.randomUUID().toString(), "Salad", Color.DARK_GRAY), new Category(UUID.randomUUID().toString(), "Brunch", Color.WHITE));
+            List.of(new Category(UUID.randomUUID().toString(), "Soups", Color.BLUE),
+                    new Category(UUID.randomUUID().toString(), "Vegetarian", Color.RED),
+                    new Category(UUID.randomUUID().toString(), "Seafood", Color.GREEN),
+                    new Category(UUID.randomUUID().toString(), "Sweet", Color.WHITE),
+                    new Category(UUID.randomUUID().toString(), "Snack", Color.YELLOW),
+                    new Category(UUID.randomUUID().toString(), "Dessert", Color.CYAN),
+                    new Category(UUID.randomUUID().toString(), "Grilled", Color.GRAY),
+                    new Category(UUID.randomUUID().toString(), "Vegan", Color.ORANGE),
+                    new Category(UUID.randomUUID().toString(), "Salad", Color.DARK_GRAY),
+                    new Category(UUID.randomUUID().toString(), "Brunch", Color.WHITE));
     private static final List<Unit> UNITS =
-            List.of(new Unit(UUID.randomUUID().toString(), "Gram", "g", BaseUnit.GRAM, 1), new Unit(UUID.randomUUID().toString(), "Milliliter", "ml", BaseUnit.MILLILITER, 1), new Unit(UUID.randomUUID().toString(), "Piece", "pc", BaseUnit.PIECE, 1), new Unit(UUID.randomUUID().toString(), "Cup", "cp", BaseUnit.MILLILITER, 200), new Unit(UUID.randomUUID().toString(), "Spoon", "sp", BaseUnit.MILLILITER, 15), new Unit(UUID.randomUUID().toString(), "Kilogram", "kg", BaseUnit.GRAM, 1000), new Unit(UUID.randomUUID().toString(), "Dozen", "dz", BaseUnit.PIECE, 12), new Unit(UUID.randomUUID().toString(), "Half", "1/2", BaseUnit.PIECE, 0.5));
+            List.of(new Unit(UUID.randomUUID().toString(), "Gram", "g", BaseUnit.GRAM, 1),
+                    new Unit(UUID.randomUUID().toString(), "Milliliter", "ml", BaseUnit.MILLILITER, 1),
+                    new Unit(UUID.randomUUID().toString(), "Piece", "pc", BaseUnit.PIECE, 1),
+                    new Unit(UUID.randomUUID().toString(), "Cup", "cp", BaseUnit.MILLILITER, 200),
+                    new Unit(UUID.randomUUID().toString(), "Spoon", "sp", BaseUnit.MILLILITER, 15),
+                    new Unit(UUID.randomUUID().toString(), "Kilogram", "kg", BaseUnit.GRAM, 1000),
+                    new Unit(UUID.randomUUID().toString(), "Dozen", "dz", BaseUnit.PIECE, 12),
+                    new Unit(UUID.randomUUID().toString(), "Half", "1/2", BaseUnit.PIECE, 0.5));
 
     private static final List<String> INGREDIENT_NAMES =
             List.of("Water", "Meat", "Milk", "Egg", "Sugar", "Oil", "Salt", "Butter", "Bread", "Sausage");
@@ -60,17 +76,19 @@ public class TestDataGenerator {
         List<IngredientWithAmount> ingredientsWithAmount = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             IngredientWithAmount ingredient = createTestIngredientWithAmount(selectRandom(ingredients));
-            if (ingredientsWithAmount.stream().noneMatch(ingredient1 -> ingredient1.getIngredient().equals(ingredient.getIngredient()))) {
+            if (ingredientsWithAmount.stream().noneMatch(
+                    ingredient1 -> ingredient1.getIngredient().equals(ingredient.getIngredient()))) {
                 ingredientsWithAmount.add(ingredient);
             }
         }
         String description = "In a medium bowl, beat together egg whites, 1/4 cup butter and 1/4 teaspoon salt";
         return new Recipe(UUID.randomUUID().toString(), name, ingredientsWithAmount, description, random.nextInt(1, 20),
-                random.nextInt(5) + 1, category);
+                          random.nextInt(5) + 1, category);
     }
 
     public List<Recipe> createTestRecipes(int count, List<Ingredient> ingredients, List<Category> categories) {
-        return RECIPE_NAMES.stream().limit(count).map(s -> createTestRecipe(s, ingredients, selectRandom(categories))).toList();
+        return RECIPE_NAMES.stream().limit(count).map(s -> createTestRecipe(s, ingredients, selectRandom(categories)))
+                           .toList();
     }
 
     private <T> T selectRandom(List<T> data) {
