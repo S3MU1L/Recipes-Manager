@@ -88,7 +88,8 @@ public class TestDataGenerator {
             }
             for (; i > 0; i--, count++) {
                 IngredientWithAmount ingredient = ingredientWithAmounts.get(count);
-                stringBuilder.append(i == 1 ? " and " : ", ").append(ingredient.getAmount()).append(" ")
+                stringBuilder.append(i == 1 ? " and " : ", ").append(ingredient.getAmount()).append(" (")
+                             .append(ingredient.getIngredient().getUnit().getAbbreviation()).append(") ")
                              .append(ingredient.getName());
             }
             stringBuilder.append(count == size ? ".\n" : "\n");
