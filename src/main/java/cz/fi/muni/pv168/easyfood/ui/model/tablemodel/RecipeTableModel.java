@@ -7,7 +7,6 @@ import cz.fi.muni.pv168.easyfood.ui.model.Column;
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 import java.awt.Component;
-import java.util.ArrayList;
 import java.util.List;
 
 public class RecipeTableModel extends AbstractTableModel implements EntityTableModel<Recipe> {
@@ -20,9 +19,9 @@ public class RecipeTableModel extends AbstractTableModel implements EntityTableM
             Column.readonly("Preparation time", String.class, Recipe::getFormattedPreparationTime)
     );
 
-    public RecipeTableModel(CrudService<Recipe> recipeCrudService) {
+    public RecipeTableModel(CrudService<Recipe> recipeCrudService, List<Recipe> recipes) {
         this.recipeCrudService = recipeCrudService;
-        this.recipes = new ArrayList<>(recipeCrudService.findAll());
+        this.recipes = recipes;
     }
 
     @Override
@@ -59,11 +58,14 @@ public class RecipeTableModel extends AbstractTableModel implements EntityTableM
     public void addRow(Recipe recipe) {
         int newRowIndex = recipes.size();
         recipes.add(recipe);
+        recipeCrudService.create(recipe);
         fireTableRowsInserted(newRowIndex, newRowIndex);
 
     }
 
     public void updateRow(Recipe oldRecipe, Recipe newRecipe) {
+        recipeCrudService.deleteByGuid(oldRecipe.getGuid());
+        recipeCrudService.create(newRecipe);
         int rowIndex = recipes.indexOf(oldRecipe);
         recipes.set(rowIndex, newRecipe);
         fireTableRowsUpdated(rowIndex, rowIndex);
@@ -81,11 +83,9 @@ public class RecipeTableModel extends AbstractTableModel implements EntityTableM
         return recipes.get(rowIndex);
     }
 
-    protected void updateEntity(Recipe entity) {
-
-    }
-
     public void deleteRow(int rowIndex) {
+        Recipe recipe = recipes.get(rowIndex);
+        recipeCrudService.deleteByGuid(recipe.getGuid());
         recipes.remove(rowIndex);
         fireTableRowsDeleted(rowIndex, rowIndex);
     }

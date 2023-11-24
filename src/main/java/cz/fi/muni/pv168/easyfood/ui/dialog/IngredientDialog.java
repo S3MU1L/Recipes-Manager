@@ -77,23 +77,27 @@ public class IngredientDialog extends EntityDialog<Ingredient> {
             JOptionPane.showMessageDialog(null, "Nutritional value can't be zero", "Error", ERROR_MESSAGE, null);
             return false;
         }
-        if (!ingredients.stream().filter(ingredient1 -> ingredient1 != ingredient &&
-                ingredient1.getName().equals(ingredient.getName())).toList().isEmpty()) {
-            JOptionPane.showMessageDialog(null,
-                    "Duplicate name: " + ingredient.getName(), "Error", ERROR_MESSAGE, null);
+        if (!ingredient.getName().equals(this.ingredient.getName()) &&
+                !ingredients.stream().filter(ingredient1 -> ingredient1.getName().equals(ingredient.getName())).toList()
+                            .isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Duplicate name: " + ingredient.getName(), "Error", ERROR_MESSAGE,
+                                          null);
             return false;
         }
         return true;
     }
 
     @Override
-    public EntityDialog<?> createNewDialog(List<Recipe> recipes, List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
+    public EntityDialog<?> createNewDialog(List<Recipe> recipes, List<Ingredient> ingredients,
+                                           List<Category> categories, List<Unit> units) {
         return new IngredientDialog(ingredients, units);
     }
 
 
     @Override
-    public EntityDialog<Ingredient> createNewDialog(Ingredient entity, List<Recipe> recipes, List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
+    public EntityDialog<Ingredient> createNewDialog(Ingredient entity, List<Recipe> recipes,
+                                                    List<Ingredient> ingredients, List<Category> categories,
+                                                    List<Unit> units) {
         return new IngredientDialog(entity, ingredients, units);
     }
 }

@@ -183,8 +183,8 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
             return false;
         }
 
-        if (!recipes.stream().filter(recipe1 -> recipe1 != recipe &&
-                recipe1.getName().equals(recipe.getName())).toList().isEmpty()) {
+        if (!recipe.getName().equals(this.recipe.getName()) &&
+                !recipes.stream().filter(recipe1 -> recipe1.getName().equals(recipe.getName())).toList().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Duplicate name: " + recipe.getName(), "Error", ERROR_MESSAGE, null);
             return false;
         }
@@ -194,12 +194,14 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
 
 
     @Override
-    public EntityDialog<?> createNewDialog(List<Recipe> recipes, List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
+    public EntityDialog<?> createNewDialog(List<Recipe> recipes, List<Ingredient> ingredients,
+                                           List<Category> categories, List<Unit> units) {
         return new RecipeDialog(recipes, ingredients, categories);
     }
 
     @Override
-    public EntityDialog<Recipe> createNewDialog(Recipe recipe, List<Recipe> recipes, List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
+    public EntityDialog<Recipe> createNewDialog(Recipe recipe, List<Recipe> recipes, List<Ingredient> ingredients,
+                                                List<Category> categories, List<Unit> units) {
         return new RecipeDialog(recipe, recipes, ingredients, categories);
     }
 
@@ -257,7 +259,8 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
         }
 
         @Override
-        public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+        public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected,
+                                                      boolean cellHasFocus) {
             if (value == null) {
                 setText("empty List");
                 return this;

@@ -22,19 +22,18 @@ public class CategoryTableModel extends AbstractTableModel implements EntityTabl
     private List<Recipe> recipes;
 
     private final CrudService<Category> categoryCrudService;
-    private final CrudService<Recipe> recipeCrudService;
 
-    public CategoryTableModel(CrudService<Category> categoryCrudService, CrudService<Recipe> recipeCrudService) {
+    public CategoryTableModel(CrudService<Category> categoryCrudService, List<Recipe> recipes,
+                              List<Category> categories) {
         this.categoryCrudService = categoryCrudService;
-        this.recipeCrudService = recipeCrudService;
-        this.recipes = recipeCrudService.findAll();
-        this.categories = categoryCrudService.findAll();
+        this.recipes = recipes;
+        this.categories = categories;
     }
 
-    private final List<Column<Category, ?>> columns = List.of(
-            Column.readonly("Name", String.class, Category::getName),
-            Column.readonly("Recipes per category", String.class, category -> StatisticsService.calculateCategoryStatistics(category, recipes).toString())
-    );
+    private final List<Column<Category, ?>> columns = List.of(Column.readonly("Name", String.class, Category::getName),
+                                                              Column.readonly("Recipes per category", String.class,
+                                                                              category -> StatisticsService.calculateCategoryStatistics(
+                                                                                      category, recipes).toString()));
 
     @Override
     public int getRowCount() {
@@ -70,10 +69,13 @@ public class CategoryTableModel extends AbstractTableModel implements EntityTabl
     public void addRow(Category category) {
         int newRowIndex = categories.size();
         categories.add(category);
+        categoryCrudService.create(category);
         fireTableRowsInserted(newRowIndex, newRowIndex);
     }
 
     public void updateRow(Category oldCategory, Category newCategory) {
+        categoryCrudService.deleteByGuid(oldCategory.getGuid());
+        categoryCrudService.create(newCategory);
         int rowIndex = categories.indexOf(oldCategory);
         categories.set(rowIndex, newCategory);
         fireTableRowsUpdated(rowIndex, rowIndex);
@@ -91,24 +93,11 @@ public class CategoryTableModel extends AbstractTableModel implements EntityTabl
     }
 
     public Category findCategoryByName(String categoryName) {
-        return categories.stream()
-                .filter(category -> category.getName().equals(categoryName))
-                .findFirst()
-                .orElse(null);
-    }
-
-
-    @Override
-    public void customizeTable(JTable table) {
-
+        return categories.stream().filter(category -> category.getName().equals(categoryName)).findFirst().orElse(null);
     }
 
     public Category getEntity(int rowIndex) {
         return categories.get(rowIndex);
-    }
-
-    protected void updateEntity(Category entity) {
-
     }
 
     public void deleteRow(int rowIndex) {
@@ -122,7 +111,8 @@ public class CategoryTableModel extends AbstractTableModel implements EntityTabl
 
         if (usedIn.size() > 0) {
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("Unable to delete Category : ").append(removedCategory.getName()).append("\nIt is used in Recipes:");
+            stringBuilder.append("Unable to delete Category : ").append(removedCategory.getName())
+                         .append("\nIt is used in Recipes:");
             for (Recipe recipe : usedIn) {
                 stringBuilder.append(" ").append(recipe.getName()).append(",");
             }
@@ -130,6 +120,9 @@ public class CategoryTableModel extends AbstractTableModel implements EntityTabl
             JOptionPane.showMessageDialog(null, stringBuilder.toString(), "Error", ERROR_MESSAGE, null);
             return;
         }
+
+        Category category = categories.get(rowIndex);
+        categoryCrudService.deleteByGuid(category.getGuid());
         categories.remove(rowIndex);
         fireTableRowsDeleted(rowIndex, rowIndex);
     }

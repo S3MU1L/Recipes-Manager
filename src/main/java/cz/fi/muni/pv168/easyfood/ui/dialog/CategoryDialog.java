@@ -55,9 +55,10 @@ public class CategoryDialog extends EntityDialog<Category> implements ActionList
 
     @Override
     public boolean valid(Category category) {
-        if (!categories.stream().filter(category1 -> category1.getName().equals(category.getName())).toList().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Duplicate name: " + category.getName(),
-                    "Error", ERROR_MESSAGE, null);
+        if (!category.getName().equals(this.category.getName()) &&
+                !categories.stream().filter(category1 -> category1.getName().equals(category.getName())).toList()
+                           .isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Duplicate name: " + category.getName(), "Error", ERROR_MESSAGE, null);
             return false;
         }
         if (category.getName().equals("")) {
@@ -68,12 +69,14 @@ public class CategoryDialog extends EntityDialog<Category> implements ActionList
     }
 
     @Override
-    public EntityDialog<?> createNewDialog(List<Recipe> recipes, List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
+    public EntityDialog<?> createNewDialog(List<Recipe> recipes, List<Ingredient> ingredients,
+                                           List<Category> categories, List<Unit> units) {
         return new CategoryDialog(categories);
     }
 
     @Override
-    public EntityDialog<Category> createNewDialog(Category entity, List<Recipe> recipes, List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
+    public EntityDialog<Category> createNewDialog(Category entity, List<Recipe> recipes, List<Ingredient> ingredients,
+                                                  List<Category> categories, List<Unit> units) {
         return new CategoryDialog(entity, categories);
     }
 
