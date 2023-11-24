@@ -41,6 +41,9 @@ public class TestDataGenerator {
             List.of("Water", "Meat", "Milk", "Egg", "Sugar", "Oil", "Salt", "Butter", "Bread", "Sausage");
     private static final List<String> RECIPE_NAMES =
             List.of("Hot dog", "Steak", "Scrambled eggs", "Sandwich", "Hamburger", "Schnitzel", "Tofu", "Ramen");
+    private static final List<String> CONTAINERS =
+            List.of("Large Bowl", "Medium Bowl", "Small Bowl", "Pan", "Pot", "Small Box");
+    private static final List<String> ACTION = List.of("Mix", "Smash", "Stir", "Boil", "Fry", "Bake");
 
     private final Random random = new Random();
 
@@ -72,16 +75,37 @@ public class TestDataGenerator {
         return INGREDIENT_NAMES.stream().limit(count).map(s -> createTestIngredient(s, selectRandom(units))).toList();
     }
 
+    private String createDescription(List<IngredientWithAmount> ingredientWithAmounts) {
+        int size = ingredientWithAmounts.size();
+        int count = 0;
+        StringBuilder stringBuilder = new StringBuilder();
+        while (count != size) {
+            stringBuilder.append("In a ").append(selectRandom(CONTAINERS)).append(", ").append(selectRandom(ACTION))
+                         .append(" together");
+            int i = size - count == 2 ? 2 : random.nextInt(2, size - count);
+            if (count + i == size - 1) {
+                i++;
+            }
+            for (; i > 0; i--, count++) {
+                IngredientWithAmount ingredient = ingredientWithAmounts.get(count);
+                stringBuilder.append(i == 1 ? " and " : ", ").append(ingredient.getAmount()).append(" ").append(ingredient.getName());
+            }
+            stringBuilder.append(count == size ? ".\n" : "\n");
+        }
+        stringBuilder.append("And then we ").append(selectRandom(ACTION)).append(" everything together");
+        return stringBuilder.toString();
+    }
+
     public Recipe createTestRecipe(String name, List<Ingredient> ingredients, Category category) {
         List<IngredientWithAmount> ingredientsWithAmount = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
+        for (int i = 2; i < 7; i++) {
             IngredientWithAmount ingredient = createTestIngredientWithAmount(selectRandom(ingredients));
             if (ingredientsWithAmount.stream().noneMatch(
                     ingredient1 -> ingredient1.getIngredient().equals(ingredient.getIngredient()))) {
                 ingredientsWithAmount.add(ingredient);
             }
         }
-        String description = "In a medium bowl, beat together egg whites, 1/4 cup butter and 1/4 teaspoon salt";
+        String description = createDescription(ingredientsWithAmount);
         return new Recipe(UUID.randomUUID().toString(), name, ingredientsWithAmount, description, random.nextInt(1, 20),
                           random.nextInt(5) + 1, category);
     }
