@@ -232,7 +232,7 @@ public class MainWindow {
         table.setAutoCreateRowSorter(true);
         table.setDefaultRenderer(Object.class, new CustomTableCellRenderer<>(ingredientTableModel));
         table.getSelectionModel().addListSelectionListener(this::rowSelectionChanged);
-        ingredientTab = new Tab("ingredients", table, ingredientTableModel, new IngredientDialog(ingredientCrudService.findAll(), unitCrudService.findAll()));
+        ingredientTab = new Tab("ingredients", table, ingredientTableModel, new IngredientDialog(ingredientCrudService.findAll(), unitTableModel));
         return table;
     }
 

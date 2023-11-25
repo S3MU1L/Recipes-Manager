@@ -4,6 +4,8 @@ import cz.muni.fi.pv168.easyfood.business.model.Category;
 import cz.muni.fi.pv168.easyfood.business.model.Ingredient;
 import cz.muni.fi.pv168.easyfood.business.model.Recipe;
 import cz.muni.fi.pv168.easyfood.business.model.Unit;
+import cz.muni.fi.pv168.easyfood.business.service.crud.CrudService;
+import cz.muni.fi.pv168.easyfood.ui.model.tablemodel.EntityTableModel;
 
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -12,6 +14,7 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import java.awt.Dimension;
+import java.util.ArrayList;
 import java.util.List;
 
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
@@ -22,19 +25,28 @@ public class IngredientDialog extends EntityDialog<Ingredient> {
     private final JSpinner caloriesField = new JSpinner(new SpinnerNumberModel(0.0, 0.0, Integer.MAX_VALUE, 0.5));
     private final JScrollPane unitsField = new JScrollPane();
     private final JList<String> unitsList;
-    private final List<Unit> units;
     private final Ingredient ingredient;
     private final List<Ingredient> ingredients;
+    private final EntityTableModel<Unit> unitTableModel;
 
-    public IngredientDialog(List<Ingredient> ingredients, List<Unit> units) {
-        this(Ingredient.createEmptyIngredient(), ingredients, units);
+    private final List<Unit> units;
+
+    public IngredientDialog(List<Ingredient> ingredients, EntityTableModel<Unit> unitTableModel) {
+        this(Ingredient.createEmptyIngredient(), ingredients, unitTableModel);
     }
 
-    public IngredientDialog(Ingredient ingredient, List<Ingredient> ingredients, List<Unit> units) {
+    public IngredientDialog(Ingredient ingredient, List<Ingredient> ingredients, EntityTableModel<Unit> unitTableModel) {
         this.ingredient = ingredient;
         this.ingredients = ingredients;
-        this.units = units;
-        unitsList = new JList<>(units.stream().map(Unit::getName).toArray(String[]::new));
+        this.unitTableModel = unitTableModel;
+        int rows = unitTableModel.getRowCount();
+        this.units = new ArrayList<>();
+
+        for (int i = 0; i < rows; i++) {
+            this.units.add(unitTableModel.getEntity(i));
+        }
+
+        unitsList = new JList<>(this.units.stream().map(Unit::getName).toArray(String[]::new));
         unitsField.setViewportView(unitsList);
         setValues();
         addFields();
@@ -88,12 +100,12 @@ public class IngredientDialog extends EntityDialog<Ingredient> {
 
     @Override
     public EntityDialog<?> createNewDialog(List<Recipe> recipes, List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
-        return new IngredientDialog(ingredients, units);
+        return new IngredientDialog(ingredients, unitTableModel);
     }
 
 
     @Override
     public EntityDialog<Ingredient> createNewDialog(Ingredient entity, List<Recipe> recipes, List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
-        return new IngredientDialog(entity, ingredients, units);
+        return new IngredientDialog(entity, ingredients, unitTableModel);
     }
 }

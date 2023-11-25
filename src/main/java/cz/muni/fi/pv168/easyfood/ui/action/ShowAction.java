@@ -34,6 +34,10 @@ public class ShowAction extends AbstractAction {
         }
 
         int modelRow = table.convertRowIndexToModel(selectedRows[0]);
+        if (!(tabContainer.getSelectedTab().getModel().getEntity(modelRow) instanceof Recipe)) {
+            return;
+        }
+
         var dialog = new ShowDialog((Recipe) tabContainer.getSelectedTab().getModel().getEntity(modelRow));
         dialog.show(tabContainer.getComponent(), "Show");
     }
