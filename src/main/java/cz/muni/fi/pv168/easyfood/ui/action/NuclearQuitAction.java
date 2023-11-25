@@ -20,7 +20,7 @@ public class NuclearQuitAction extends AbstractAction {
     }
 
     public NuclearQuitAction(DatabaseManager databaseManager) {
-        super("Nuclear Quit", Icons.QUIT_ICON);
+        super("Nuclear Quit", Icons.NUCLEAR_QUIT_ICON);
         this.databaseManager = databaseManager;
 
         putValue(SHORT_DESCRIPTION, "Terminates the application and deletes a database");
