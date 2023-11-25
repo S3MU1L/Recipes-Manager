@@ -68,7 +68,6 @@ final class SqlFileExecutor {
 
     private String loadSQLFromResources(final String fileName) {
         URL resource = resourceRoot.getResource(fileName);
-        System.out.println(fileName);
         if (resource == null) {
             throw new FatalDataStorageException("Expected SQL file does not exit: " + fileName);
         }
