@@ -148,23 +148,24 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
 
     @Override
     public Recipe getEntity() {
-        int preparationTime = (Integer) prepTimeField.getValue();
-        int portions = (Integer) portionField.getValue();
-        String name = nameField.getText().trim();
-        String descriptionText = descriptionArea.getText();
+        recipe.setPreparationTime((Integer) prepTimeField.getValue());
+        recipe.setPortions((Integer) portionField.getValue());
+        recipe.setName(nameField.getText().trim());
+        recipe.setDescription(descriptionArea.getText().trim());
+
         JList<String> categoriesNames = (JList<String>) categoriesPane.getViewport().getView();
         String categoryName = categoriesNames.getSelectedValue();
-
         List<IngredientWithAmount> ingredientsInRecipe = new ArrayList<>();
         List<Category> categorySelected =
                 categories.stream().filter(category1 -> category1.getName().equals(categoryName)).toList();
-        Category category = categorySelected.size() > 0 ? categorySelected.get(0) : Category.createEmptyCategory();
 
+        recipe.setCategory(categorySelected.size() > 0 ? categorySelected.get(0) : Category.createEmptyCategory());
         int rows = model.getRowCount();
         for (int i = 0; i < rows; i++) {
             ingredientsInRecipe.add(model.getEntity(i));
         }
-        return new Recipe(name, ingredientsInRecipe, descriptionText, preparationTime, portions, category);
+        recipe.setIngredients(ingredientsInRecipe);
+        return recipe;
     }
 
     @Override
