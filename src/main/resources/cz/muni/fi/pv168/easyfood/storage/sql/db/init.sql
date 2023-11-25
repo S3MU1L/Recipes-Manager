@@ -1,26 +1,51 @@
---
--- Department table definition
---
-CREATE TABLE IF NOT EXISTS "Department"
-(
-    `id`        BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    `guid`      VARCHAR     NOT NULL UNIQUE,
-    `number`    VARCHAR(10) NOT NULL UNIQUE,
-    `name`      VARCHAR(50) NOT NULL,
-    `createdAt` TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE IF NOT EXISTS Category (
+                                        id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                                        guid VARCHAR(255) NOT NULL,
+                                        name VARCHAR(255) NOT NULL,
+                                        color VARCHAR(255) NOT NULL
 );
 
---
--- Employee table definition
---
-CREATE TABLE IF NOT EXISTS "Employee"
-(
-    `id`           BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    `guid`         VARCHAR      NOT NULL UNIQUE,
-    `firstName`    VARCHAR(150) NOT NULL,
-    `lastName`     VARCHAR(150) NOT NULL,
-    `birthDate`    DATE         NOT NULL,
-    `gender`       ENUM('MALE', 'FEMALE') NOT NULL,
-    `departmentId` BIGINT REFERENCES "Department"(`id`),
-    `createdAt`    TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE IF NOT EXISTS Unit (
+                                    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                                    guid VARCHAR(255) NOT NULL,
+                                    baseUnitOrdinal INT NOT NULL,
+                                    name VARCHAR(255) NOT NULL,
+                                    abbreviation VARCHAR(255) NOT NULL,
+                                    conversion DOUBLE NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS Ingredient (
+                                          id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                                          guid VARCHAR(255) NOT NULL,
+                                          unitId BIGINT,
+                                          name VARCHAR(255) NOT NULL,
+                                          calories DOUBLE NOT NULL,
+                                          FOREIGN KEY (unitId) REFERENCES Unit(id)
+);
+
+CREATE TABLE IF NOT EXISTS IngredientWithAmount (
+                                                    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                                                    guid VARCHAR(255) NOT NULL,
+                                                    ingredientId BIGINT,
+                                                    amount DOUBLE NOT NULL,
+                                                    FOREIGN KEY (ingredientId) REFERENCES Ingredient(id)
+);
+
+CREATE TABLE IF NOT EXISTS Recipe (
+                                      id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                                      guid VARCHAR(255) NOT NULL,
+                                      name VARCHAR(255) NOT NULL,
+                                      description TEXT NOT NULL,
+                                      preparationTime INT NOT NULL,
+                                      portions INT NOT NULL,
+                                      categoryId BIGINT,
+                                      FOREIGN KEY (categoryId) REFERENCES Category(id)
+);
+
+CREATE TABLE IF NOT EXISTS RecipeIngredientWithAmount (
+                                                          recipeId BIGINT,
+                                                          ingredientWithAmountId BIGINT,
+                                                          PRIMARY KEY (recipeId, ingredientWithAmountId),
+                                                          FOREIGN KEY (recipeId) REFERENCES Recipe(id),
+                                                          FOREIGN KEY (ingredientWithAmountId) REFERENCES IngredientWithAmount(id)
 );

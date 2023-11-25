@@ -59,7 +59,7 @@ public class UnitDao implements DataAccessObject<UnitEntity> {
 
     @Override
     public Collection<UnitEntity> findAll() {
-        var sql = "SELECT id, guid, baseUnit, name, abbreviation, conversion FROM Unit";
+        var sql = "SELECT id, guid, baseUnitOrdinal, name, abbreviation, conversion FROM Unit";
         try (
                 var connection = connections.get();
                 var statement = connection.use().prepareStatement(sql)
@@ -92,7 +92,7 @@ public class UnitDao implements DataAccessObject<UnitEntity> {
 
     @Override
     public Optional<UnitEntity> findById(long id) {
-        var sql = "SELECT id, guid, baseUnit, name, abbreviation, conversion FROM Unit WHERE id = ?";
+        var sql = "SELECT id, guid, baseUnitOrdinal, name, abbreviation, conversion FROM Unit WHERE id = ?";
         try (
                 var connection = connections.get();
                 var statement = connection.use().prepareStatement(sql)
@@ -111,7 +111,7 @@ public class UnitDao implements DataAccessObject<UnitEntity> {
 
     @Override
     public Optional<UnitEntity> findByGuid(String guid) {
-        var sql = "SELECT id, guid, baseUnit, name, abbreviation, conversion FROM Unit WHERE guid = ?";
+        var sql = "SELECT id, guid, baseUnitOrdinal, name, abbreviation, conversion FROM Unit WHERE guid = ?";
         try (
                 var connection = connections.get();
                 var statement = connection.use().prepareStatement(sql)
