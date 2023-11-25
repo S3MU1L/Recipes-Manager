@@ -16,7 +16,7 @@ import cz.fi.muni.pv168.easyfood.bussiness.service.validation.IngredientValidato
 import cz.fi.muni.pv168.easyfood.bussiness.service.validation.RecipeValidator;
 import cz.fi.muni.pv168.easyfood.bussiness.service.validation.UnitValidator;
 import cz.fi.muni.pv168.easyfood.data.TestDataGenerator;
-import cz.fi.muni.pv168.easyfood.storage.InMemoryRepository;
+import cz.fi.muni.pv168.easyfood.storage.memory.InMemoryRepository;
 import cz.fi.muni.pv168.easyfood.ui.action.AddAction;
 import cz.fi.muni.pv168.easyfood.ui.action.DeleteAction;
 import cz.fi.muni.pv168.easyfood.ui.action.EditAction;
@@ -127,18 +127,6 @@ public class MainWindow {
         ingredientTable = createIngredientTable(ingredientTableModel);
         categoryTable = createCategoryTable(categoryTableModel);
         recipeTable = createRecipeTable(recipeTableModel);
-
-//        UnitTableModel unitModel = (UnitTableModel) unitTable.getModel();
-//        testDataGenerator.createTestUnits(3).forEach(unitModel::addRow);
-//
-//        IngredientTableModel ingredientModel = (IngredientTableModel) ingredientTable.getModel();
-//        testDataGenerator.createTestIngredients(5, units).forEach(ingredientModel::addRow);
-//
-//        CategoryTableModel categoryModel = (CategoryTableModel) categoryTable.getModel();
-//        testDataGenerator.createTestCategories(10).forEach(categoryModel::addRow);
-//
-//        RecipeTableModel recipeModel = (RecipeTableModel) recipeTable.getModel();
-//        testDataGenerator.createTestRecipes(5, ingredients, categories).forEach(recipeModel::addRow);
 
         tabContainer = new TabContainer();
         tabContainer.addTab(recipeTab);
