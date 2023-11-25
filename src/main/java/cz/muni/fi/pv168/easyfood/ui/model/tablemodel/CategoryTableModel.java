@@ -28,7 +28,7 @@ public class CategoryTableModel extends AbstractTableModel implements EntityTabl
         this.categoryCrudService = categoryCrudService;
         this.recipeCrudService = recipeCrudService;
         this.recipes = recipeCrudService.findAll();
-        this.categories = categoryCrudService.findAll();
+        this.categories = new ArrayList<>(categoryCrudService.findAll());
     }
 
     private final List<Column<Category, ?>> columns = List.of(

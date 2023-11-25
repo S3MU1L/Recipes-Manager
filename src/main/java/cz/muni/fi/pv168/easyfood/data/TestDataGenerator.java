@@ -86,12 +86,12 @@ public class TestDataGenerator {
     public Recipe createTestRecipe(List<Ingredient> ingredients, Category category) {
         String name = selectRandom(RECIPE_NAMES);
         List<IngredientWithAmount> ingredientsWithAmount = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            IngredientWithAmount ingredient = createTestIngredientWithAmount(selectRandom(ingredients));
-            if (ingredientsWithAmount.stream().noneMatch(ingredient1 -> ingredient1.getIngredient().equals(ingredient.getIngredient()))) {
-                ingredientsWithAmount.add(ingredient);
-            }
-        }
+//        for (int i = 0; i < 5; i++) {
+//            IngredientWithAmount ingredient = createTestIngredientWithAmount(selectRandom(ingredients));
+//            if (ingredientsWithAmount.stream().noneMatch(ingredient1 -> ingredient1.getIngredient().equals(ingredient.getIngredient()))) {
+//                ingredientsWithAmount.add(ingredient);
+//            }
+//        }
         String description = "In a medium bowl, beat together egg whites, 1/4 cup butter and 1/4 teaspoon salt";
         return new Recipe(UUID.randomUUID().toString(), name, ingredientsWithAmount, description, random.nextInt(1, 20),
                 random.nextInt(5) + 1, category);

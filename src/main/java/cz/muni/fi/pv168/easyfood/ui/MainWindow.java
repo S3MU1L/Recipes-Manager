@@ -95,11 +95,10 @@ public class MainWindow {
         frame = createFrame();
         var testDataGenerator = new TestDataGenerator();
 
-        List<Unit> units = testDataGenerator.createTestUnits(5);
-        List<Category> categories = testDataGenerator.createTestCategories(5);
-        List<Ingredient> ingredients = testDataGenerator.createTestIngredients(5, units);
-        List<Recipe> recipes = testDataGenerator.createTestRecipes(10, ingredients, categories);
-
+        List<Unit> units = testDataGenerator.createTestUnits(1);
+        List<Category> categories = testDataGenerator.createTestCategories(1);
+        List<Ingredient> ingredients = testDataGenerator.createTestIngredients(1, units);
+        List<Recipe> recipes = testDataGenerator.createTestRecipes(1, ingredients, categories);
 
         var recipeRepository = dependencyProvider.getRecipeRepository();
         var ingredientRepository = dependencyProvider.getIngredientRepository();
@@ -121,6 +120,23 @@ public class MainWindow {
         ingredientTableModel = new IngredientTableModel(ingredientCrudService, recipeCrudService);
         categoryTableModel = new CategoryTableModel(categoryCrudService, recipeCrudService);
         unitTableModel = new UnitTableModel(unitCrudService, ingredientCrudService);
+
+        for (var unit : units) {
+            unitTableModel.addRow(unit);
+        }
+
+        for (var category : categories) {
+            categoryTableModel.addRow(category);
+        }
+
+        for (var ingredient : ingredients) {
+            ingredientTableModel.addRow(ingredient);
+        }
+
+        for (var recipe : recipes) {
+            recipeTableModel.addRow(recipe);
+        }
+
 
         unitTable = createUnitTable(unitTableModel);
         ingredientTable = createIngredientTable(ingredientTableModel);
