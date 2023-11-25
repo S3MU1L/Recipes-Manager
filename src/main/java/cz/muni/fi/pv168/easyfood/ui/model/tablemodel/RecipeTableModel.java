@@ -71,9 +71,9 @@ public class RecipeTableModel extends AbstractTableModel implements EntityTableM
         fireTableRowsInserted(newRowIndex, newRowIndex);
     }
 
-    public void updateRow(Recipe oldRecipe, Recipe newRecipe) {
-        recipeCrudService.update(newRecipe);
-        int rowIndex = recipes.indexOf(oldRecipe);
+    public void updateRow(Recipe recipe) {
+        recipeCrudService.update(recipe);
+        int rowIndex = recipes.indexOf(recipe);
         fireTableRowsUpdated(rowIndex, rowIndex);
     }
 

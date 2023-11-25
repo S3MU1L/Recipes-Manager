@@ -16,9 +16,9 @@ public class UnitSqlRepository implements Repository<Unit> {
     private final EntityMapper<UnitEntity, Unit> unitMapper;
 
     public UnitSqlRepository(
-            DataAccessObject<UnitEntity> recipeDao,
+            DataAccessObject<UnitEntity> unitDao,
             EntityMapper<UnitEntity, Unit> categoryMapper) {
-        this.unitDao = recipeDao;
+        this.unitDao = unitDao;
         this.unitMapper = categoryMapper;
     }
 
@@ -38,11 +38,11 @@ public class UnitSqlRepository implements Repository<Unit> {
 
     @Override
     public void update(Unit entity) {
-        var existingRecipe = unitDao.findByGuid(entity.getGuid())
-                .orElseThrow(() -> new DataStorageException("Recipe not found, id: " + entity.getGuid()));
-        var updatedRecipe = unitMapper.mapExistingEntityToDatabase(entity, existingRecipe.id());
+        var existingUnit = unitDao.findByGuid(entity.getGuid())
+                .orElseThrow(() -> new DataStorageException("Unit not found, id: " + entity.getGuid()));
+        var updatedUnit = unitMapper.mapExistingEntityToDatabase(entity, existingUnit.id());
 
-        unitDao.update(updatedRecipe);
+        unitDao.update(updatedUnit);
     }
 
     @Override

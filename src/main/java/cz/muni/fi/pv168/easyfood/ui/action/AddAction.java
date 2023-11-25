@@ -54,8 +54,9 @@ public final class AddAction extends AbstractAction {
         var dialog = tabContainer.getSelectedTab().getDialog().createNewDialog(recipes, ingredients, categories, units);
         var result = dialog.show(table, title.toString());
 
-        result.ifPresent(recipe -> {
-            model.addRow(recipe);
+        result.ifPresent(entity -> {
+            System.out.println(entity);
+            model.addRow(entity);
             mainWindow.updateRecipeCountLabel();
         });
     }

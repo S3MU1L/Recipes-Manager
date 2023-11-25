@@ -121,21 +121,21 @@ public class MainWindow {
         categoryTableModel = new CategoryTableModel(categoryCrudService, recipeCrudService);
         unitTableModel = new UnitTableModel(unitCrudService, ingredientCrudService);
 
-        for (var unit : units) {
-            unitTableModel.addRow(unit);
-        }
-
-        for (var category : categories) {
-            categoryTableModel.addRow(category);
-        }
-
-        for (var ingredient : ingredients) {
-            ingredientTableModel.addRow(ingredient);
-        }
-
-        for (var recipe : recipes) {
-            recipeTableModel.addRow(recipe);
-        }
+//        for (var unit : units) {
+//            unitTableModel.addRow(unit);
+//        }
+//
+//        for (var category : categories) {
+//            categoryTableModel.addRow(category);
+//        }
+//
+//        for (var ingredient : ingredients) {
+//            ingredientTableModel.addRow(ingredient);
+//        }
+//
+//        for (var recipe : recipes) {
+//            recipeTableModel.addRow(recipe);
+//        }
 
 
         unitTable = createUnitTable(unitTableModel);

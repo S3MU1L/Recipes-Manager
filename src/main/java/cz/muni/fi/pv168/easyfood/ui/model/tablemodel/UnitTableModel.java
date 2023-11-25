@@ -20,7 +20,6 @@ import static javax.swing.JOptionPane.ERROR_MESSAGE;
 public class UnitTableModel extends AbstractTableModel implements EntityTableModel<Unit> {
     private final List<Unit> units;
     private final List<Ingredient> ingredients;
-
     private final CrudService<Unit> unitCrudService;
     private final CrudService<Ingredient> ingredientCrudService;
 
@@ -56,7 +55,6 @@ public class UnitTableModel extends AbstractTableModel implements EntityTableMod
                 cell.setBackground(Color.CYAN);
                 cell.setForeground(Color.BLACK);
             }
-
         }
     }
 
@@ -69,7 +67,6 @@ public class UnitTableModel extends AbstractTableModel implements EntityTableMod
 
     @Override
     public void customizeTable(JTable table) {
-
     }
 
     @Override
@@ -114,10 +111,10 @@ public class UnitTableModel extends AbstractTableModel implements EntityTableMod
     }
 
     @Override
-    public void updateRow(Unit oldUnit, Unit newUnit) {
-        unitCrudService.update(newUnit)
+    public void updateRow(Unit unit) {
+        unitCrudService.update(unit)
                 .intoException();
-        int rowIndex = units.indexOf(oldUnit);
+        int rowIndex = units.indexOf(unit);
         fireTableRowsUpdated(rowIndex, rowIndex);
     }
 

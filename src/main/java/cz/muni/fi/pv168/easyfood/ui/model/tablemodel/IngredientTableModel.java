@@ -72,10 +72,10 @@ public class IngredientTableModel extends AbstractTableModel implements EntityTa
         fireTableRowsInserted(newRowIndex, newRowIndex);
     }
 
-    public void updateRow(Ingredient oldIngredient, Ingredient newIngredient) {
-        ingredientCrudService.update(newIngredient)
+    public void updateRow(Ingredient ingredient) {
+        ingredientCrudService.update(ingredient)
                 .intoException();
-        int rowIndex = ingredients.indexOf(oldIngredient);
+        int rowIndex = ingredients.indexOf(ingredient);
         fireTableRowsUpdated(rowIndex, rowIndex);
     }
 
@@ -119,7 +119,4 @@ public class IngredientTableModel extends AbstractTableModel implements EntityTa
         return ingredients.get(rowIndex);
     }
 
-    protected void updateEntity(Ingredient entity) {
-
-    }
 }

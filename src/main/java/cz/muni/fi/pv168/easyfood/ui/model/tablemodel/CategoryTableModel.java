@@ -53,6 +53,15 @@ public class CategoryTableModel extends AbstractTableModel implements EntityTabl
     }
 
     @Override
+    public void setValueAt(Object value, int rowIndex, int columnIndex) {
+        if (value != null) {
+            var category = getEntity(rowIndex);
+            columns.get(columnIndex).setValue(value, category);
+//            updateRow(category);
+        }
+    }
+
+    @Override
     public String getColumnName(int columnIndex) {
         return columns.get(columnIndex).getName();
     }
@@ -75,10 +84,10 @@ public class CategoryTableModel extends AbstractTableModel implements EntityTabl
         fireTableRowsInserted(newRowIndex, newRowIndex);
     }
 
-    public void updateRow(Category oldCategory, Category newCategory) {
-        categoryCrudService.update(newCategory)
+    public void updateRow(Category category) {
+        categoryCrudService.update(category)
                 .intoException();
-        int rowIndex = categories.indexOf(oldCategory);
+        int rowIndex = categories.indexOf(category);
         fireTableRowsUpdated(rowIndex, rowIndex);
     }
 
@@ -132,10 +141,6 @@ public class CategoryTableModel extends AbstractTableModel implements EntityTabl
 
     public Category getEntity(int rowIndex) {
         return categories.get(rowIndex);
-    }
-
-    protected void updateEntity(Category entity) {
-
     }
 
 }

@@ -21,7 +21,6 @@ public class UnitCrudService implements CrudService<Unit> {
         this.guidProvider = guidProvider;
     }
 
-
     @Override
     public List<Unit> findAll() {
         return unitRepository.findAll();
@@ -33,17 +32,19 @@ public class UnitCrudService implements CrudService<Unit> {
         if (newUnit.getGuid() == null || newUnit.getGuid().isBlank()) {
             newUnit.setGuid(guidProvider.newGuid());
         } else if (unitRepository.existsByGuid(newUnit.getGuid())) {
-            throw new EntityAlreadyExistsException("Employee with given guid already exists: " + newUnit.getGuid());
+            throw new EntityAlreadyExistsException("Unit with given guid already exists: " + newUnit.getGuid());
         }
         if (validationResult.isValid()) {
             unitRepository.create(newUnit);
         }
+        System.out.println("Creating entity : " + newUnit + " id: " + newUnit.getGuid());
 
         return validationResult;
     }
 
     @Override
     public ValidationResult update(Unit entity) {
+        System.out.println("Updating entity id with: " + entity.getGuid());
         var validationResult = unitValidator.validate(entity);
         if (validationResult.isValid()) {
             unitRepository.update(entity);
