@@ -18,7 +18,6 @@ import static javax.swing.JOptionPane.ERROR_MESSAGE;
 public class IngredientTableModel extends AbstractTableModel implements EntityTableModel<Ingredient> {
     private final List<Ingredient> ingredients;
     private final List<Recipe> recipes;
-
     private final CrudService<Ingredient> ingredientCrudService;
     private final CrudService<Recipe> recipeCrudService;
 
@@ -66,17 +65,45 @@ public class IngredientTableModel extends AbstractTableModel implements EntityTa
     }
 
     public void addRow(Ingredient ingredient) {
+        ingredientCrudService.create(ingredient)
+                .intoException();
         int newRowIndex = ingredients.size();
         ingredients.add(ingredient);
         fireTableRowsInserted(newRowIndex, newRowIndex);
     }
 
     public void updateRow(Ingredient oldIngredient, Ingredient newIngredient) {
+        ingredientCrudService.update(newIngredient)
+                .intoException();
         int rowIndex = ingredients.indexOf(oldIngredient);
-        ingredients.set(rowIndex, newIngredient);
         fireTableRowsUpdated(rowIndex, rowIndex);
     }
 
+    public void deleteRow(int rowIndex) {
+        var toDelete = ingredients.get(rowIndex);
+        List<Recipe> usedIn = new ArrayList<>();
+        recipes.forEach(recipe -> {
+            if (recipe.getIngredients().stream().map(IngredientWithAmount::getIngredient).filter(ingredient -> ingredient.equals(ingredient)).toList().size() >
+                    0) {
+                usedIn.add(recipe);
+            }
+        });
+
+        if (usedIn.size() > 0) {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("Unable to delete Ingredient : ").append(toDelete.getName()).append("\nIt is used in Recipes: ");
+            for (Recipe recipe : usedIn) {
+                stringBuilder.append(" ").append(recipe.getName()).append(",");
+            }
+            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+            JOptionPane.showMessageDialog(null, stringBuilder.toString(), "Error", ERROR_MESSAGE, null);
+            return;
+        }
+
+        ingredientCrudService.deleteByGuid(toDelete.getGuid());
+        ingredients.remove(rowIndex);
+        fireTableRowsDeleted(rowIndex, rowIndex);
+    }
 
     @Override
     public void customizeTableCell(Component cell, Object value, int row, JTable table) {
@@ -94,30 +121,5 @@ public class IngredientTableModel extends AbstractTableModel implements EntityTa
 
     protected void updateEntity(Ingredient entity) {
 
-    }
-
-    public void deleteRow(int rowIndex) {
-        Ingredient removedIngredient = ingredients.get(rowIndex);
-        List<Recipe> usedIn = new ArrayList<>();
-        recipes.forEach(recipe -> {
-            if (recipe.getIngredients().stream().map(IngredientWithAmount::getIngredient).filter(ingredient -> ingredient.equals(removedIngredient)).toList().size() >
-                    0) {
-                usedIn.add(recipe);
-            }
-        });
-
-        if (usedIn.size() > 0) {
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("Unable to delete Ingredient : ").append(removedIngredient.getName()).append("\nIt is used in Recipes: ");
-            for (Recipe recipe : usedIn) {
-                stringBuilder.append(" ").append(recipe.getName()).append(",");
-            }
-            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
-            JOptionPane.showMessageDialog(null, stringBuilder.toString(), "Error", ERROR_MESSAGE, null);
-            return;
-        }
-        ingredients.remove(rowIndex);
-
-        fireTableRowsDeleted(rowIndex, rowIndex);
     }
 }

@@ -50,6 +50,13 @@ public class RecipeTableModel extends AbstractTableModel implements EntityTableM
         return columns.get(columnIndex).isEditable();
     }
 
+    public Recipe getEntity(int rowIndex) {
+        return recipes.get(rowIndex);
+    }
+
+    protected void updateEntity(Recipe entity) {
+    }
+
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         var recipe = getEntity(rowIndex);
@@ -57,35 +64,23 @@ public class RecipeTableModel extends AbstractTableModel implements EntityTableM
     }
 
     public void addRow(Recipe recipe) {
+        recipeCrudService.create(recipe)
+                .intoException();
         int newRowIndex = recipes.size();
         recipes.add(recipe);
         fireTableRowsInserted(newRowIndex, newRowIndex);
-
     }
 
     public void updateRow(Recipe oldRecipe, Recipe newRecipe) {
+        recipeCrudService.update(newRecipe);
         int rowIndex = recipes.indexOf(oldRecipe);
-        recipes.set(rowIndex, newRecipe);
         fireTableRowsUpdated(rowIndex, rowIndex);
     }
 
-    public void customizeTableCell(Component cell, Object value, int row, JTable table) {
-
-    }
-
-    public void customizeTable(JTable table) {
-
-    }
-
-    public Recipe getEntity(int rowIndex) {
-        return recipes.get(rowIndex);
-    }
-
-    protected void updateEntity(Recipe entity) {
-
-    }
 
     public void deleteRow(int rowIndex) {
+        var toDelete = getEntity(rowIndex);
+        recipeCrudService.deleteByGuid(toDelete.getGuid());
         recipes.remove(rowIndex);
         fireTableRowsDeleted(rowIndex, rowIndex);
     }
@@ -96,6 +91,13 @@ public class RecipeTableModel extends AbstractTableModel implements EntityTableM
         }
         int last_index = recipes.size();
         recipes.clear();
+        recipeCrudService.deleteAll();
         fireTableRowsDeleted(0, last_index - 1);
+    }
+
+    public void customizeTableCell(Component cell, Object value, int row, JTable table) {
+    }
+
+    public void customizeTable(JTable table) {
     }
 }

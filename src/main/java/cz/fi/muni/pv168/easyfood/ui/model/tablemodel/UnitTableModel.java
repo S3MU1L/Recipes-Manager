@@ -106,6 +106,8 @@ public class UnitTableModel extends AbstractTableModel implements EntityTableMod
 
     @Override
     public void addRow(Unit unit) {
+        unitCrudService.create(unit)
+                .intoException();
         int newRowIndex = units.size();
         units.add(unit);
         fireTableRowsInserted(newRowIndex, newRowIndex);
@@ -113,17 +115,18 @@ public class UnitTableModel extends AbstractTableModel implements EntityTableMod
 
     @Override
     public void updateRow(Unit oldUnit, Unit newUnit) {
-        units.set(units.indexOf(oldUnit), newUnit);
+        unitCrudService.update(newUnit)
+                .intoException();
         int rowIndex = units.indexOf(oldUnit);
         fireTableRowsUpdated(rowIndex, rowIndex);
     }
 
 
     public void deleteRow(int rowIndex) {
-        Unit removedUnit = units.get(rowIndex);
+        var toDelete = units.get(rowIndex);
 
         for (BaseUnit baseUnit : BaseUnit.values()) {
-            if (removedUnit.getName().equals(baseUnit.toString())) {
+            if (toDelete.getName().equals(baseUnit.toString())) {
                 JOptionPane.showMessageDialog(null,
                         "Cannot delete Base Unit " + baseUnit, "Error", ERROR_MESSAGE, null);
                 return;
@@ -132,14 +135,14 @@ public class UnitTableModel extends AbstractTableModel implements EntityTableMod
 
         List<Ingredient> usedIn = new ArrayList<>();
         for (Ingredient ingredient : new ArrayList<>(ingredientCrudService.findAll())) {
-            if (ingredient.getUnit().equals(removedUnit)) {
+            if (ingredient.getUnit().equals(toDelete)) {
                 usedIn.add(ingredient);
             }
         }
 
         if (usedIn.size() > 0) {
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("Unable to delete Unit : ").append(removedUnit.getName()).append("\nIt is used in Ingredients:");
+            stringBuilder.append("Unable to delete Unit : ").append(toDelete.getName()).append("\nIt is used in Ingredients:");
             for (Ingredient ingredient : usedIn) {
                 stringBuilder.append(" ").append(ingredient.getName()).append(",");
             }
@@ -148,6 +151,7 @@ public class UnitTableModel extends AbstractTableModel implements EntityTableMod
             return;
         }
 
+        unitCrudService.deleteByGuid(toDelete.getGuid());
         units.remove(rowIndex);
         fireTableRowsDeleted(rowIndex, rowIndex);
     }

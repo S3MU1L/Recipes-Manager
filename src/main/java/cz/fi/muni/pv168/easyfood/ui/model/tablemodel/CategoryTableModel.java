@@ -20,8 +20,8 @@ import static javax.swing.JOptionPane.ERROR_MESSAGE;
 public class CategoryTableModel extends AbstractTableModel implements EntityTableModel<Category> {
     private final List<Category> categories;
     private List<Recipe> recipes;
-
     private final CrudService<Category> categoryCrudService;
+
     private final CrudService<Recipe> recipeCrudService;
 
     public CategoryTableModel(CrudService<Category> categoryCrudService, CrudService<Recipe> recipeCrudService) {
@@ -68,15 +68,42 @@ public class CategoryTableModel extends AbstractTableModel implements EntityTabl
     }
 
     public void addRow(Category category) {
+        categoryCrudService.create(category)
+                .intoException();
         int newRowIndex = categories.size();
         categories.add(category);
         fireTableRowsInserted(newRowIndex, newRowIndex);
     }
 
     public void updateRow(Category oldCategory, Category newCategory) {
+        categoryCrudService.update(newCategory)
+                .intoException();
         int rowIndex = categories.indexOf(oldCategory);
-        categories.set(rowIndex, newCategory);
         fireTableRowsUpdated(rowIndex, rowIndex);
+    }
+
+    public void deleteRow(int rowIndex) {
+        var toDelete = categories.get(rowIndex);
+        List<Recipe> usedIn = new ArrayList<>();
+        recipes.forEach(recipe -> {
+            if (recipe.getCategory().equals(toDelete)) {
+                usedIn.add(recipe);
+            }
+        });
+
+        if (usedIn.size() > 0) {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("Unable to delete Category : ").append(toDelete.getName()).append("\nIt is used in Recipes:");
+            for (Recipe recipe : usedIn) {
+                stringBuilder.append(" ").append(recipe.getName()).append(",");
+            }
+            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+            JOptionPane.showMessageDialog(null, stringBuilder.toString(), "Error", ERROR_MESSAGE, null);
+            return;
+        }
+        categoryCrudService.deleteByGuid(toDelete.getGuid());
+        categories.remove(rowIndex);
+        fireTableRowsDeleted(rowIndex, rowIndex);
     }
 
 
@@ -111,26 +138,4 @@ public class CategoryTableModel extends AbstractTableModel implements EntityTabl
 
     }
 
-    public void deleteRow(int rowIndex) {
-        Category removedCategory = categories.get(rowIndex);
-        List<Recipe> usedIn = new ArrayList<>();
-        recipes.forEach(recipe -> {
-            if (recipe.getCategory().equals(removedCategory)) {
-                usedIn.add(recipe);
-            }
-        });
-
-        if (usedIn.size() > 0) {
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("Unable to delete Category : ").append(removedCategory.getName()).append("\nIt is used in Recipes:");
-            for (Recipe recipe : usedIn) {
-                stringBuilder.append(" ").append(recipe.getName()).append(",");
-            }
-            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
-            JOptionPane.showMessageDialog(null, stringBuilder.toString(), "Error", ERROR_MESSAGE, null);
-            return;
-        }
-        categories.remove(rowIndex);
-        fireTableRowsDeleted(rowIndex, rowIndex);
-    }
 }

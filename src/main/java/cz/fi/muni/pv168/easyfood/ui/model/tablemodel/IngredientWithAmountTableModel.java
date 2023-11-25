@@ -1,6 +1,7 @@
 package cz.fi.muni.pv168.easyfood.ui.model.tablemodel;
 
 import cz.fi.muni.pv168.easyfood.bussiness.model.IngredientWithAmount;
+import cz.fi.muni.pv168.easyfood.bussiness.service.crud.CrudService;
 import cz.fi.muni.pv168.easyfood.ui.model.Column;
 
 import javax.swing.JTable;
@@ -11,6 +12,7 @@ import java.util.List;
 
 public class IngredientWithAmountTableModel extends AbstractTableModel implements EntityTableModel<IngredientWithAmount> {
     private final List<IngredientWithAmount> ingredients;
+//    private final CrudService<IngredientWithAmount> ingredientCrudService;
 
     private final List<Column<IngredientWithAmount, ?>> columns = List.of(
             Column.readonly("Name", String.class, IngredientWithAmount::getName),
