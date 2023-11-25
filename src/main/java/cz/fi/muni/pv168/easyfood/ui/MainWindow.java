@@ -37,6 +37,7 @@ import cz.fi.muni.pv168.easyfood.ui.model.tablemodel.UnitTableModel;
 import cz.fi.muni.pv168.easyfood.ui.renderers.CustomTableCellRenderer;
 import cz.fi.muni.pv168.easyfood.ui.tab.Tab;
 import cz.fi.muni.pv168.easyfood.ui.tab.TabContainer;
+import cz.fi.muni.pv168.easyfood.wiring.DependencyProvider;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -89,12 +90,10 @@ public class MainWindow {
     private final CrudService<Ingredient> ingredientCrudService;
     private final CrudService<Category> categoryCrudService;
     private final CrudService<Unit> unitCrudService;
-
     private JLabel recipeCountLabel = new JLabel();
 
-    public MainWindow() {
+    public MainWindow(DependencyProvider dependencyProvider) {
         frame = createFrame();
-
         var testDataGenerator = new TestDataGenerator();
 
         List<Unit> units = testDataGenerator.createTestUnits(5);
@@ -102,10 +101,11 @@ public class MainWindow {
         List<Ingredient> ingredients = testDataGenerator.createTestIngredients(5, units);
         List<Recipe> recipes = testDataGenerator.createTestRecipes(10, ingredients, categories);
 
-        var recipeRepository = new InMemoryRepository<>(recipes);
-        var ingredientRepository = new InMemoryRepository<>(ingredients);
-        var categoryRepository = new InMemoryRepository<>(categories);
-        var unitRepository = new InMemoryRepository<>(units);
+
+        var recipeRepository = dependencyProvider.getRecipeRepository();
+        var ingredientRepository = dependencyProvider.getIngredientRepository();
+        var categoryRepository = dependencyProvider.getCategoryRepository();
+        var unitRepository = dependencyProvider.getUnitRepository();
 
         var recipeValidator = new RecipeValidator();
         var ingredientValidator = new IngredientValidator();
