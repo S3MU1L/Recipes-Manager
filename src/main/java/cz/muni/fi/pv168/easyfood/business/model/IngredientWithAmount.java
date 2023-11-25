@@ -31,14 +31,14 @@ public class IngredientWithAmount extends Entity {
             Ingredient ingredient,
             double amount) {
         super(guid);
-        this.ingredient = new Ingredient(ingredient.getName(), ingredient.getCalories(), ingredient.getUnit());
+        this.ingredient = ingredient;
         this.amount = amount;
     }
 
     public IngredientWithAmount(
             Ingredient ingredient,
             double amount) {
-        this.ingredient = new Ingredient(ingredient.getName(), ingredient.getCalories(), ingredient.getUnit());
+        this.ingredient = ingredient;
         this.amount = amount;
     }
 

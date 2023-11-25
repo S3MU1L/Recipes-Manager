@@ -1,5 +1,8 @@
 package cz.muni.fi.pv168.easyfood.storage.sql.dao;
 
+import cz.muni.fi.pv168.easyfood.business.model.Recipe;
+import cz.muni.fi.pv168.easyfood.storage.DataStorageException;
+import cz.muni.fi.pv168.easyfood.storage.sql.dao.DataAccessObject;
 import cz.muni.fi.pv168.easyfood.storage.sql.db.ConnectionHandler;
 import cz.muni.fi.pv168.easyfood.storage.sql.entity.IngredientWithAmountEntity;
 
@@ -23,8 +26,8 @@ public class IngredientWithAmountDao implements DataAccessObject<IngredientWithA
     @Override
     public IngredientWithAmountEntity create(IngredientWithAmountEntity entity) {
         var sql = """
-                INSERT INTO IngredientWithAmount(guid, ingredientId, amount)
-                VALUES (?, ?, ?)
+                INSERT INTO RecipeIngredientWithAmount(guid, recipeId, ingredientId, amount)
+                VALUES (?, ?, ?, ?)
                 """;
         try (
                 var connection = connections.get();
@@ -32,14 +35,15 @@ public class IngredientWithAmountDao implements DataAccessObject<IngredientWithA
         ) {
             statement.setString(1, entity.guid());
             statement.setLong(2, entity.ingredientId());
-            statement.setDouble(3, entity.amount());
+            statement.setLong(3, entity.ingredientId());
+            statement.setDouble(4, entity.amount());
             statement.executeUpdate();
 
             try (var keyResultSet = statement.getGeneratedKeys()) {
-                long ingredientWithAmountId;
+                long recipeIngredientWithAmountId;
 
                 if (keyResultSet.next()) {
-                    ingredientWithAmountId = keyResultSet.getLong(1);
+                    recipeIngredientWithAmountId = keyResultSet.getLong(1);
                 } else {
                     throw new DataStorageException("Failed to fetch generated key for: " + entity);
                 }
@@ -47,7 +51,7 @@ public class IngredientWithAmountDao implements DataAccessObject<IngredientWithA
                     throw new DataStorageException("Multiple keys returned for: " + entity);
                 }
 
-                return findById(ingredientWithAmountId).orElseThrow();
+                return findById(recipeIngredientWithAmountId).orElseThrow();
             }
         } catch (SQLException ex) {
             throw new DataStorageException("Failed to store: " + entity, ex);
@@ -56,7 +60,7 @@ public class IngredientWithAmountDao implements DataAccessObject<IngredientWithA
 
     @Override
     public Collection<IngredientWithAmountEntity> findAll() {
-        var sql = "SELECT id, guid, ingredientId, amount FROM IngredientWithAmount";
+        var sql = "SELECT id, guid, recipeId, ingredientId, amount FROM RecipeIngredientWithAmount";
         try (
                 var connection = connections.get();
                 var statement = connection.use().prepareStatement(sql)
@@ -72,7 +76,7 @@ public class IngredientWithAmountDao implements DataAccessObject<IngredientWithA
 
             return ingredientsWithAmount;
         } catch (SQLException ex) {
-            throw new DataStorageException("Failed to load all ingredients with amount", ex);
+            throw new DataStorageException("Failed to load all recipe ingredients with amount", ex);
         }
     }
 
@@ -87,7 +91,7 @@ public class IngredientWithAmountDao implements DataAccessObject<IngredientWithA
 
     @Override
     public Optional<IngredientWithAmountEntity> findById(long id) {
-        var sql = "SELECT id, guid, ingredientId, amount FROM IngredientWithAmount WHERE id = ?";
+        var sql = "SELECT id, guid, recipeId, ingredientId, amount FROM RecipeIngredientWithAmount WHERE id = ?";
         try (
                 var connection = connections.get();
                 var statement = connection.use().prepareStatement(sql)
@@ -100,13 +104,13 @@ public class IngredientWithAmountDao implements DataAccessObject<IngredientWithA
                 return Optional.empty();
             }
         } catch (SQLException ex) {
-            throw new DataStorageException("Failed to load ingredient with amount by id", ex);
+            throw new DataStorageException("Failed to load recipe ingredient with amount by id", ex);
         }
     }
 
     @Override
     public Optional<IngredientWithAmountEntity> findByGuid(String guid) {
-        var sql = "SELECT id, guid, ingredientId, amount FROM IngredientWithAmount WHERE guid = ?";
+        var sql = "SELECT id, guid, recipeId, ingredientId, amount FROM RecipeIngredientWithAmount WHERE guid = ?";
         try (
                 var connection = connections.get();
                 var statement = connection.use().prepareStatement(sql)
@@ -119,30 +123,53 @@ public class IngredientWithAmountDao implements DataAccessObject<IngredientWithA
                 return Optional.empty();
             }
         } catch (SQLException ex) {
-            throw new DataStorageException("Failed to load ingredient with amount by guid", ex);
+            throw new DataStorageException("Failed to load recipe ingredient with amount by guid", ex);
         }
     }
 
+    public List<IngredientWithAmountEntity> findIngredientsOfRecipe(Recipe recipe) {
+        var sql = "SELECT id, guid, recipeId, ingredientId, amount FROM RecipeIngredientWithAmount WHERE guid = ?";
+        List<IngredientWithAmountEntity> ingredientsList = new ArrayList<>();
+
+        try (
+                var connection = connections.get();
+                var statement = connection.use().prepareStatement(sql)
+        ) {
+            statement.setString(1, recipe.getGuid());
+            var resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                ingredientsList.add(ingredientWithAmountFromResultSet(resultSet));
+            }
+        } catch (SQLException ex) {
+            throw new DataStorageException("Failed to load recipe ingredients with amount by guid", ex);
+        }
+
+        return ingredientsList;
+    }
+
+
     @Override
     public IngredientWithAmountEntity update(IngredientWithAmountEntity entity) {
-        var sql = "UPDATE IngredientWithAmount SET ingredientId = ?, amount = ? WHERE id = ?";
+        var sql = "UPDATE RecipeIngredientWithAmount SET recipeId = ?, ingredientId = ?, amount = ? WHERE id = ?";
         try (
                 var connection = connections.get();
                 var statement = connection.use().prepareStatement(sql)
         ) {
             statement.setLong(1, entity.ingredientId());
-            statement.setDouble(2, entity.amount());
-            statement.setLong(3, entity.id());
+            statement.setLong(2, entity.ingredientId());
+            statement.setDouble(3, entity.amount());
+            statement.setLong(4, entity.id());
             statement.executeUpdate();
             return entity;
         } catch (SQLException ex) {
-            throw new DataStorageException("Failed to update ingredient with amount: " + entity, ex);
+            throw new DataStorageException("Failed to update recipe ingredient with amount: " + entity, ex);
         }
     }
 
     @Override
     public void deleteByGuid(String guid) {
-        var sql = "DELETE FROM IngredientWithAmount WHERE guid = ?";
+        var sql = "DELETE FROM RecipeIngredientWithAmount WHERE guid = ?";
         try (
                 var connection = connections.get();
                 var statement = connection.use().prepareStatement(sql)
@@ -150,26 +177,26 @@ public class IngredientWithAmountDao implements DataAccessObject<IngredientWithA
             statement.setString(1, guid);
             statement.executeUpdate();
         } catch (SQLException ex) {
-            throw new DataStorageException("Failed to delete ingredient with amount by guid: " + guid, ex);
+            throw new DataStorageException("Failed to delete recipe ingredient with amount by guid: " + guid, ex);
         }
     }
 
     @Override
     public void deleteAll() {
-        var sql = "DELETE FROM IngredientWithAmount";
+        var sql = "DELETE FROM RecipeIngredientWithAmount";
         try (
                 var connection = connections.get();
                 var statement = connection.use().prepareStatement(sql)
         ) {
             statement.executeUpdate();
         } catch (SQLException ex) {
-            throw new DataStorageException("Failed to delete all ingredients", ex);
+            throw new DataStorageException("Failed to delete all recipe ingredients with amount", ex);
         }
     }
 
     @Override
     public boolean existsByGuid(String guid) {
-        var sql = "SELECT id FROM IngredientWithAmount WHERE guid = ?";
+        var sql = "SELECT id FROM RecipeIngredientWithAmount WHERE guid = ?";
         try (
                 var connection = connections.get();
                 var statement = connection.use().prepareStatement(sql)
@@ -178,7 +205,7 @@ public class IngredientWithAmountDao implements DataAccessObject<IngredientWithA
             var resultSet = statement.executeQuery();
             return resultSet.next();
         } catch (SQLException ex) {
-            throw new DataStorageException("Failed to check if ingredient with amount exists: " + guid, ex);
+            throw new DataStorageException("Failed to check if recipe ingredient with amount exists: " + guid, ex);
         }
     }
 }

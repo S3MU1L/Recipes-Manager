@@ -72,13 +72,13 @@ public class RecipeMapper implements EntityMapper<RecipeEntity, Recipe> {
                         entity.getCategory().getGuid()));
 
         List<Long> ingredientIds = new ArrayList<>();
-        for (IngredientWithAmount ingredient : entity.getIngredients()) {
-            var ingredientEntity = ingredientDao
-                    .findByGuid(ingredient.getIngredient().getGuid())
-                    .orElseThrow(() -> new DataStorageException("Ingredient not found, guid: " +
-                            ingredient.getIngredient().getGuid()));
-            ingredientIds.add(ingredientEntity.id());
-        }
+//        for (IngredientWithAmount ingredient : entity.getIngredients()) {
+//            var ingredientEntity = ingredientDao
+//                    .findByGuid(ingredient.getIngredient().getGuid())
+//                    .orElseThrow(() -> new DataStorageException("Ingredient not found, guid: " +
+//                            ingredient.getIngredient().getGuid()));
+//            ingredientIds.add(ingredientEntity.id());
+//        }
 
         return new RecipeEntity(
                 entity.getGuid(),

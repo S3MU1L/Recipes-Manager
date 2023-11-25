@@ -3,16 +3,19 @@ package cz.muni.fi.pv168.easyfood.ui;
 
 import cz.muni.fi.pv168.easyfood.business.model.Category;
 import cz.muni.fi.pv168.easyfood.business.model.Ingredient;
+import cz.muni.fi.pv168.easyfood.business.model.IngredientWithAmount;
 import cz.muni.fi.pv168.easyfood.business.model.Recipe;
 import cz.muni.fi.pv168.easyfood.business.model.Unit;
 import cz.muni.fi.pv168.easyfood.business.model.UuidGuidProvider;
 import cz.muni.fi.pv168.easyfood.business.service.crud.CategoryCrudService;
 import cz.muni.fi.pv168.easyfood.business.service.crud.CrudService;
 import cz.muni.fi.pv168.easyfood.business.service.crud.IngredientCrudService;
+import cz.muni.fi.pv168.easyfood.business.service.crud.IngredientWithAmountCrudService;
 import cz.muni.fi.pv168.easyfood.business.service.crud.RecipeCrudService;
 import cz.muni.fi.pv168.easyfood.business.service.crud.UnitCrudService;
 import cz.muni.fi.pv168.easyfood.business.service.validation.CategoryValidator;
 import cz.muni.fi.pv168.easyfood.business.service.validation.IngredientValidator;
+import cz.muni.fi.pv168.easyfood.business.service.validation.IngredientWithAmountValidator;
 import cz.muni.fi.pv168.easyfood.business.service.validation.RecipeValidator;
 import cz.muni.fi.pv168.easyfood.business.service.validation.UnitValidator;
 import cz.muni.fi.pv168.easyfood.data.TestDataGenerator;
@@ -89,9 +92,13 @@ public class MainWindow {
     private final CrudService<Ingredient> ingredientCrudService;
     private final CrudService<Category> categoryCrudService;
     private final CrudService<Unit> unitCrudService;
+    private final CrudService<IngredientWithAmount> ingredientWithAmountCrudService;
     private JLabel recipeCountLabel = new JLabel();
 
+    private final DependencyProvider dependencyProvider;
+
     public MainWindow(DependencyProvider dependencyProvider) {
+        this.dependencyProvider = dependencyProvider;
         frame = createFrame();
         var testDataGenerator = new TestDataGenerator();
 
@@ -104,17 +111,20 @@ public class MainWindow {
         var ingredientRepository = dependencyProvider.getIngredientRepository();
         var categoryRepository = dependencyProvider.getCategoryRepository();
         var unitRepository = dependencyProvider.getUnitRepository();
+        var ingredientWithAmountRepository = dependencyProvider.getIngredientsWithAmountRepository();
 
         var recipeValidator = new RecipeValidator();
         var ingredientValidator = new IngredientValidator();
         var categoryValidator = new CategoryValidator();
         var unitValidator = new UnitValidator();
+        var ingredientWithAmountValidator = new IngredientWithAmountValidator();
 
         var guidProvider = new UuidGuidProvider();
         recipeCrudService = new RecipeCrudService(recipeRepository, recipeValidator, guidProvider);
         ingredientCrudService = new IngredientCrudService(ingredientRepository, ingredientValidator, guidProvider);
         categoryCrudService = new CategoryCrudService(categoryRepository, categoryValidator, guidProvider);
         unitCrudService = new UnitCrudService(unitRepository, unitValidator, guidProvider);
+        ingredientWithAmountCrudService = new IngredientWithAmountCrudService(ingredientWithAmountRepository, ingredientWithAmountValidator, guidProvider);
 
         recipeTableModel = new RecipeTableModel(recipeCrudService);
         ingredientTableModel = new IngredientTableModel(ingredientCrudService, recipeCrudService);
@@ -222,8 +232,12 @@ public class MainWindow {
                 new Tab("recipes", table, recipeTableModel,
                         new RecipeDialog(Recipe.createEmptyRecipe(),
                                 recipeCrudService.findAll(),
-                                ingredientCrudService.findAll(),
-                                categoryCrudService.findAll()));
+                                ingredientTableModel,
+                                categoryTableModel,
+                                ingredientWithAmountCrudService,
+                                dependencyProvider.getIngredientWithAmountDao(),
+                                dependencyProvider.getIngredientWitAmountMapper()
+                        ));
         return table;
     }
 

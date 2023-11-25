@@ -16,6 +16,8 @@ import javax.swing.SpinnerNumberModel;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 
@@ -39,14 +41,12 @@ public class IngredientDialog extends EntityDialog<Ingredient> {
         this.ingredient = ingredient;
         this.ingredients = ingredients;
         this.unitTableModel = unitTableModel;
-        int rows = unitTableModel.getRowCount();
-        this.units = new ArrayList<>();
 
-        for (int i = 0; i < rows; i++) {
-            this.units.add(unitTableModel.getEntity(i));
-        }
+        this.units = IntStream.range(0, unitTableModel.getRowCount())
+                .mapToObj(unitTableModel::getEntity)
+                .collect(Collectors.toList());
 
-        unitsList = new JList<>(this.units.stream().map(Unit::getName).toArray(String[]::new));
+        unitsList = new JList<>(units.stream().map(Unit::getName).toArray(String[]::new));
         unitsField.setViewportView(unitsList);
         setValues();
         addFields();

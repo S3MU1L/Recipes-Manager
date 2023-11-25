@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
+import java.util.logging.Logger;
 
 public class RecipeDao implements DataAccessObject<RecipeEntity> {
     private final Supplier<ConnectionHandler> connections;
@@ -47,24 +48,10 @@ public class RecipeDao implements DataAccessObject<RecipeEntity> {
                     throw new DataStorageException("Multiple keys returned for: " + entity);
                 }
 
-                insertRecipeIngredientWithAmount(connection.use(), recipeId, entity.ingredients());
-
                 return findById(recipeId).orElseThrow();
             }
         } catch (SQLException ex) {
             throw new DataStorageException("Failed to store: " + entity, ex);
-        }
-    }
-
-    private void insertRecipeIngredientWithAmount(Connection connection, long recipeId, List<Long> ingredientIds) throws SQLException {
-        var sql = "INSERT INTO RecipeIngredientWithAmount(recipeId, ingredientWithAmountId) VALUES (?, ?)";
-        try (var statement = connection.prepareStatement(sql)) {
-            for (Long ingredientId : ingredientIds) {
-                statement.setLong(1, recipeId);
-                statement.setLong(2, ingredientId);
-                statement.addBatch();
-            }
-            statement.executeBatch();
         }
     }
 
@@ -104,7 +91,7 @@ public class RecipeDao implements DataAccessObject<RecipeEntity> {
     }
 
     private List<Long> getIngredientsForRecipe(long recipeId) {
-        var sql = "SELECT ingredientWithAmountId FROM RecipeIngredientWithAmount WHERE recipeId = ?";
+        var sql = "SELECT ingredientId FROM RecipeIngredientWithAmount WHERE recipeId = ?";
         try (
                 var connection = connections.get();
                 var statement = connection.use().prepareStatement(sql)
@@ -113,7 +100,7 @@ public class RecipeDao implements DataAccessObject<RecipeEntity> {
             var resultSet = statement.executeQuery();
             List<Long> ingredientIds = new ArrayList<>();
             while (resultSet.next()) {
-                ingredientIds.add(resultSet.getLong("ingredientWithAmountId"));
+                ingredientIds.add(resultSet.getLong("ingredientId"));
             }
             return ingredientIds;
         } catch (SQLException ex) {
@@ -185,9 +172,6 @@ public class RecipeDao implements DataAccessObject<RecipeEntity> {
             statement.executeUpdate();
 
             deleteRecipeIngredientWithAmount(connection.use(), entity.id());
-
-            insertRecipeIngredientWithAmount(connection.use(), entity.id(), entity.ingredients());
-
             return entity;
         } catch (SQLException ex) {
             throw new DataStorageException("Failed to update recipe: " + entity, ex);

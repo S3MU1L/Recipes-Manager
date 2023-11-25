@@ -30,6 +30,7 @@ public class ShowDialog extends EntityDialog<Recipe> {
     private final JLabel categoriesField = new JLabel();
     private final JScrollPane ingredientsTable;
     private final JTextArea description = new JTextArea();
+
     public ShowDialog() {
         this(Recipe.createEmptyRecipe());
     }
@@ -37,7 +38,7 @@ public class ShowDialog extends EntityDialog<Recipe> {
     public ShowDialog(Recipe recipe) {
         this.recipe = recipe;
         List<IngredientWithAmount> ingredients = recipe.getIngredients();
-        var model = new IngredientWithAmountTableModel(ingredients);
+        var model = new IngredientWithAmountTableModel(ingredients, null);
         var table = new JTable(model);
         table.setAutoCreateRowSorter(true);
         table.setCellSelectionEnabled(false);
@@ -71,7 +72,7 @@ public class ShowDialog extends EntityDialog<Recipe> {
         add("Time to prepare (minutes): ", prepareTimeField);
         add("Category:", categoriesField);
         add("Ingredients:", ingredientsTable);
-        add("Description:", createDescriptionScrollPane(new Dimension(300,100)));
+        add("Description:", createDescriptionScrollPane(new Dimension(300, 100)));
     }
 
     private JComponent createDescriptionScrollPane(Dimension size) {

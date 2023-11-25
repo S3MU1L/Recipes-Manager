@@ -1,6 +1,7 @@
 package cz.muni.fi.pv168.easyfood.ui.model.tablemodel;
 
 import cz.muni.fi.pv168.easyfood.business.model.IngredientWithAmount;
+import cz.muni.fi.pv168.easyfood.business.service.crud.CrudService;
 import cz.muni.fi.pv168.easyfood.ui.model.Column;
 
 import javax.swing.JTable;
@@ -11,15 +12,19 @@ import java.util.List;
 
 public class IngredientWithAmountTableModel extends AbstractTableModel implements EntityTableModel<IngredientWithAmount> {
     private final List<IngredientWithAmount> ingredients;
-//    private final CrudService<IngredientWithAmount> ingredientCrudService;
+    private final CrudService<IngredientWithAmount> ingredientCrudService;
 
     private final List<Column<IngredientWithAmount, ?>> columns = List.of(
             Column.readonly("Name", String.class, IngredientWithAmount::getName),
             Column.readonly("Amount", String.class, IngredientWithAmount::getFormattedAmount)
     );
 
-    public IngredientWithAmountTableModel(List<IngredientWithAmount> ingredients) {
+    public IngredientWithAmountTableModel(
+            List<IngredientWithAmount> ingredients,
+            CrudService<IngredientWithAmount> ingredientCrudService
+    ) {
         this.ingredients = new ArrayList<>(ingredients);
+        this.ingredientCrudService = ingredientCrudService;
     }
 
     @Override
@@ -55,6 +60,8 @@ public class IngredientWithAmountTableModel extends AbstractTableModel implement
 
 
     public void addRow(IngredientWithAmount ingredient) {
+        ingredientCrudService.create(ingredient)
+                .intoException();
         int newRowIndex = ingredients.size();
         ingredients.add(ingredient);
         fireTableRowsInserted(newRowIndex, newRowIndex);
@@ -62,8 +69,9 @@ public class IngredientWithAmountTableModel extends AbstractTableModel implement
 
     @Override
     public void updateRow(IngredientWithAmount ingredient) {
+        ingredientCrudService.update(ingredient)
+                .intoException();
         int rowIndex = ingredients.indexOf(ingredient);
-        ingredients.set(rowIndex, ingredient);
         fireTableRowsUpdated(rowIndex, rowIndex);
     }
 
@@ -80,6 +88,8 @@ public class IngredientWithAmountTableModel extends AbstractTableModel implement
     }
 
     public void deleteRow(int rowIndex) {
+        var toDelete = ingredients.get(rowIndex);
+        ingredientCrudService.deleteByGuid(toDelete.getGuid());
         ingredients.remove(rowIndex);
         fireTableRowsDeleted(rowIndex, rowIndex);
     }

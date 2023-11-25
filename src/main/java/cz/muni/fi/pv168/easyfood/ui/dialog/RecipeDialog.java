@@ -5,6 +5,11 @@ import cz.muni.fi.pv168.easyfood.business.model.Ingredient;
 import cz.muni.fi.pv168.easyfood.business.model.IngredientWithAmount;
 import cz.muni.fi.pv168.easyfood.business.model.Recipe;
 import cz.muni.fi.pv168.easyfood.business.model.Unit;
+import cz.muni.fi.pv168.easyfood.business.service.crud.CrudService;
+import cz.muni.fi.pv168.easyfood.storage.sql.dao.IngredientWithAmountDao;
+import cz.muni.fi.pv168.easyfood.storage.sql.entity.IngredientWithAmountEntity;
+import cz.muni.fi.pv168.easyfood.storage.sql.entity.mapper.IngredientWitAmountMapper;
+import cz.muni.fi.pv168.easyfood.ui.model.tablemodel.EntityTableModel;
 import cz.muni.fi.pv168.easyfood.ui.resources.Icons;
 import cz.muni.fi.pv168.easyfood.ui.model.tablemodel.IngredientWithAmountTableModel;
 import cz.muni.fi.pv168.easyfood.ui.renderers.CategoryListCellRenderer;
@@ -35,6 +40,8 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static java.lang.Math.round;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
@@ -48,23 +55,63 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
     private static final JSpinner portionField = new JSpinner(new SpinnerNumberModel());
     private final JSpinner amountField = new JSpinner(new SpinnerNumberModel(0.0, 0.0, Integer.MAX_VALUE, 0.5));
     private final JTextArea descriptionArea = new JTextArea();
-    private final List<Category> categories;
     private final JScrollPane categoriesPane = new JScrollPane();
     private final JButton addIngredientButton = new JButton("add Ingredient");
     private final JComboBox<Ingredient> ingredientJComboBox;
     private final JTable table;
     private final List<Recipe> recipes;
     private final Recipe recipe;
-    private final IngredientWithAmountTableModel model;
+    private final EntityTableModel<Ingredient> ingredientTableModel;
+    private final List<Ingredient> ingredients;
+    private final CrudService<IngredientWithAmount> ingredientWithAmountCrudService;
+    private final EntityTableModel<Category> categoryTableModel;
+    private final EntityTableModel<IngredientWithAmount> withAmountTableModel;
+    private final List<Category> categories;
+    private final IngredientWithAmountDao ingredientWithAmountDao;
 
-    public RecipeDialog(List<Recipe> recipes, List<Ingredient> ingredients, List<Category> categories) {
-        this(Recipe.createEmptyRecipe(), recipes, ingredients, categories);
+    private final IngredientWitAmountMapper ingredientWitAmountMapper;
+
+    public RecipeDialog(
+            List<Recipe> recipes,
+            EntityTableModel<Ingredient> ingredientTableModel,
+            EntityTableModel<Category> categoryTableModel,
+            CrudService<IngredientWithAmount> ingredientCrudService,
+            IngredientWithAmountDao ingredientWithAmountDao,
+            IngredientWitAmountMapper ingredientWitAmountMapper
+    ) {
+        this(Recipe.createEmptyRecipe(),
+                recipes,
+                ingredientTableModel,
+                categoryTableModel,
+                ingredientCrudService,
+                ingredientWithAmountDao,
+                ingredientWitAmountMapper);
     }
 
-    public RecipeDialog(Recipe recipe, List<Recipe> recipes, List<Ingredient> ingredients, List<Category> categories) {
-        this.recipes = recipes;
-        this.categories = categories;
+    public RecipeDialog(
+            Recipe recipe,
+            List<Recipe> recipes,
+            EntityTableModel<Ingredient> ingredientTableModel,
+            EntityTableModel<Category> categoryTableModel,
+            CrudService<IngredientWithAmount> ingredientCrudService,
+            IngredientWithAmountDao ingredientWithAmountDao,
+            IngredientWitAmountMapper ingredientWitAmountMapper
+    ) {
         this.recipe = recipe;
+        this.recipes = recipes;
+        this.categoryTableModel = categoryTableModel;
+        this.ingredientTableModel = ingredientTableModel;
+        this.ingredientWithAmountCrudService = ingredientCrudService;
+        this.ingredientWithAmountDao = ingredientWithAmountDao;
+        this.ingredientWitAmountMapper = ingredientWitAmountMapper;
+
+        this.categories = IntStream.range(0, categoryTableModel.getRowCount())
+                .mapToObj(categoryTableModel::getEntity)
+                .collect(Collectors.toList());
+
+        this.ingredients = IntStream.range(0, ingredientTableModel.getRowCount())
+                .mapToObj(ingredientTableModel::getEntity)
+                .collect(Collectors.toList());
 
         JList<String> categoriesList = new JList<>(categories.stream().map(Category::getName).toArray(String[]::new));
         categoriesList.setCellRenderer(new CategoryListCellRenderer(categories));
@@ -72,11 +119,16 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
         if (recipe.getCategory() != null) {
             categoriesList.setSelectedValue(recipe.getCategory().getName(), true);
         }
-
         categoriesPane.setViewportView(categoriesList);
 
-        model = new IngredientWithAmountTableModel(recipe.getIngredients());
-        table = new JTable(model);
+        List<IngredientWithAmount> presentIngredients = new ArrayList<>();
+        var recipeIngredients = ingredientWithAmountDao.findIngredientsOfRecipe(recipe);
+        for (var entity : recipeIngredients) {
+            presentIngredients.add(ingredientWitAmountMapper.mapToBusiness(entity));
+        }
+
+        withAmountTableModel = new IngredientWithAmountTableModel(presentIngredients, ingredientWithAmountCrudService);
+        table = new JTable(withAmountTableModel);
 
         ingredientJComboBox = new JComboBox<>(new Vector<>(ingredients));
         ingredientJComboBox.setRenderer(new IngredientRenderer());
@@ -92,6 +144,7 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
         setValues();
         addFields();
     }
+
 
     private JPopupMenu createPopUpMenu(Action deleteAction) {
         var menu = new JPopupMenu();
@@ -160,10 +213,11 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
                 categories.stream().filter(category1 -> category1.getName().equals(categoryName)).toList();
 
         recipe.setCategory(categorySelected.size() > 0 ? categorySelected.get(0) : Category.createEmptyCategory());
-        int rows = model.getRowCount();
+        int rows = withAmountTableModel.getRowCount();
         for (int i = 0; i < rows; i++) {
-            ingredientsInRecipe.add(model.getEntity(i));
+            ingredientsInRecipe.add(withAmountTableModel.getEntity(i));
         }
+
         recipe.setIngredients(ingredientsInRecipe);
         return recipe;
     }
@@ -196,12 +250,28 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
 
     @Override
     public EntityDialog<?> createNewDialog(List<Recipe> recipes, List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
-        return new RecipeDialog(recipes, ingredients, categories);
+        return new RecipeDialog(
+                Recipe.createEmptyRecipe(),
+                recipes,
+                ingredientTableModel,
+                categoryTableModel,
+                ingredientWithAmountCrudService,
+                ingredientWithAmountDao,
+                ingredientWitAmountMapper
+        );
     }
 
     @Override
     public EntityDialog<Recipe> createNewDialog(Recipe recipe, List<Recipe> recipes, List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
-        return new RecipeDialog(recipe, recipes, ingredients, categories);
+        return new RecipeDialog(
+                recipe,
+                recipes,
+                ingredientTableModel,
+                categoryTableModel,
+                ingredientWithAmountCrudService,
+                ingredientWithAmountDao,
+                ingredientWitAmountMapper
+        );
     }
 
     private void addIngredient() {
@@ -215,8 +285,10 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
             return;
         }
 
+        System.out.println("selected ingredient with guid " + ingredient + " " + ingredient.getGuid());
         var ingredientAndAmount = new IngredientWithAmount(ingredient, amount);
-        model.addRow(ingredientAndAmount);
+        System.out.println(ingredientAndAmount.getIngredient().getGuid());
+        withAmountTableModel.addRow(ingredientAndAmount);
         amountField.setValue(0.0);
         System.out.println("Adding ingredient into recipe");
     }
@@ -230,10 +302,10 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
         }
         System.out.println("Ingredient Name " + selectedIngredient.getName());
         IngredientWithAmount ingredient = new IngredientWithAmount(selectedIngredient, (Double) amountField.getValue());
-        int rows = model.getRowCount();
+        int rows = withAmountTableModel.getRowCount();
 
         for (int i = 0; i < rows; i++) {
-            if (model.getEntity(i).equals(ingredient)) {
+            if (withAmountTableModel.getEntity(i).equals(ingredient)) {
                 JOptionPane.showMessageDialog(null, "Ingredient already present");
                 return false;
             }
@@ -245,7 +317,7 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
     private void deleteSelected() {
         int[] selected = table.getSelectedRows();
         for (int i = selected.length - 1; i >= 0; i--) {
-            model.deleteRow(selected[i]);
+            withAmountTableModel.deleteRow(selected[i]);
         }
     }
 
