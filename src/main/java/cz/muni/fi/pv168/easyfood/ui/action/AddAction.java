@@ -55,7 +55,6 @@ public final class AddAction extends AbstractAction {
         var result = dialog.show(table, title.toString());
 
         result.ifPresent(entity -> {
-            System.out.println(entity);
             model.addRow(entity);
             mainWindow.updateRecipeCountLabel();
         });

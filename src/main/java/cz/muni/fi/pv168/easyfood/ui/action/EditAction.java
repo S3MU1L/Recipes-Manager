@@ -2,6 +2,7 @@ package cz.muni.fi.pv168.easyfood.ui.action;
 
 
 import cz.muni.fi.pv168.easyfood.business.model.Category;
+import cz.muni.fi.pv168.easyfood.business.model.Entity;
 import cz.muni.fi.pv168.easyfood.business.model.Ingredient;
 import cz.muni.fi.pv168.easyfood.business.model.Recipe;
 import cz.muni.fi.pv168.easyfood.business.model.Unit;
@@ -60,7 +61,8 @@ public final class EditAction extends AbstractAction {
         var result = dialog.show(table, title.toString());
 
         result.ifPresent(entityToEdit -> {
-            model.updateRow(entityToEdit);
+            System.out.println(entityToEdit);
+            model.updateRow(entity);
         });
 
     }
