@@ -11,12 +11,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
 
-
 /**
  * The class is responsible for managing H2 database connection and schemas
  */
 public final class DatabaseManager {
-
     private static final String PROJECT_NAME = "easy-food";
     private static final String DB_PROPERTIES_STRING = "DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=false";
 
@@ -80,7 +78,7 @@ public final class DatabaseManager {
 
     private static Path createDbFileSystemPath() {
         String projectDir = System.getProperty("user.dir");
-        Path projectDbPath = Paths.get(projectDir, "db", PROJECT_NAME);
+        Path projectDbPath = Paths.get(projectDir, "cz.fi.muni.pv168.easyfood.storage.sql.db", PROJECT_NAME);
 
         File parentDir = projectDbPath.getParent().toFile();
 
