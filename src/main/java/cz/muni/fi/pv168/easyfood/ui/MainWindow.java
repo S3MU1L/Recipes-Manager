@@ -141,6 +141,8 @@ public class MainWindow {
         categoryTable = createCategoryTable(categoryTableModel, categories);
         recipeTable = createRecipeTable(recipeTableModel, recipes);
 
+        categoryTable.getRowSorter().toggleSortOrder(0);
+
         tabContainer = new TabContainer();
         tabContainer.addTab(recipeTab);
         tabContainer.addTab(ingredientTab);
