@@ -91,7 +91,6 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
         this.categoryTableModel = categoryTableModel;
         this.ingredientTableModel = ingredientTableModel;
         this.ingredientWithAmountCrudService = ingredientWithAmountCrudService;
-
         this.categories = IntStream.range(0, categoryTableModel.getRowCount())
                 .mapToObj(categoryTableModel::getEntity)
                 .collect(Collectors.toList());
@@ -279,7 +278,7 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
         int rows = withAmountTableModel.getRowCount();
 
         for (int i = 0; i < rows; i++) {
-            if (withAmountTableModel.getEntity(i).equals(ingredient)) {
+            if (withAmountTableModel.getEntity(i).getName().equals(ingredient.getName())) {
                 JOptionPane.showMessageDialog(null, "Ingredient already present", "Error", ERROR_MESSAGE, null);
                 return false;
             }

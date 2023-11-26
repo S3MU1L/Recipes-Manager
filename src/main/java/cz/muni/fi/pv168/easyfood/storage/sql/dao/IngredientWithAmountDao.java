@@ -101,8 +101,6 @@ public class IngredientWithAmountDao implements DataAccessObject<IngredientWithA
     }
 
     public List<IngredientWithAmountEntity> findIngredientsOfRecipe(Long id) {
-        System.out.println("searching for id + " + id);
-
         var sql = "SELECT id, guid, recipeId, ingredientId, amount FROM RecipeIngredientWithAmount WHERE recipeId = ?";
         List<IngredientWithAmountEntity> ingredientsList = new ArrayList<>();
 

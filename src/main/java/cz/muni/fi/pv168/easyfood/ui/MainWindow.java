@@ -124,7 +124,7 @@ public class MainWindow {
         unitCrudService = new UnitCrudService(unitRepository, unitValidator, guidProvider);
         ingredientWithAmountCrudService =
                 new IngredientWithAmountCrudService(ingredientWithAmountRepository, ingredientWithAmountValidator,
-                                                    guidProvider);
+                        guidProvider);
 
         List<Recipe> recipes = new ArrayList<>(recipeCrudService.findAll());
         List<Unit> units = new ArrayList<>(unitCrudService.findAll());
@@ -218,25 +218,10 @@ public class MainWindow {
         table.setAutoCreateRowSorter(true);
         table.setDefaultRenderer(Object.class, new CustomTableCellRenderer<>(recipeTableModel));
         table.getSelectionModel().addListSelectionListener(this::rowSelectionChanged);
-        addIngredientsToRecipes(recipes);
         recipeTab = new Tab("recipes", table, recipeTableModel,
-                            new RecipeDialog(Recipe.createEmptyRecipe(), recipes, ingredientTableModel,
-                                             categoryTableModel, ingredientWithAmountCrudService));
+                new RecipeDialog(Recipe.createEmptyRecipe(), recipes, ingredientTableModel,
+                        categoryTableModel, ingredientWithAmountCrudService));
         return table;
-    }
-
-    private void addIngredientsToRecipes(List<Recipe> recipes) {
-        for (var recipe : recipes) {
-            System.out.println(recipe);
-            var recipeEntity = dependencyProvider.getRecipeDao().findByGuid(recipe.getGuid());
-            var ingredients =
-                    dependencyProvider.getIngredientWithAmountDao().findIngredientsOfRecipe(recipeEntity.get().id());
-            for (var ingredient : ingredients) {
-                System.out.println(ingredient);
-                var ingredientWithAmount = dependencyProvider.getIngredientWithAmountMapper().mapToBusiness(ingredient);
-                recipe.addIngredient(ingredientWithAmount);
-            }
-        }
     }
 
     private JTable createIngredientTable(IngredientTableModel ingredientTableModel, List<Ingredient> ingredients,
@@ -335,14 +320,14 @@ public class MainWindow {
             Unit unit = (Unit) tabContainer.getSelectedTab().getModel().getEntity(index);
             specialEdit =
                     Arrays.stream(BaseUnit.values()).map(BaseUnit::toString).filter(name -> unit.getName().equals(name))
-                          .toList().isEmpty();
+                            .toList().isEmpty();
         } else {
             specialEdit = true;
         }
         editAction.setEnabled(selectionModel.getSelectedItemsCount() == 1 && specialEdit);
         deleteAction.setEnabled(selectionModel.getSelectedItemsCount() >= 1 && specialEdit);
         showAction.setEnabled(selectionModel.getSelectedItemsCount() == 1 &&
-                                      tabContainer.getSelectedTab().getModel() instanceof RecipeTableModel);
+                tabContainer.getSelectedTab().getModel() instanceof RecipeTableModel);
     }
 
     public void updateRecipeCountLabel() {
