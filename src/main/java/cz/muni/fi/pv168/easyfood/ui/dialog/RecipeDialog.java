@@ -271,7 +271,7 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
         Ingredient selectedIngredient = (Ingredient) ingredientJComboBox.getSelectedItem();
         double amount = (double) amountField.getValue();
         if (amount <= 0) {
-            JOptionPane.showMessageDialog(null, "Invalid amount of ingredient");
+            JOptionPane.showMessageDialog(null, "Invalid amount of ingredient", "Error", ERROR_MESSAGE, null);
             return false;
         }
         System.out.println("Ingredient Name " + selectedIngredient.getName());
@@ -280,7 +280,7 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
 
         for (int i = 0; i < rows; i++) {
             if (withAmountTableModel.getEntity(i).equals(ingredient)) {
-                JOptionPane.showMessageDialog(null, "Ingredient already present");
+                JOptionPane.showMessageDialog(null, "Ingredient already present", "Error", ERROR_MESSAGE, null);
                 return false;
             }
         }
