@@ -118,7 +118,7 @@ public class UnitTableModel extends AbstractTableModel implements EntityTableMod
 
     @Override
     public void updateAll() {
-        units = unitCrudService.findAll();
+        units = new ArrayList<>(unitCrudService.findAll());
     }
 
 

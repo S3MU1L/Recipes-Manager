@@ -91,7 +91,7 @@ public class CategoryTableModel extends AbstractTableModel implements EntityTabl
 
     @Override
     public void updateAll() {
-        categories = categoryCrudService.findAll();
+        categories = new ArrayList<>(categoryCrudService.findAll());
     }
 
     public void deleteRow(int rowIndex) {

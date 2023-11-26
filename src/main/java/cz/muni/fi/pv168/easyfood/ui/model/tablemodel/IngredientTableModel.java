@@ -78,7 +78,7 @@ public class IngredientTableModel extends AbstractTableModel implements EntityTa
 
     @Override
     public void updateAll() {
-        ingredients = ingredientCrudService.findAll();
+        ingredients = new ArrayList<>(ingredientCrudService.findAll());
     }
 
     public void deleteRow(int rowIndex) {

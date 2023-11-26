@@ -8,6 +8,7 @@ import cz.muni.fi.pv168.easyfood.wiring.DependencyProvider;
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 import java.awt.Component;
+import java.util.ArrayList;
 import java.util.List;
 
 public class RecipeTableModel extends AbstractTableModel implements EntityTableModel<Recipe> {
@@ -91,7 +92,7 @@ public class RecipeTableModel extends AbstractTableModel implements EntityTableM
 
     @Override
     public void updateAll() {
-        recipes = recipeCrudService.findAll();
+        recipes = new ArrayList<>(recipeCrudService.findAll());
     }
 
 
