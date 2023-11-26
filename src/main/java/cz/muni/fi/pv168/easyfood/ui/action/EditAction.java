@@ -61,7 +61,6 @@ public final class EditAction extends AbstractAction {
         var result = dialog.show(table, title.toString());
 
         result.ifPresent(entityToEdit -> {
-            System.out.println(entityToEdit);
             model.updateRow(entity);
         });
 

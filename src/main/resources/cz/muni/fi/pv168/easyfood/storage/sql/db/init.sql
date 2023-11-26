@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS RecipeIngredientWithAmount
 (
     id           BIGINT PRIMARY KEY AUTO_INCREMENT,
     guid         VARCHAR(255) NOT NULL,
-    recipeId     VARCHAR(255) NOT NULL,
+    recipeId     BIGINT,
     ingredientId BIGINT,
     amount       DOUBLE       NOT NULL,
     FOREIGN KEY (ingredientId) REFERENCES Ingredient (id)

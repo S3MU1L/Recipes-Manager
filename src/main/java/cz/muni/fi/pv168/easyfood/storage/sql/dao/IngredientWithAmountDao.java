@@ -1,8 +1,8 @@
 package cz.muni.fi.pv168.easyfood.storage.sql.dao;
 
+import cz.muni.fi.pv168.easyfood.business.model.IngredientWithAmount;
 import cz.muni.fi.pv168.easyfood.business.model.Recipe;
 import cz.muni.fi.pv168.easyfood.storage.DataStorageException;
-import cz.muni.fi.pv168.easyfood.storage.sql.dao.DataAccessObject;
 import cz.muni.fi.pv168.easyfood.storage.sql.db.ConnectionHandler;
 import cz.muni.fi.pv168.easyfood.storage.sql.entity.IngredientWithAmountEntity;
 
@@ -19,43 +19,16 @@ public class IngredientWithAmountDao implements DataAccessObject<IngredientWithA
 
     private final Supplier<ConnectionHandler> connections;
 
-    public IngredientWithAmountDao(Supplier<ConnectionHandler> connections) {
+    public IngredientWithAmountDao(
+            Supplier<ConnectionHandler> connections
+    ) {
         this.connections = connections;
     }
 
     @Override
     public IngredientWithAmountEntity create(IngredientWithAmountEntity entity) {
-        var sql = """
-                INSERT INTO RecipeIngredientWithAmount(guid, recipeId, ingredientId, amount)
-                VALUES (?, ?, ?, ?)
-                """;
-        try (
-                var connection = connections.get();
-                var statement = connection.use().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)
-        ) {
-            statement.setString(1, entity.guid());
-            statement.setLong(2, entity.ingredientId());
-            statement.setLong(3, entity.ingredientId());
-            statement.setDouble(4, entity.amount());
-            statement.executeUpdate();
-
-            try (var keyResultSet = statement.getGeneratedKeys()) {
-                long recipeIngredientWithAmountId;
-
-                if (keyResultSet.next()) {
-                    recipeIngredientWithAmountId = keyResultSet.getLong(1);
-                } else {
-                    throw new DataStorageException("Failed to fetch generated key for: " + entity);
-                }
-                if (keyResultSet.next()) {
-                    throw new DataStorageException("Multiple keys returned for: " + entity);
-                }
-
-                return findById(recipeIngredientWithAmountId).orElseThrow();
-            }
-        } catch (SQLException ex) {
-            throw new DataStorageException("Failed to store: " + entity, ex);
-        }
+        // NOT IMPLEMENTED IN THIS DAO
+        return null;
     }
 
     @Override
@@ -127,17 +100,18 @@ public class IngredientWithAmountDao implements DataAccessObject<IngredientWithA
         }
     }
 
-    public List<IngredientWithAmountEntity> findIngredientsOfRecipe(Recipe recipe) {
-        var sql = "SELECT id, guid, recipeId, ingredientId, amount FROM RecipeIngredientWithAmount WHERE guid = ?";
+    public List<IngredientWithAmountEntity> findIngredientsOfRecipe(Long id) {
+        System.out.println("searching for id + " + id);
+
+        var sql = "SELECT id, guid, recipeId, ingredientId, amount FROM RecipeIngredientWithAmount WHERE recipeId = ?";
         List<IngredientWithAmountEntity> ingredientsList = new ArrayList<>();
 
         try (
                 var connection = connections.get();
                 var statement = connection.use().prepareStatement(sql)
         ) {
-            statement.setString(1, recipe.getGuid());
+            statement.setLong(1, id);
             var resultSet = statement.executeQuery();
-
             while (resultSet.next()) {
                 ingredientsList.add(ingredientWithAmountFromResultSet(resultSet));
             }
@@ -207,5 +181,42 @@ public class IngredientWithAmountDao implements DataAccessObject<IngredientWithA
         } catch (SQLException ex) {
             throw new DataStorageException("Failed to check if recipe ingredient with amount exists: " + guid, ex);
         }
+    }
+
+    public IngredientWithAmountEntity addRecipeIngredient(IngredientWithAmount ingredient, Long recipeId, Long ingredientId) {
+        System.out.println("adding recipe-ingredient" + recipeId + " " + ingredientId + " " + ingredient.getAmount());
+        var sql = """
+                INSERT INTO RecipeIngredientWithAmount(guid, recipeId, ingredientId, amount)
+                VALUES (?, ?, ?, ?)
+                """;
+        try (
+                var connection = connections.get();
+                var statement = connection.use().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)
+        ) {
+            statement.setString(1, ingredient.getGuid());
+            statement.setLong(2, recipeId);
+            statement.setLong(3, ingredientId);
+            statement.setDouble(4, ingredient.getAmount());
+            statement.executeUpdate();
+
+            try (var keyResultSet = statement.getGeneratedKeys()) {
+                long recipeIngredientWithAmountId;
+
+                if (keyResultSet.next()) {
+                    recipeIngredientWithAmountId = keyResultSet.getLong(1);
+                } else {
+                    throw new DataStorageException("Failed to fetch generated key for: " + ingredient);
+                }
+                if (keyResultSet.next()) {
+                    throw new DataStorageException("Multiple keys returned for: " + ingredient);
+                }
+
+                System.out.println("executed insert");
+                return findById(recipeIngredientWithAmountId).orElseThrow();
+            }
+        } catch (SQLException ex) {
+            throw new DataStorageException("Failed to store: " + ingredient, ex);
+        }
+
     }
 }

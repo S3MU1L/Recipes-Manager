@@ -3,6 +3,7 @@ package cz.muni.fi.pv168.easyfood.ui.model.tablemodel;
 import cz.muni.fi.pv168.easyfood.business.model.Recipe;
 import cz.muni.fi.pv168.easyfood.business.service.crud.CrudService;
 import cz.muni.fi.pv168.easyfood.ui.model.Column;
+import cz.muni.fi.pv168.easyfood.wiring.DependencyProvider;
 
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
@@ -13,6 +14,7 @@ import java.util.List;
 public class RecipeTableModel extends AbstractTableModel implements EntityTableModel<Recipe> {
     private final List<Recipe> recipes;
     private final CrudService<Recipe> recipeCrudService;
+    private final DependencyProvider dependencyProvider;
 
     private final List<Column<Recipe, ?>> columns = List.of(
             Column.readonly("Name", String.class, Recipe::getName),
@@ -20,9 +22,10 @@ public class RecipeTableModel extends AbstractTableModel implements EntityTableM
             Column.readonly("Preparation time", String.class, Recipe::getFormattedPreparationTime)
     );
 
-    public RecipeTableModel(CrudService<Recipe> recipeCrudService) {
+    public RecipeTableModel(CrudService<Recipe> recipeCrudService, DependencyProvider dependencyProvider) {
         this.recipeCrudService = recipeCrudService;
         this.recipes = new ArrayList<>(recipeCrudService.findAll());
+        this.dependencyProvider = dependencyProvider;
     }
 
     @Override
@@ -66,9 +69,19 @@ public class RecipeTableModel extends AbstractTableModel implements EntityTableM
     public void addRow(Recipe recipe) {
         recipeCrudService.create(recipe)
                 .intoException();
+        addIngredients(recipe);
+
         int newRowIndex = recipes.size();
         recipes.add(recipe);
         fireTableRowsInserted(newRowIndex, newRowIndex);
+    }
+
+    private void addIngredients(Recipe recipe) {
+        var recipeEntity = dependencyProvider.getRecipeDao().findByGuid(recipe.getGuid());
+        for (var ingredientAmount : recipe.getIngredients()) {
+            var ingredientEntity = dependencyProvider.getIngredientDao().findByGuid(ingredientAmount.getIngredient().getGuid());
+            dependencyProvider.getIngredientWithAmountDao().addRecipeIngredient(ingredientAmount, recipeEntity.get().id(), ingredientEntity.get().id());
+        }
     }
 
     public void updateRow(Recipe recipe) {

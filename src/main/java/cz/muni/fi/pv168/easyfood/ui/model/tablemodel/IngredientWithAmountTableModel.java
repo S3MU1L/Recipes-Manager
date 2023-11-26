@@ -60,8 +60,6 @@ public class IngredientWithAmountTableModel extends AbstractTableModel implement
 
 
     public void addRow(IngredientWithAmount ingredient) {
-        ingredientCrudService.create(ingredient)
-                .intoException();
         int newRowIndex = ingredients.size();
         ingredients.add(ingredient);
         fireTableRowsInserted(newRowIndex, newRowIndex);
@@ -73,6 +71,13 @@ public class IngredientWithAmountTableModel extends AbstractTableModel implement
                 .intoException();
         int rowIndex = ingredients.indexOf(ingredient);
         fireTableRowsUpdated(rowIndex, rowIndex);
+    }
+
+    public void deleteRow(int rowIndex) {
+        var toDelete = ingredients.get(rowIndex);
+        ingredientCrudService.deleteByGuid(toDelete.getGuid());
+        ingredients.remove(rowIndex);
+        fireTableRowsDeleted(rowIndex, rowIndex);
     }
 
     @Override
@@ -87,10 +92,4 @@ public class IngredientWithAmountTableModel extends AbstractTableModel implement
         return ingredients.get(rowIndex);
     }
 
-    public void deleteRow(int rowIndex) {
-        var toDelete = ingredients.get(rowIndex);
-        ingredientCrudService.deleteByGuid(toDelete.getGuid());
-        ingredients.remove(rowIndex);
-        fireTableRowsDeleted(rowIndex, rowIndex);
-    }
 }

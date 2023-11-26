@@ -179,7 +179,7 @@ public class RecipeDao implements DataAccessObject<RecipeEntity> {
     }
 
     private void deleteRecipeIngredientWithAmount(Connection connection, long recipeId) throws SQLException {
-        var sql = "DELETE FROM RecipeIngredientWithAmount WHERE recipeId = ?";
+        var sql = "DELETE FROM Recipe WHERE id = ?";
         try (var statement = connection.prepareStatement(sql)) {
             statement.setLong(1, recipeId);
             statement.executeUpdate();

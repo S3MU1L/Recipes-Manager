@@ -1,6 +1,7 @@
 package cz.muni.fi.pv168.easyfood.business.model;
 
 import java.util.Objects;
+import java.util.UUID;
 
 public class IngredientWithAmount extends Entity {
     private Ingredient ingredient;
@@ -22,6 +23,7 @@ public class IngredientWithAmount extends Entity {
             double calories,
             Unit unit,
             double amount) {
+        super(UUID.randomUUID().toString());
         this.ingredient = new Ingredient(name, calories, unit);
         this.amount = amount;
     }
@@ -38,6 +40,7 @@ public class IngredientWithAmount extends Entity {
     public IngredientWithAmount(
             Ingredient ingredient,
             double amount) {
+        super(UUID.randomUUID().toString());
         this.ingredient = ingredient;
         this.amount = amount;
     }

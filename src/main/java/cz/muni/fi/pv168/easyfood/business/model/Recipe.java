@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 public class Recipe extends Entity {
     private String name;
@@ -44,7 +45,7 @@ public class Recipe extends Entity {
     }
 
     public static Recipe createEmptyRecipe() {
-        return new Recipe("", new ArrayList<>(), "", 0, 0, null);
+        return new Recipe(UUID.randomUUID().toString(), "", new ArrayList<>(), "", 0, 0, null);
     }
 
     public void setCategory(Category category) {

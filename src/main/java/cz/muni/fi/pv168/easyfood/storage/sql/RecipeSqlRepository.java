@@ -39,7 +39,7 @@ public class RecipeSqlRepository implements Repository<Recipe> {
     @Override
     public void update(Recipe entity) {
         var existingRecipe = recipeDao.findByGuid(entity.getGuid())
-                .orElseThrow(() -> new DataStorageException("Recipe not found, id: " + entity.getGuid()));
+                .orElseThrow(() -> new DataStorageException("Recipe not found, guid: " + entity.getGuid()));
         var updatedRecipe = recipeMapper.mapExistingEntityToDatabase(entity, existingRecipe.id());
 
         recipeDao.update(updatedRecipe);

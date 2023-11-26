@@ -20,7 +20,7 @@ import cz.muni.fi.pv168.easyfood.storage.sql.dao.UnitDao;
 import cz.muni.fi.pv168.easyfood.storage.sql.db.DatabaseManager;
 import cz.muni.fi.pv168.easyfood.storage.sql.entity.mapper.CategoryMapper;
 import cz.muni.fi.pv168.easyfood.storage.sql.entity.mapper.IngredientMapper;
-import cz.muni.fi.pv168.easyfood.storage.sql.entity.mapper.IngredientWitAmountMapper;
+import cz.muni.fi.pv168.easyfood.storage.sql.entity.mapper.IngredientWithAmountMapper;
 import cz.muni.fi.pv168.easyfood.storage.sql.entity.mapper.RecipeMapper;
 import cz.muni.fi.pv168.easyfood.storage.sql.entity.mapper.UnitMapper;
 
@@ -36,25 +36,32 @@ public class CommonDependencyProvider implements DependencyProvider {
     private final Repository<IngredientWithAmount> ingredientsWithAmount;
     private final DatabaseManager databaseManager;
     private final IngredientWithAmountDao ingredientWithAmountDao;
-    private final IngredientWitAmountMapper ingredientWitAmountMapper;
+    private final RecipeDao recipeDao;
+    private final IngredientDao ingredientDao;
+    private final CategoryDao categoryDao;
+    private final IngredientWithAmountMapper ingredientWithAmountMapper;
+    private final RecipeMapper recipeMapper;
+
+
+    private final IngredientMapper ingredientMapper;
 
     public CommonDependencyProvider(DatabaseManager databaseManager) {
         this.databaseManager = databaseManager;
 
         var categoryMapper = new CategoryMapper();
-        var categoryDao = new CategoryDao(databaseManager::getConnectionHandler);
+        categoryDao = new CategoryDao(databaseManager::getConnectionHandler);
 
         var unitMapper = new UnitMapper();
         var unitDao = new UnitDao(databaseManager::getConnectionHandler);
 
-        var ingredientMapper = new IngredientMapper(unitDao, unitMapper);
-        var ingredientDao = new IngredientDao(databaseManager::getConnectionHandler);
+        ingredientMapper = new IngredientMapper(unitDao, unitMapper);
+        ingredientDao = new IngredientDao(databaseManager::getConnectionHandler);
 
-        ingredientWitAmountMapper = new IngredientWitAmountMapper(ingredientDao, ingredientMapper);
+        ingredientWithAmountMapper = new IngredientWithAmountMapper(ingredientDao, ingredientMapper);
         ingredientWithAmountDao = new IngredientWithAmountDao(databaseManager::getConnectionHandler);
 
-        var recipeMapper = new RecipeMapper(categoryDao, categoryMapper, ingredientWithAmountDao, ingredientWitAmountMapper);
-        var recipeDao = new RecipeDao(databaseManager::getConnectionHandler);
+        recipeMapper = new RecipeMapper(categoryDao, categoryMapper, ingredientWithAmountDao, ingredientWithAmountMapper);
+        recipeDao = new RecipeDao(databaseManager::getConnectionHandler);
 
         this.categories = new CategorySqlRepository(
                 categoryDao,
@@ -78,7 +85,7 @@ public class CommonDependencyProvider implements DependencyProvider {
 
         this.ingredientsWithAmount = new IngredientWithAmountSqlRepository(
                 ingredientWithAmountDao,
-                ingredientWitAmountMapper
+                ingredientWithAmountMapper
         );
 
 
@@ -119,7 +126,31 @@ public class CommonDependencyProvider implements DependencyProvider {
         return ingredientWithAmountDao;
     }
 
-    public IngredientWitAmountMapper getIngredientWitAmountMapper() {
-        return ingredientWitAmountMapper;
+    public IngredientWithAmountMapper getIngredientWithAmountMapper() {
+        return ingredientWithAmountMapper;
+    }
+
+    @Override
+    public RecipeMapper getRecipeMapper() {
+        return recipeMapper;
+    }
+
+    @Override
+    public IngredientMapper getIngredientMapper() {
+        return ingredientMapper;
+    }
+
+    @Override
+    public RecipeDao getRecipeDao() {
+        return recipeDao;
+    }
+
+    @Override
+    public IngredientDao getIngredientDao() {
+        return ingredientDao;
+    }
+
+    public CategoryDao getCategoryDao() {
+        return categoryDao;
     }
 }

@@ -6,9 +6,12 @@ import cz.muni.fi.pv168.easyfood.business.model.IngredientWithAmount;
 import cz.muni.fi.pv168.easyfood.business.model.Recipe;
 import cz.muni.fi.pv168.easyfood.business.model.Unit;
 import cz.muni.fi.pv168.easyfood.business.service.crud.CrudService;
+import cz.muni.fi.pv168.easyfood.storage.sql.dao.CategoryDao;
+import cz.muni.fi.pv168.easyfood.storage.sql.dao.IngredientDao;
 import cz.muni.fi.pv168.easyfood.storage.sql.dao.IngredientWithAmountDao;
-import cz.muni.fi.pv168.easyfood.storage.sql.entity.IngredientWithAmountEntity;
-import cz.muni.fi.pv168.easyfood.storage.sql.entity.mapper.IngredientWitAmountMapper;
+import cz.muni.fi.pv168.easyfood.storage.sql.dao.RecipeDao;
+import cz.muni.fi.pv168.easyfood.storage.sql.entity.mapper.IngredientMapper;
+import cz.muni.fi.pv168.easyfood.storage.sql.entity.mapper.IngredientWithAmountMapper;
 import cz.muni.fi.pv168.easyfood.ui.model.tablemodel.EntityTableModel;
 import cz.muni.fi.pv168.easyfood.ui.resources.Icons;
 import cz.muni.fi.pv168.easyfood.ui.model.tablemodel.IngredientWithAmountTableModel;
@@ -61,31 +64,25 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
     private final JTable table;
     private final List<Recipe> recipes;
     private final Recipe recipe;
+    private final EntityTableModel<Category> categoryTableModel;
     private final EntityTableModel<Ingredient> ingredientTableModel;
     private final List<Ingredient> ingredients;
     private final CrudService<IngredientWithAmount> ingredientWithAmountCrudService;
-    private final EntityTableModel<Category> categoryTableModel;
     private final EntityTableModel<IngredientWithAmount> withAmountTableModel;
     private final List<Category> categories;
-    private final IngredientWithAmountDao ingredientWithAmountDao;
-
-    private final IngredientWitAmountMapper ingredientWitAmountMapper;
 
     public RecipeDialog(
             List<Recipe> recipes,
             EntityTableModel<Ingredient> ingredientTableModel,
             EntityTableModel<Category> categoryTableModel,
-            CrudService<IngredientWithAmount> ingredientCrudService,
-            IngredientWithAmountDao ingredientWithAmountDao,
-            IngredientWitAmountMapper ingredientWitAmountMapper
+            CrudService<IngredientWithAmount> ingredientWithAmountCrudService
     ) {
         this(Recipe.createEmptyRecipe(),
                 recipes,
                 ingredientTableModel,
                 categoryTableModel,
-                ingredientCrudService,
-                ingredientWithAmountDao,
-                ingredientWitAmountMapper);
+                ingredientWithAmountCrudService
+        );
     }
 
     public RecipeDialog(
@@ -93,17 +90,13 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
             List<Recipe> recipes,
             EntityTableModel<Ingredient> ingredientTableModel,
             EntityTableModel<Category> categoryTableModel,
-            CrudService<IngredientWithAmount> ingredientCrudService,
-            IngredientWithAmountDao ingredientWithAmountDao,
-            IngredientWitAmountMapper ingredientWitAmountMapper
+            CrudService<IngredientWithAmount> ingredientWithAmountCrudService
     ) {
         this.recipe = recipe;
         this.recipes = recipes;
         this.categoryTableModel = categoryTableModel;
         this.ingredientTableModel = ingredientTableModel;
-        this.ingredientWithAmountCrudService = ingredientCrudService;
-        this.ingredientWithAmountDao = ingredientWithAmountDao;
-        this.ingredientWitAmountMapper = ingredientWitAmountMapper;
+        this.ingredientWithAmountCrudService = ingredientWithAmountCrudService;
 
         this.categories = IntStream.range(0, categoryTableModel.getRowCount())
                 .mapToObj(categoryTableModel::getEntity)
@@ -120,14 +113,7 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
             categoriesList.setSelectedValue(recipe.getCategory().getName(), true);
         }
         categoriesPane.setViewportView(categoriesList);
-
-        List<IngredientWithAmount> presentIngredients = new ArrayList<>();
-        var recipeIngredients = ingredientWithAmountDao.findIngredientsOfRecipe(recipe);
-        for (var entity : recipeIngredients) {
-            presentIngredients.add(ingredientWitAmountMapper.mapToBusiness(entity));
-        }
-
-        withAmountTableModel = new IngredientWithAmountTableModel(presentIngredients, ingredientWithAmountCrudService);
+        withAmountTableModel = new IngredientWithAmountTableModel(recipe.getIngredients(), ingredientWithAmountCrudService);
         table = new JTable(withAmountTableModel);
 
         ingredientJComboBox = new JComboBox<>(new Vector<>(ingredients));
@@ -255,9 +241,7 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
                 recipes,
                 ingredientTableModel,
                 categoryTableModel,
-                ingredientWithAmountCrudService,
-                ingredientWithAmountDao,
-                ingredientWitAmountMapper
+                ingredientWithAmountCrudService
         );
     }
 
@@ -268,9 +252,7 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
                 recipes,
                 ingredientTableModel,
                 categoryTableModel,
-                ingredientWithAmountCrudService,
-                ingredientWithAmountDao,
-                ingredientWitAmountMapper
+                ingredientWithAmountCrudService
         );
     }
 
@@ -285,12 +267,10 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
             return;
         }
 
-        System.out.println("selected ingredient with guid " + ingredient + " " + ingredient.getGuid());
         var ingredientAndAmount = new IngredientWithAmount(ingredient, amount);
-        System.out.println(ingredientAndAmount.getIngredient().getGuid());
+        recipe.addIngredient(ingredientAndAmount);
         withAmountTableModel.addRow(ingredientAndAmount);
         amountField.setValue(0.0);
-        System.out.println("Adding ingredient into recipe");
     }
 
     private boolean validAddIngredient() {

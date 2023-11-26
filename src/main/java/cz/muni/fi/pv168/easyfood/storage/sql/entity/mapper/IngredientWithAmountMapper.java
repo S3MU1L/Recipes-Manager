@@ -7,12 +7,12 @@ import cz.muni.fi.pv168.easyfood.storage.sql.dao.DataAccessObject;
 import cz.muni.fi.pv168.easyfood.storage.sql.entity.IngredientEntity;
 import cz.muni.fi.pv168.easyfood.storage.sql.entity.IngredientWithAmountEntity;
 
-public class IngredientWitAmountMapper implements EntityMapper<IngredientWithAmountEntity, IngredientWithAmount> {
+public class IngredientWithAmountMapper implements EntityMapper<IngredientWithAmountEntity, IngredientWithAmount> {
 
     private final DataAccessObject<IngredientEntity> ingredientDao;
     private final EntityMapper<IngredientEntity, Ingredient> ingredientManager;
 
-    public IngredientWitAmountMapper(
+    public IngredientWithAmountMapper(
             DataAccessObject<IngredientEntity> ingredientDao,
             EntityMapper<IngredientEntity, Ingredient> ingredientManager) {
         this.ingredientDao = ingredientDao;

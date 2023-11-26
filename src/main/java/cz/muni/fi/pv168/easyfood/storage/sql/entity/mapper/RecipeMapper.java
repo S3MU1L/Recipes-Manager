@@ -71,19 +71,10 @@ public class RecipeMapper implements EntityMapper<RecipeEntity, Recipe> {
                 .orElseThrow(() -> new DataStorageException("Category not found, guid: " +
                         entity.getCategory().getGuid()));
 
-        List<Long> ingredientIds = new ArrayList<>();
-//        for (IngredientWithAmount ingredient : entity.getIngredients()) {
-//            var ingredientEntity = ingredientDao
-//                    .findByGuid(ingredient.getIngredient().getGuid())
-//                    .orElseThrow(() -> new DataStorageException("Ingredient not found, guid: " +
-//                            ingredient.getIngredient().getGuid()));
-//            ingredientIds.add(ingredientEntity.id());
-//        }
-
         return new RecipeEntity(
                 entity.getGuid(),
                 entity.getName(),
-                ingredientIds,
+                new ArrayList<>(),
                 entity.getDescription(),
                 entity.getPreparationTime(),
                 entity.getPortions(),
@@ -98,20 +89,11 @@ public class RecipeMapper implements EntityMapper<RecipeEntity, Recipe> {
                 .orElseThrow(() -> new DataStorageException("Category not found, guid: " +
                         entity.getCategory().getGuid()));
 
-        List<Long> ingredientIds = new ArrayList<>();
-        for (IngredientWithAmount ingredient : entity.getIngredients()) {
-            var ingredientEntity = ingredientDao
-                    .findByGuid(ingredient.getIngredient().getGuid())
-                    .orElseThrow(() -> new DataStorageException("Ingredient not found, guid: " +
-                            ingredient.getIngredient().getGuid()));
-            ingredientIds.add(ingredientEntity.id());
-        }
-
         return new RecipeEntity(
                 dbId,
                 entity.getGuid(),
                 entity.getName(),
-                ingredientIds,
+                new ArrayList<>(),
                 entity.getDescription(),
                 entity.getPreparationTime(),
                 entity.getPortions(),
