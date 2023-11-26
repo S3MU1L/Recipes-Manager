@@ -171,7 +171,6 @@ public class RecipeDao implements DataAccessObject<RecipeEntity> {
             statement.setLong(7, entity.id());
             statement.executeUpdate();
 
-            deleteRecipeIngredientWithAmount(connection.use(), entity.id());
             return entity;
         } catch (SQLException ex) {
             throw new DataStorageException("Failed to update recipe: " + entity, ex);
