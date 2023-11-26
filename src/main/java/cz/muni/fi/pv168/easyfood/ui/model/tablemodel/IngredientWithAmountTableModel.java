@@ -73,6 +73,11 @@ public class IngredientWithAmountTableModel extends AbstractTableModel implement
         fireTableRowsUpdated(rowIndex, rowIndex);
     }
 
+    @Override
+    public void updateAll() {
+
+    }
+
     public void deleteRow(int rowIndex) {
         var toDelete = ingredients.get(rowIndex);
         ingredientCrudService.deleteByGuid(toDelete.getGuid());

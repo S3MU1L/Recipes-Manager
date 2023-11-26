@@ -8,11 +8,10 @@ import cz.muni.fi.pv168.easyfood.wiring.DependencyProvider;
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 import java.awt.Component;
-import java.util.ArrayList;
 import java.util.List;
 
 public class RecipeTableModel extends AbstractTableModel implements EntityTableModel<Recipe> {
-    private final List<Recipe> recipes;
+    private List<Recipe> recipes;
     private final CrudService<Recipe> recipeCrudService;
     private final DependencyProvider dependencyProvider;
 
@@ -22,9 +21,9 @@ public class RecipeTableModel extends AbstractTableModel implements EntityTableM
             Column.readonly("Preparation time", String.class, Recipe::getFormattedPreparationTime)
     );
 
-    public RecipeTableModel(CrudService<Recipe> recipeCrudService, DependencyProvider dependencyProvider) {
+    public RecipeTableModel(CrudService<Recipe> recipeCrudService, DependencyProvider dependencyProvider, List<Recipe> recipes) {
         this.recipeCrudService = recipeCrudService;
-        this.recipes = new ArrayList<>(recipeCrudService.findAll());
+        this.recipes = recipes;
         this.dependencyProvider = dependencyProvider;
     }
 
@@ -88,6 +87,11 @@ public class RecipeTableModel extends AbstractTableModel implements EntityTableM
         recipeCrudService.update(recipe);
         int rowIndex = recipes.indexOf(recipe);
         fireTableRowsUpdated(rowIndex, rowIndex);
+    }
+
+    @Override
+    public void updateAll() {
+        recipes = recipeCrudService.findAll();
     }
 
 

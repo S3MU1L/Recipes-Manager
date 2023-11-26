@@ -18,10 +18,9 @@ import java.util.List;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 
 public class UnitTableModel extends AbstractTableModel implements EntityTableModel<Unit> {
-    private final List<Unit> units;
+    private List<Unit> units;
     private final List<Ingredient> ingredients;
     private final CrudService<Unit> unitCrudService;
-    private final CrudService<Ingredient> ingredientCrudService;
 
     private final List<Column<Unit, ?>> columns = List.of(
             Column.readonly("Name", String.class, Unit::getName),
@@ -29,11 +28,10 @@ public class UnitTableModel extends AbstractTableModel implements EntityTableMod
             Column.readonly("In Base Unit", String.class, Unit::getFormattedBaseUnit)
     );
 
-    public UnitTableModel(CrudService<Unit> unitCrudService, CrudService<Ingredient> ingredientCrudService) {
+    public UnitTableModel(CrudService<Unit> unitCrudService, List<Ingredient> ingredients, List<Unit> units) {
         this.unitCrudService = unitCrudService;
-        this.ingredientCrudService = ingredientCrudService;
-        this.units = new ArrayList<>(unitCrudService.findAll());
-        this.ingredients = new ArrayList<>(ingredientCrudService.findAll());
+        this.ingredients = ingredients;
+        this.units = units;
     }
 
     public int getSize() {
@@ -118,6 +116,11 @@ public class UnitTableModel extends AbstractTableModel implements EntityTableMod
         fireTableRowsUpdated(rowIndex, rowIndex);
     }
 
+    @Override
+    public void updateAll() {
+        units = unitCrudService.findAll();
+    }
+
 
     public void deleteRow(int rowIndex) {
         var toDelete = units.get(rowIndex);
@@ -131,7 +134,7 @@ public class UnitTableModel extends AbstractTableModel implements EntityTableMod
         }
 
         List<Ingredient> usedIn = new ArrayList<>();
-        for (Ingredient ingredient : new ArrayList<>(ingredientCrudService.findAll())) {
+        for (Ingredient ingredient : ingredients) {
             if (ingredient.getUnit().equals(toDelete)) {
                 usedIn.add(ingredient);
             }

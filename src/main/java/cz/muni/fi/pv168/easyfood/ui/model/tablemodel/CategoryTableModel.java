@@ -18,20 +18,21 @@ import static javax.swing.JOptionPane.ERROR_MESSAGE;
 
 
 public class CategoryTableModel extends AbstractTableModel implements EntityTableModel<Category> {
-    private final List<Category> categories;
+    private List<Category> categories;
+    private List<Recipe> recipes;
     private final CrudService<Category> categoryCrudService;
-    private CrudService<Recipe> recipeCrudService;
 
-    public CategoryTableModel(CrudService<Category> categoryCrudService, CrudService<Recipe> recipeCrudService) {
+    public CategoryTableModel(CrudService<Category> categoryCrudService, List<Recipe> recipes,
+                              List<Category> categories) {
         this.categoryCrudService = categoryCrudService;
-        this.recipeCrudService = recipeCrudService;
-        this.categories = new ArrayList<>(categoryCrudService.findAll());
+        this.recipes = recipes;
+        this.categories = categories;
     }
 
-    private final List<Column<Category, ?>> columns = List.of(
-            Column.readonly("Name", String.class, Category::getName),
-            Column.readonly("Recipes per category", String.class, category -> StatisticsService.calculateCategoryStatistics(category, recipeCrudService.findAll()).toString())
-    );
+    private final List<Column<Category, ?>> columns = List.of(Column.readonly("Name", String.class, Category::getName),
+                                                              Column.readonly("Recipes per category", String.class,
+                                                                              category -> StatisticsService.calculateCategoryStatistics(
+                                                                                      category, recipes).toString()));
 
     @Override
     public int getRowCount() {
@@ -88,10 +89,15 @@ public class CategoryTableModel extends AbstractTableModel implements EntityTabl
         fireTableRowsUpdated(rowIndex, rowIndex);
     }
 
+    @Override
+    public void updateAll() {
+        categories = categoryCrudService.findAll();
+    }
+
     public void deleteRow(int rowIndex) {
         var toDelete = categories.get(rowIndex);
         List<Recipe> usedIn = new ArrayList<>();
-        recipeCrudService.findAll().forEach(recipe -> {
+        recipes.forEach(recipe -> {
             if (recipe.getCategory().equals(toDelete)) {
                 usedIn.add(recipe);
             }

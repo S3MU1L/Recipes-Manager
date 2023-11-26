@@ -30,6 +30,7 @@ public interface EntityTableModel<E> extends TableModel {
     void addRow(E entity);
 
     void updateRow(E entity);
+    void updateAll();
 
     void deleteRow(int modelRow);
 }

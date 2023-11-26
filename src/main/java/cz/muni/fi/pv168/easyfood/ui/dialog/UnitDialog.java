@@ -64,6 +64,7 @@ public class UnitDialog extends EntityDialog<Unit> {
 
     @Override
     public boolean valid(Unit unit) {
+
         if (unit.getName().equals("")) {
             JOptionPane.showMessageDialog(null, "Empty name", "Error", ERROR_MESSAGE, null);
             return false;
@@ -76,8 +77,8 @@ public class UnitDialog extends EntityDialog<Unit> {
             JOptionPane.showMessageDialog(null, "Conversion can't be zero", "Error", ERROR_MESSAGE, null);
             return false;
         }
-        if (!units.stream().filter(unit1 -> unit1 != unit &&
-                unit1.getName().equals(unit.getName())).toList().isEmpty()) {
+        if (!units.stream().filter(unit1 -> !unit1.getGuid().equals(unit.getGuid()) && unit1.getName().equals(unit.getName())).toList()
+                  .isEmpty()) {
             JOptionPane.showMessageDialog(null, "Duplicate name: " + unit.getName(), "Error", ERROR_MESSAGE, null);
             return false;
         }
@@ -85,12 +86,14 @@ public class UnitDialog extends EntityDialog<Unit> {
     }
 
     @Override
-    public EntityDialog<?> createNewDialog(List<Recipe> recipes, List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
+    public EntityDialog<?> createNewDialog(List<Recipe> recipes, List<Ingredient> ingredients,
+                                           List<Category> categories, List<Unit> units) {
         return new UnitDialog(units);
     }
 
     @Override
-    public EntityDialog<Unit> createNewDialog(Unit unit, List<Recipe> recipes, List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
+    public EntityDialog<Unit> createNewDialog(Unit unit, List<Recipe> recipes, List<Ingredient> ingredients,
+                                              List<Category> categories, List<Unit> units) {
         return new UnitDialog(unit, units);
     }
 

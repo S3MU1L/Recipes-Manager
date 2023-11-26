@@ -1,6 +1,7 @@
 package cz.muni.fi.pv168.easyfood.ui;
 
 
+import cz.muni.fi.pv168.easyfood.business.model.BaseUnit;
 import cz.muni.fi.pv168.easyfood.business.model.Category;
 import cz.muni.fi.pv168.easyfood.business.model.Ingredient;
 import cz.muni.fi.pv168.easyfood.business.model.IngredientWithAmount;
@@ -63,6 +64,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Toolkit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MainWindow {
@@ -103,11 +105,6 @@ public class MainWindow {
         frame = createFrame();
         var testDataGenerator = new TestDataGenerator();
 
-        List<Unit> units = testDataGenerator.createTestUnits(1);
-        List<Category> categories = testDataGenerator.createTestCategories(1);
-        List<Ingredient> ingredients = testDataGenerator.createTestIngredients(1, units);
-        List<Recipe> recipes = testDataGenerator.createTestRecipes(1, ingredients, categories);
-
         var recipeRepository = dependencyProvider.getRecipeRepository();
         var ingredientRepository = dependencyProvider.getIngredientRepository();
         var categoryRepository = dependencyProvider.getCategoryRepository();
@@ -125,17 +122,24 @@ public class MainWindow {
         ingredientCrudService = new IngredientCrudService(ingredientRepository, ingredientValidator, guidProvider);
         categoryCrudService = new CategoryCrudService(categoryRepository, categoryValidator, guidProvider);
         unitCrudService = new UnitCrudService(unitRepository, unitValidator, guidProvider);
-        ingredientWithAmountCrudService = new IngredientWithAmountCrudService(ingredientWithAmountRepository, ingredientWithAmountValidator, guidProvider);
+        ingredientWithAmountCrudService =
+                new IngredientWithAmountCrudService(ingredientWithAmountRepository, ingredientWithAmountValidator,
+                                                    guidProvider);
 
-        recipeTableModel = new RecipeTableModel(recipeCrudService, dependencyProvider);
-        ingredientTableModel = new IngredientTableModel(ingredientCrudService, recipeCrudService);
-        categoryTableModel = new CategoryTableModel(categoryCrudService, recipeCrudService);
-        unitTableModel = new UnitTableModel(unitCrudService, ingredientCrudService);
+        List<Recipe> recipes = new ArrayList<>(recipeCrudService.findAll());
+        List<Unit> units = new ArrayList<>(unitCrudService.findAll());
+        List<Category> categories = new ArrayList<>(categoryCrudService.findAll());
+        List<Ingredient> ingredients = new ArrayList<>(ingredientCrudService.findAll());
 
-        unitTable = createUnitTable(unitTableModel);
-        ingredientTable = createIngredientTable(ingredientTableModel);
-        categoryTable = createCategoryTable(categoryTableModel);
-        recipeTable = createRecipeTable(recipeTableModel);
+        recipeTableModel = new RecipeTableModel(recipeCrudService, dependencyProvider, recipes);
+        ingredientTableModel = new IngredientTableModel(ingredientCrudService, recipes, ingredients);
+        categoryTableModel = new CategoryTableModel(categoryCrudService, recipes, categories);
+        unitTableModel = new UnitTableModel(unitCrudService, ingredients, units);
+
+        unitTable = createUnitTable(unitTableModel, units);
+        ingredientTable = createIngredientTable(ingredientTableModel, ingredients, units);
+        categoryTable = createCategoryTable(categoryTableModel, categories);
+        recipeTable = createRecipeTable(recipeTableModel, recipes);
 
         tabContainer = new TabContainer();
         tabContainer.addTab(recipeTab);
@@ -145,7 +149,7 @@ public class MainWindow {
         tabContainer.addChangeListener(this::tabChangeListener);
 
         TabContainer filterContainer = new TabContainer();
-        var model = new RecipeTableModel(recipeCrudService, dependencyProvider);
+        var model = new RecipeTableModel(recipeCrudService, dependencyProvider, recipes);
         var table = new JTable(model);
         Tab filterTab = new Tab("Filter", table, model, new FilterDialog(categories, ingredients));
         filterContainer.addTab(filterTab);
@@ -207,21 +211,15 @@ public class MainWindow {
         return footerPanel;
     }
 
-    private JTable createRecipeTable(RecipeTableModel recipeTableModel) {
+    private JTable createRecipeTable(RecipeTableModel recipeTableModel, List<Recipe> recipes) {
         var table = new JTable(recipeTableModel);
         table.setAutoCreateRowSorter(true);
         table.setDefaultRenderer(Object.class, new CustomTableCellRenderer<>(recipeTableModel));
         table.getSelectionModel().addListSelectionListener(this::rowSelectionChanged);
-        List<Recipe> recipes = new ArrayList<>(recipeCrudService.findAll());
         addIngredientsToRecipes(recipes);
-        recipeTab =
-                new Tab("recipes", table, recipeTableModel,
-                        new RecipeDialog(Recipe.createEmptyRecipe(),
-                                recipes,
-                                ingredientTableModel,
-                                categoryTableModel,
-                                ingredientWithAmountCrudService
-                        ));
+        recipeTab = new Tab("recipes", table, recipeTableModel,
+                            new RecipeDialog(Recipe.createEmptyRecipe(), recipes, ingredientTableModel,
+                                             categoryTableModel, ingredientWithAmountCrudService));
         return table;
     }
 
@@ -229,7 +227,8 @@ public class MainWindow {
         for (var recipe : recipes) {
             System.out.println(recipe);
             var recipeEntity = dependencyProvider.getRecipeDao().findByGuid(recipe.getGuid());
-            var ingredients = dependencyProvider.getIngredientWithAmountDao().findIngredientsOfRecipe(recipeEntity.get().id());
+            var ingredients =
+                    dependencyProvider.getIngredientWithAmountDao().findIngredientsOfRecipe(recipeEntity.get().id());
             for (var ingredient : ingredients) {
                 System.out.println(ingredient);
                 var ingredientWithAmount = dependencyProvider.getIngredientWithAmountMapper().mapToBusiness(ingredient);
@@ -238,35 +237,42 @@ public class MainWindow {
         }
     }
 
-    private JTable createIngredientTable(IngredientTableModel ingredientTableModel) {
+    private JTable createIngredientTable(IngredientTableModel ingredientTableModel, List<Ingredient> ingredients,
+                                         List<Unit> units) {
         var table = new JTable(ingredientTableModel);
         table.setAutoCreateRowSorter(true);
         table.setDefaultRenderer(Object.class, new CustomTableCellRenderer<>(ingredientTableModel));
         table.getSelectionModel().addListSelectionListener(this::rowSelectionChanged);
-        ingredientTab = new Tab("ingredients", table, ingredientTableModel, new IngredientDialog(ingredientCrudService.findAll(), unitTableModel));
+        ingredientTab = new Tab("ingredients", table, ingredientTableModel, new IngredientDialog(ingredients, units));
         return table;
     }
 
-    private JTable createCategoryTable(CategoryTableModel categoryTableModel) {
+    private JTable createCategoryTable(CategoryTableModel categoryTableModel, List<Category> categories) {
         var table = new JTable(categoryTableModel);
         table.setAutoCreateRowSorter(true);
         table.setDefaultRenderer(Object.class, new CustomTableCellRenderer<>(categoryTableModel));
         table.getSelectionModel().addListSelectionListener(this::rowSelectionChanged);
-        categoryTab = new Tab("categories", table, categoryTableModel, new CategoryDialog(categoryCrudService.findAll()));
+        categoryTab = new Tab("categories", table, categoryTableModel, new CategoryDialog(categories));
         return table;
     }
 
-    private JTable createUnitTable(UnitTableModel unitTableModel) {
+    private JTable createUnitTable(UnitTableModel unitTableModel, List<Unit> units) {
         var unitTable = new JTable(unitTableModel);
         unitTable.setAutoCreateRowSorter(true);
         unitTable.setDefaultRenderer(Object.class, new CustomTableCellRenderer<>(unitTableModel));
         unitTable.getSelectionModel().addListSelectionListener(this::rowSelectionChanged);
-        unitTab = new Tab("units", unitTable, unitTableModel, new UnitDialog(unitCrudService.findAll()));
+        unitTab = new Tab("units", unitTable, unitTableModel, new UnitDialog(units));
         Box tables = Box.createVerticalBox();
         tables.add(new JLabel(" "));
         tables.add((unitTable.getTableHeader()));
         tables.add(unitTable);
 
+        TestDataGenerator testDataGenerator = new TestDataGenerator();
+        if (unitTableModel.getSize() == 0) {
+            for (Unit unit : testDataGenerator.createTestUnits(3)) {
+                unitTableModel.addRow(unit);
+            }
+        }
         unitTab.setComponent(new JScrollPane(tables));
         return unitTable;
     }
@@ -316,10 +322,25 @@ public class MainWindow {
     }
 
     private void rowSelectionChanged(ListSelectionEvent listSelectionEvent) {
+        if (listSelectionEvent.getValueIsAdjusting()) {
+            return;
+        }
         var selectionModel = (ListSelectionModel) listSelectionEvent.getSource();
-        editAction.setEnabled(selectionModel.getSelectedItemsCount() == 1);
-        deleteAction.setEnabled(selectionModel.getSelectedItemsCount() >= 1);
-        showAction.setEnabled(selectionModel.getSelectedItemsCount() == 1);
+        boolean specialEdit;
+        if (tabContainer.getSelectedTab().getModel() instanceof UnitTableModel) {
+            var table = tabContainer.getSelectedTab().getTable();
+            int index = table.convertRowIndexToModel(table.getSelectedRows()[0]);
+            Unit unit = (Unit) tabContainer.getSelectedTab().getModel().getEntity(index);
+            specialEdit =
+                    Arrays.stream(BaseUnit.values()).map(BaseUnit::toString).filter(name -> unit.getName().equals(name))
+                          .toList().isEmpty();
+        } else {
+            specialEdit = true;
+        }
+        editAction.setEnabled(selectionModel.getSelectedItemsCount() == 1 && specialEdit);
+        deleteAction.setEnabled(selectionModel.getSelectedItemsCount() >= 1 && specialEdit);
+        showAction.setEnabled(selectionModel.getSelectedItemsCount() == 1 &&
+                                      tabContainer.getSelectedTab().getModel() instanceof RecipeTableModel);
     }
 
     public void updateRecipeCountLabel() {

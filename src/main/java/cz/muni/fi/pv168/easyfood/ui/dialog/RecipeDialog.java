@@ -6,16 +6,10 @@ import cz.muni.fi.pv168.easyfood.business.model.IngredientWithAmount;
 import cz.muni.fi.pv168.easyfood.business.model.Recipe;
 import cz.muni.fi.pv168.easyfood.business.model.Unit;
 import cz.muni.fi.pv168.easyfood.business.service.crud.CrudService;
-import cz.muni.fi.pv168.easyfood.storage.sql.dao.CategoryDao;
-import cz.muni.fi.pv168.easyfood.storage.sql.dao.IngredientDao;
-import cz.muni.fi.pv168.easyfood.storage.sql.dao.IngredientWithAmountDao;
-import cz.muni.fi.pv168.easyfood.storage.sql.dao.RecipeDao;
-import cz.muni.fi.pv168.easyfood.storage.sql.entity.mapper.IngredientMapper;
-import cz.muni.fi.pv168.easyfood.storage.sql.entity.mapper.IngredientWithAmountMapper;
 import cz.muni.fi.pv168.easyfood.ui.model.tablemodel.EntityTableModel;
-import cz.muni.fi.pv168.easyfood.ui.resources.Icons;
 import cz.muni.fi.pv168.easyfood.ui.model.tablemodel.IngredientWithAmountTableModel;
 import cz.muni.fi.pv168.easyfood.ui.renderers.CategoryListCellRenderer;
+import cz.muni.fi.pv168.easyfood.ui.resources.Icons;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -224,7 +218,7 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
             return false;
         }
 
-        if (!recipes.stream().filter(recipe1 -> recipe1 != recipe &&
+        if (!recipes.stream().filter(recipe1 -> !recipe1.getGuid().equals(recipe.getGuid()) &&
                 recipe1.getName().equals(recipe.getName())).toList().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Duplicate name: " + recipe.getName(), "Error", ERROR_MESSAGE, null);
             return false;

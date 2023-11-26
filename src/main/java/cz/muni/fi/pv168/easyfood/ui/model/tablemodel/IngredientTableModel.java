@@ -16,21 +16,18 @@ import java.util.List;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 
 public class IngredientTableModel extends AbstractTableModel implements EntityTableModel<Ingredient> {
-    private final List<Ingredient> ingredients;
+    private List<Ingredient> ingredients;
     private final List<Recipe> recipes;
     private final CrudService<Ingredient> ingredientCrudService;
-    private final CrudService<Recipe> recipeCrudService;
 
-    private final List<Column<Ingredient, ?>> columns = List.of(
-            Column.readonly("Name", String.class, Ingredient::getName),
-            Column.readonly("Calories", String.class, Ingredient::getFormattedCalories)
-    );
+    private final List<Column<Ingredient, ?>> columns =
+            List.of(Column.readonly("Name", String.class, Ingredient::getName),
+                    Column.readonly("Calories", String.class, Ingredient::getFormattedCalories));
 
-    public IngredientTableModel(CrudService<Ingredient> ingredientCrudService, CrudService<Recipe> recipeCrudService) {
+    public IngredientTableModel(CrudService<Ingredient> ingredientCrudService, List<Recipe> recipes, List<Ingredient> ingredients) {
         this.ingredientCrudService = ingredientCrudService;
-        this.recipeCrudService = recipeCrudService;
-        this.ingredients = new ArrayList<>(ingredientCrudService.findAll());
-        this.recipes = new ArrayList<>(recipeCrudService.findAll());
+        this.ingredients = ingredients;
+        this.recipes = recipes;
     }
 
     @Override
@@ -79,12 +76,17 @@ public class IngredientTableModel extends AbstractTableModel implements EntityTa
         fireTableRowsUpdated(rowIndex, rowIndex);
     }
 
+    @Override
+    public void updateAll() {
+        ingredients = ingredientCrudService.findAll();
+    }
+
     public void deleteRow(int rowIndex) {
         var toDelete = ingredients.get(rowIndex);
         List<Recipe> usedIn = new ArrayList<>();
         recipes.forEach(recipe -> {
-            if (recipe.getIngredients().stream().map(IngredientWithAmount::getIngredient).filter(ingredient -> ingredient.equals(ingredient)).toList().size() >
-                    0) {
+            if (recipe.getIngredients().stream().map(IngredientWithAmount::getIngredient)
+                      .filter(ingredient -> ingredient.equals(toDelete)).toList().size() > 0) {
                 usedIn.add(recipe);
             }
         });

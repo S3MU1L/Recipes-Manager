@@ -4,8 +4,6 @@ import cz.muni.fi.pv168.easyfood.business.model.Category;
 import cz.muni.fi.pv168.easyfood.business.model.Ingredient;
 import cz.muni.fi.pv168.easyfood.business.model.Recipe;
 import cz.muni.fi.pv168.easyfood.business.model.Unit;
-import cz.muni.fi.pv168.easyfood.business.service.crud.CrudService;
-import cz.muni.fi.pv168.easyfood.ui.model.tablemodel.EntityTableModel;
 
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -14,10 +12,7 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import java.awt.Dimension;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 
@@ -29,22 +24,16 @@ public class IngredientDialog extends EntityDialog<Ingredient> {
     private final JList<String> unitsList;
     private final Ingredient ingredient;
     private final List<Ingredient> ingredients;
-    private final EntityTableModel<Unit> unitTableModel;
-
     private final List<Unit> units;
 
-    public IngredientDialog(List<Ingredient> ingredients, EntityTableModel<Unit> unitTableModel) {
-        this(Ingredient.createEmptyIngredient(), ingredients, unitTableModel);
+    public IngredientDialog(List<Ingredient> ingredients, List<Unit> units) {
+        this(Ingredient.createEmptyIngredient(), ingredients, units);
     }
 
-    public IngredientDialog(Ingredient ingredient, List<Ingredient> ingredients, EntityTableModel<Unit> unitTableModel) {
+    public IngredientDialog(Ingredient ingredient, List<Ingredient> ingredients, List<Unit> units) {
         this.ingredient = ingredient;
         this.ingredients = ingredients;
-        this.unitTableModel = unitTableModel;
-
-        this.units = IntStream.range(0, unitTableModel.getRowCount())
-                .mapToObj(unitTableModel::getEntity)
-                .collect(Collectors.toList());
+        this.units = units;
 
         unitsList = new JList<>(units.stream().map(Unit::getName).toArray(String[]::new));
         unitsField.setViewportView(unitsList);
@@ -89,23 +78,26 @@ public class IngredientDialog extends EntityDialog<Ingredient> {
             JOptionPane.showMessageDialog(null, "Nutritional value can't be zero", "Error", ERROR_MESSAGE, null);
             return false;
         }
-        if (!ingredients.stream().filter(ingredient1 -> ingredient1 != ingredient &&
+        if (!ingredients.stream().filter(ingredient1 -> !ingredient1.getGuid().equals(ingredient.getGuid()) &&
                 ingredient1.getName().equals(ingredient.getName())).toList().isEmpty()) {
             JOptionPane.showMessageDialog(null,
-                    "Duplicate name: " + ingredient.getName(), "Error", ERROR_MESSAGE, null);
+                                          "Duplicate name: " + ingredient.getName(), "Error", ERROR_MESSAGE, null);
             return false;
         }
         return true;
     }
 
     @Override
-    public EntityDialog<?> createNewDialog(List<Recipe> recipes, List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
-        return new IngredientDialog(ingredients, unitTableModel);
+    public EntityDialog<?> createNewDialog(List<Recipe> recipes, List<Ingredient> ingredients,
+                                           List<Category> categories, List<Unit> units) {
+        return new IngredientDialog(ingredients, units);
     }
 
 
     @Override
-    public EntityDialog<Ingredient> createNewDialog(Ingredient entity, List<Recipe> recipes, List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
-        return new IngredientDialog(entity, ingredients, unitTableModel);
+    public EntityDialog<Ingredient> createNewDialog(Ingredient entity, List<Recipe> recipes,
+                                                    List<Ingredient> ingredients, List<Category> categories,
+                                                    List<Unit> units) {
+        return new IngredientDialog(entity, ingredients, units);
     }
 }
