@@ -19,21 +19,18 @@ import static javax.swing.JOptionPane.ERROR_MESSAGE;
 
 public class CategoryTableModel extends AbstractTableModel implements EntityTableModel<Category> {
     private final List<Category> categories;
-    private List<Recipe> recipes;
     private final CrudService<Category> categoryCrudService;
-
-    private final CrudService<Recipe> recipeCrudService;
+    private CrudService<Recipe> recipeCrudService;
 
     public CategoryTableModel(CrudService<Category> categoryCrudService, CrudService<Recipe> recipeCrudService) {
         this.categoryCrudService = categoryCrudService;
         this.recipeCrudService = recipeCrudService;
-        this.recipes = recipeCrudService.findAll();
         this.categories = new ArrayList<>(categoryCrudService.findAll());
     }
 
     private final List<Column<Category, ?>> columns = List.of(
             Column.readonly("Name", String.class, Category::getName),
-            Column.readonly("Recipes per category", String.class, category -> StatisticsService.calculateCategoryStatistics(category, recipes).toString())
+            Column.readonly("Recipes per category", String.class, category -> StatisticsService.calculateCategoryStatistics(category, recipeCrudService.findAll()).toString())
     );
 
     @Override
@@ -94,7 +91,7 @@ public class CategoryTableModel extends AbstractTableModel implements EntityTabl
     public void deleteRow(int rowIndex) {
         var toDelete = categories.get(rowIndex);
         List<Recipe> usedIn = new ArrayList<>();
-        recipes.forEach(recipe -> {
+        recipeCrudService.findAll().forEach(recipe -> {
             if (recipe.getCategory().equals(toDelete)) {
                 usedIn.add(recipe);
             }
