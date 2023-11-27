@@ -313,13 +313,20 @@ public class MainWindow {
     }
 
     private void rowSelectionChanged(ListSelectionEvent listSelectionEvent) {
-        if (listSelectionEvent.getValueIsAdjusting()) {
+        editAction.setEnabled(false);
+        deleteAction.setEnabled(false);
+        showAction.setEnabled(false);
+
+
+        if (listSelectionEvent.getValueIsAdjusting() || tabContainer.getSelectedTab().getTable().getSelectedRows().length == 0) {
             return;
         }
         var selectionModel = (ListSelectionModel) listSelectionEvent.getSource();
         boolean specialEdit;
+
         if (tabContainer.getSelectedTab().getModel() instanceof UnitTableModel) {
             var table = tabContainer.getSelectedTab().getTable();
+
             int index = table.convertRowIndexToModel(table.getSelectedRows()[0]);
             Unit unit = (Unit) tabContainer.getSelectedTab().getModel().getEntity(index);
             specialEdit =
