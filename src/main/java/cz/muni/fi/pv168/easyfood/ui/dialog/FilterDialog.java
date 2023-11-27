@@ -18,7 +18,11 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import java.awt.Dimension;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Set;
 
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 
@@ -151,8 +155,6 @@ public class FilterDialog extends EntityDialog<Filter> {
         portionsField.setPaintLabels(true);
         portionsField.setPaintTicks(true);
         portionsField.setSnapToTicks(true);
-
-
 
         resetButton.setText("Reset");
         resetButton.addActionListener(e -> {
