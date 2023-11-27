@@ -63,12 +63,13 @@ public final class FilterAction extends AbstractAction {
                 filter.getIngredients().size() == 0 &&
                 filter.getPreparationTime() == 0 && filter.getMinimumNutritionalValue() == 0 &&
                 filter.getMaximumNutritionalValue() == 0 && filter.getPortions() == 0) {
-            recipeTableModel.clear();
-            originalRecipes.forEach(recipeTableModel::addRow);
+            recipeTableModel.updateAll();
+            //originalRecipes.forEach(recipeTableModel::addRow);
         } else if (filter != null) {
-            List<Recipe> filteredRecipes = filter.getFilteredRecipes(recipes);
-            recipeTableModel.clear();
-            filteredRecipes.forEach(recipeTableModel::addRow);
+            //List<Recipe> filteredRecipes = filter.getFilteredRecipes(recipes);
+            //recipeTableModel.clear();
+            //filteredRecipes.forEach(recipeTableModel::addRow);
+            recipeTableModel.updateWithFilter(filter);
         }
         mainWindow.updateRecipeCountLabel();
     }
