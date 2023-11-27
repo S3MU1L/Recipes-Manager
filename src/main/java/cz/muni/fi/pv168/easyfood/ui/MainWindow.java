@@ -131,6 +131,10 @@ public class MainWindow {
         List<Category> categories = new ArrayList<>(categoryCrudService.findAll());
         List<Ingredient> ingredients = new ArrayList<>(ingredientCrudService.findAll());
 
+        for (var recipe : recipes) {
+            System.out.println(recipe);
+        }
+
         recipeTableModel = new RecipeTableModel(recipeCrudService, dependencyProvider, recipes);
         ingredientTableModel = new IngredientTableModel(ingredientCrudService, recipes, ingredients);
         categoryTableModel = new CategoryTableModel(categoryCrudService, recipes, categories);

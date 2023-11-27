@@ -77,4 +77,9 @@ public interface DataAccessObject<E> {
      * @return true if entity exists, false otherwise
      */
     boolean existsByGuid(String guid);
+
+
+    default Optional<E> findByRecipeAndIngredientId(long recipeId, long ingredientId) {
+        return null;
+    }
 }
