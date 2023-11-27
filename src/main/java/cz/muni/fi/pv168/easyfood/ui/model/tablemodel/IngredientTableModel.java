@@ -86,7 +86,7 @@ public class IngredientTableModel extends AbstractTableModel implements EntityTa
         List<Recipe> usedIn = new ArrayList<>();
         recipes.forEach(recipe -> {
             if (recipe.getIngredients().stream().map(IngredientWithAmount::getIngredient)
-                      .filter(ingredient -> ingredient.equals(toDelete)).toList().size() > 0) {
+                    .filter(ingredient -> ingredient.getName().equals(toDelete.getName())).toList().size() > 0) {
                 usedIn.add(recipe);
             }
         });
