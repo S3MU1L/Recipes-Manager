@@ -70,7 +70,6 @@ public class RecipeTableModel extends AbstractTableModel implements EntityTableM
         recipeCrudService.create(recipe)
                 .intoException();
         addIngredients(recipe);
-
         int newRowIndex = recipes.size();
         recipes.add(recipe);
         fireTableRowsInserted(newRowIndex, newRowIndex);

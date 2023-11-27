@@ -224,7 +224,7 @@ public class MainWindow {
         table.getSelectionModel().addListSelectionListener(this::rowSelectionChanged);
         recipeTab = new Tab("recipes", table, recipeTableModel,
                 new RecipeDialog(Recipe.createEmptyRecipe(), recipes, ingredientTableModel,
-                        categoryTableModel, ingredientWithAmountCrudService));
+                        categoryTableModel, ingredientWithAmountCrudService, dependencyProvider));
         return table;
     }
 

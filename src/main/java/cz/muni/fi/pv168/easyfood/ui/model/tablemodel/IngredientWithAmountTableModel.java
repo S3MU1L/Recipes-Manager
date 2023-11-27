@@ -1,8 +1,10 @@
 package cz.muni.fi.pv168.easyfood.ui.model.tablemodel;
 
 import cz.muni.fi.pv168.easyfood.business.model.IngredientWithAmount;
+import cz.muni.fi.pv168.easyfood.business.model.Recipe;
 import cz.muni.fi.pv168.easyfood.business.service.crud.CrudService;
 import cz.muni.fi.pv168.easyfood.ui.model.Column;
+import cz.muni.fi.pv168.easyfood.wiring.DependencyProvider;
 
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
@@ -14,6 +16,8 @@ public class IngredientWithAmountTableModel extends AbstractTableModel implement
     private final List<IngredientWithAmount> ingredients;
     private final CrudService<IngredientWithAmount> ingredientCrudService;
 
+    private final DependencyProvider dependencyProvider;
+
     private final List<Column<IngredientWithAmount, ?>> columns = List.of(
             Column.readonly("Name", String.class, IngredientWithAmount::getName),
             Column.readonly("Amount", String.class, IngredientWithAmount::getFormattedAmount)
@@ -21,9 +25,11 @@ public class IngredientWithAmountTableModel extends AbstractTableModel implement
 
     public IngredientWithAmountTableModel(
             List<IngredientWithAmount> ingredients,
-            CrudService<IngredientWithAmount> ingredientCrudService
+            CrudService<IngredientWithAmount> ingredientCrudService,
+            DependencyProvider dependencyProvider
     ) {
         this.ingredients = new ArrayList<>(ingredients);
+        this.dependencyProvider = dependencyProvider;
         this.ingredientCrudService = ingredientCrudService;
     }
 
@@ -65,6 +71,17 @@ public class IngredientWithAmountTableModel extends AbstractTableModel implement
         fireTableRowsInserted(newRowIndex, newRowIndex);
     }
 
+    public void addRow(IngredientWithAmount ingredient, Recipe recipe) {
+        addRow(ingredient);
+        var recipeEntity = dependencyProvider.getRecipeDao().findByGuid(recipe.getGuid());
+        if (!recipeEntity.isPresent()) {
+            return;
+        }
+
+        var ingredientEntity = dependencyProvider.getIngredientDao().findByGuid(ingredient.getIngredient().getGuid());
+        dependencyProvider.getIngredientWithAmountDao().addRecipeIngredient(ingredient, recipeEntity.get().id(), ingredientEntity.get().id());
+    }
+
     @Override
     public void updateRow(IngredientWithAmount ingredient) {
         ingredientCrudService.update(ingredient)
@@ -73,17 +90,28 @@ public class IngredientWithAmountTableModel extends AbstractTableModel implement
         fireTableRowsUpdated(rowIndex, rowIndex);
     }
 
+
+    public void deleteRow(int rowIndex) {
+        ingredients.remove(rowIndex);
+        fireTableRowsDeleted(rowIndex, rowIndex);
+    }
+
+    public void deleteRow(int rowIndex, Recipe recipe) {
+        var recipeEntity = dependencyProvider.getRecipeDao().findByGuid(recipe.getGuid());
+        if (!recipeEntity.isPresent()) {
+            return;
+        }
+
+        var toDelete = ingredients.get(rowIndex);
+        ingredientCrudService.deleteByGuid(toDelete.getGuid());
+        deleteRow(rowIndex);
+    }
+
     @Override
     public void updateAll() {
 
     }
 
-    public void deleteRow(int rowIndex) {
-        var toDelete = ingredients.get(rowIndex);
-        ingredientCrudService.deleteByGuid(toDelete.getGuid());
-        ingredients.remove(rowIndex);
-        fireTableRowsDeleted(rowIndex, rowIndex);
-    }
 
     @Override
     public void customizeTableCell(Component cell, Object value, int row, JTable table) {

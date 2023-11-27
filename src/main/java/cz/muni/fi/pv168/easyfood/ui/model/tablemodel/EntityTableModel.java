@@ -1,5 +1,8 @@
 package cz.muni.fi.pv168.easyfood.ui.model.tablemodel;
 
+import cz.muni.fi.pv168.easyfood.business.model.IngredientWithAmount;
+import cz.muni.fi.pv168.easyfood.business.model.Recipe;
+
 import javax.swing.JTable;
 import javax.swing.table.TableModel;
 import java.awt.Component;
@@ -30,7 +33,14 @@ public interface EntityTableModel<E> extends TableModel {
     void addRow(E entity);
 
     void updateRow(E entity);
+
     void updateAll();
 
     void deleteRow(int modelRow);
+
+    default void addRow(IngredientWithAmount ingredient, Recipe recipe) {
+    }
+
+    default void deleteRow(int modelRow, Recipe recipe) {
+    }
 }

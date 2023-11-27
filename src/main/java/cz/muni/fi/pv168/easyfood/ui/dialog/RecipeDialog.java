@@ -10,6 +10,7 @@ import cz.muni.fi.pv168.easyfood.ui.model.tablemodel.EntityTableModel;
 import cz.muni.fi.pv168.easyfood.ui.model.tablemodel.IngredientWithAmountTableModel;
 import cz.muni.fi.pv168.easyfood.ui.renderers.CategoryListCellRenderer;
 import cz.muni.fi.pv168.easyfood.ui.resources.Icons;
+import cz.muni.fi.pv168.easyfood.wiring.DependencyProvider;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -64,18 +65,21 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
     private final CrudService<IngredientWithAmount> ingredientWithAmountCrudService;
     private final EntityTableModel<IngredientWithAmount> withAmountTableModel;
     private final List<Category> categories;
+    private final DependencyProvider dependencyProvider;
 
     public RecipeDialog(
             List<Recipe> recipes,
             EntityTableModel<Ingredient> ingredientTableModel,
             EntityTableModel<Category> categoryTableModel,
-            CrudService<IngredientWithAmount> ingredientWithAmountCrudService
+            CrudService<IngredientWithAmount> ingredientWithAmountCrudService,
+            DependencyProvider dependencyProvider
     ) {
         this(Recipe.createEmptyRecipe(),
                 recipes,
                 ingredientTableModel,
                 categoryTableModel,
-                ingredientWithAmountCrudService
+                ingredientWithAmountCrudService,
+                dependencyProvider
         );
     }
 
@@ -84,13 +88,16 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
             List<Recipe> recipes,
             EntityTableModel<Ingredient> ingredientTableModel,
             EntityTableModel<Category> categoryTableModel,
-            CrudService<IngredientWithAmount> ingredientWithAmountCrudService
+            CrudService<IngredientWithAmount> ingredientWithAmountCrudService,
+            DependencyProvider dependencyProvider
     ) {
         this.recipe = recipe;
         this.recipes = recipes;
         this.categoryTableModel = categoryTableModel;
         this.ingredientTableModel = ingredientTableModel;
         this.ingredientWithAmountCrudService = ingredientWithAmountCrudService;
+        this.dependencyProvider = dependencyProvider;
+
         this.categories = IntStream.range(0, categoryTableModel.getRowCount())
                 .mapToObj(categoryTableModel::getEntity)
                 .collect(Collectors.toList());
@@ -106,7 +113,7 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
             categoriesList.setSelectedValue(recipe.getCategory().getName(), true);
         }
         categoriesPane.setViewportView(categoriesList);
-        withAmountTableModel = new IngredientWithAmountTableModel(recipe.getIngredients(), ingredientWithAmountCrudService);
+        withAmountTableModel = new IngredientWithAmountTableModel(recipe.getIngredients(), ingredientWithAmountCrudService, dependencyProvider);
         table = new JTable(withAmountTableModel);
 
         ingredientJComboBox = new JComboBox<>(new Vector<>(ingredients));
@@ -234,7 +241,8 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
                 recipes,
                 ingredientTableModel,
                 categoryTableModel,
-                ingredientWithAmountCrudService
+                ingredientWithAmountCrudService,
+                dependencyProvider
         );
     }
 
@@ -245,7 +253,8 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
                 recipes,
                 ingredientTableModel,
                 categoryTableModel,
-                ingredientWithAmountCrudService
+                ingredientWithAmountCrudService,
+                dependencyProvider
         );
     }
 
@@ -262,7 +271,7 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
 
         var ingredientAndAmount = new IngredientWithAmount(ingredient, amount);
         recipe.addIngredient(ingredientAndAmount);
-        withAmountTableModel.addRow(ingredientAndAmount);
+        withAmountTableModel.addRow(ingredientAndAmount, recipe);
         amountField.setValue(0.0);
     }
 
@@ -290,7 +299,7 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
     private void deleteSelected() {
         int[] selected = table.getSelectedRows();
         for (int i = selected.length - 1; i >= 0; i--) {
-            withAmountTableModel.deleteRow(selected[i]);
+            withAmountTableModel.deleteRow(selected[i], recipe);
         }
     }
 

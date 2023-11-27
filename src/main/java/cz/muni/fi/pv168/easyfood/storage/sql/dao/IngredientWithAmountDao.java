@@ -1,5 +1,6 @@
 package cz.muni.fi.pv168.easyfood.storage.sql.dao;
 
+import cz.muni.fi.pv168.easyfood.business.model.Ingredient;
 import cz.muni.fi.pv168.easyfood.business.model.IngredientWithAmount;
 import cz.muni.fi.pv168.easyfood.business.model.Recipe;
 import cz.muni.fi.pv168.easyfood.storage.DataStorageException;

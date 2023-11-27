@@ -38,7 +38,8 @@ public class ShowDialog extends EntityDialog<Recipe> {
     public ShowDialog(Recipe recipe) {
         this.recipe = recipe;
         List<IngredientWithAmount> ingredients = recipe.getIngredients();
-        var model = new IngredientWithAmountTableModel(ingredients, null);
+        // we can just pass null since we won't be doing any crud operations in showDialog
+        var model = new IngredientWithAmountTableModel(ingredients, null, null);
         var table = new JTable(model);
         table.setAutoCreateRowSorter(true);
         table.setCellSelectionEnabled(false);
