@@ -1,5 +1,6 @@
 package cz.muni.fi.pv168.easyfood.ui.action;
 
+import cz.muni.fi.pv168.easyfood.business.model.Recipe;
 import cz.muni.fi.pv168.easyfood.ui.MainWindow;
 import cz.muni.fi.pv168.easyfood.ui.model.tablemodel.RecipeTableModel;
 import cz.muni.fi.pv168.easyfood.ui.resources.Icons;
@@ -11,11 +12,11 @@ import java.awt.event.KeyEvent;
 
 public class RemoveFilterAction extends AbstractAction {
     private final MainWindow mainWindow;
-    private final TabContainer tabContainer;
-    public RemoveFilterAction(MainWindow mainWindow, TabContainer tabContainer){
+    private final RecipeTableModel recipeTableModel;
+    public RemoveFilterAction(MainWindow mainWindow, TabContainer tabContainer, RecipeTableModel recipeTableModel){
         super("Add", Icons.FILTER_REMOVE_ICON);
         this.mainWindow = mainWindow;
-        this.tabContainer = tabContainer;
+        this.recipeTableModel = recipeTableModel;
         putValue(SHORT_DESCRIPTION, "Remove filter");
         putValue(MNEMONIC_KEY, KeyEvent.VK_R);
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke("ctrl R"));
@@ -23,10 +24,9 @@ public class RemoveFilterAction extends AbstractAction {
     }
     @Override
     public void actionPerformed(ActionEvent e) {
-        RecipeTableModel model = (RecipeTableModel) tabContainer.getSelectedTab().getModel();
-        model.updateAll();
-        model.setActiveFiter(false);
-        model.fireTableDataChanged();
+        recipeTableModel.updateAll();
+        recipeTableModel.setActiveFiter(false);
+        recipeTableModel.fireTableDataChanged();
         mainWindow.updateRecipeCountLabel();
     }
 }

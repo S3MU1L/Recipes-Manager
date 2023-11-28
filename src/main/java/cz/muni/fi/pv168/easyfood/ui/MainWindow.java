@@ -167,7 +167,7 @@ public class MainWindow {
         editAction = new EditAction(tabContainer, recipes, ingredients, categories, units);
         showAction = new ShowAction(tabContainer);
         filterAction = new FilterAction(this, tabContainer, filterContainer, recipes, ingredients, categories, units);
-        removeFilterAction = new RemoveFilterAction(this, tabContainer);
+        removeFilterAction = new RemoveFilterAction(this, tabContainer, recipeTableModel);
         importAction = new ImportAction();
         exportAction = new ExportAction();
 
@@ -191,12 +191,12 @@ public class MainWindow {
         categoryTable.clearSelection();
         unitTable.clearSelection();
         filterAction.setEnabled(tabContainer.getSelectedTab().getModel().getClass().equals(RecipeTableModel.class));
-        removeFilterAction.setEnabled(tabContainer.getSelectedTab().getModel().getClass().equals(RecipeTableModel.class) && recipeTableModel.isActiveFiter());
     }
 
     public void updateFilterStatus(){
         removeFilterAction.setEnabled(recipeTableModel.isActiveFiter());
         addAction.setEnabled(!recipeTableModel.isActiveFiter());
+        deleteAction.setEnabled(!recipeTableModel.isActiveFiter());
     }
 
     public void show() {
@@ -327,7 +327,6 @@ public class MainWindow {
         deleteAction.setEnabled(false);
         showAction.setEnabled(false);
 
-
         if (listSelectionEvent.getValueIsAdjusting() || tabContainer.getSelectedTab().getTable().getSelectedRows().length == 0) {
             return;
         }
@@ -349,6 +348,9 @@ public class MainWindow {
         deleteAction.setEnabled(selectionModel.getSelectedItemsCount() >= 1 && specialEdit);
         showAction.setEnabled(selectionModel.getSelectedItemsCount() == 1 &&
                 tabContainer.getSelectedTab().getModel() instanceof RecipeTableModel);
+        if(recipeTableModel.isActiveFiter()){
+            deleteAction.setEnabled(false);
+        }
     }
 
     public void updateRecipeCountLabel() {
