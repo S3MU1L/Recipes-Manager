@@ -63,7 +63,7 @@ public final class FilterAction extends AbstractAction {
                 filter.getIngredients().size() == 0 &&
                 filter.getPreparationTime() == 0 && filter.getMinimumNutritionalValue() == 0 &&
                 filter.getMaximumNutritionalValue() == 0 && filter.getPortions() == 0) {
-            recipeTableModel.updateAll();
+            recipeTableModel.setRecipes(originalRecipes);
             //originalRecipes.forEach(recipeTableModel::addRow);
         } else if (filter != null) {
             //List<Recipe> filteredRecipes = filter.getFilteredRecipes(recipes);

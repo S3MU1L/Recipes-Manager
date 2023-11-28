@@ -94,6 +94,10 @@ public class RecipeTableModel extends AbstractTableModel implements EntityTableM
     public void updateAll() {
         recipes = new ArrayList<>(recipeCrudService.findAll());
     }
+    public void setRecipes(List<Recipe> recipes) {
+        this.recipes = recipes;
+    }
+
     public void updateWithFilter(Filter filter){
         List<Recipe> allRecipes = new ArrayList<>(recipeCrudService.findAll());
 
