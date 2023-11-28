@@ -13,6 +13,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
+import javax.swing.border.EmptyBorder;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.util.List;
@@ -54,6 +55,9 @@ public class ShowDialog extends EntityDialog<Recipe> {
         caloriesField.setText(String.valueOf(round(recipe.getCalories())));
         prepareTimeField.setText(String.valueOf(recipe.getPreparationTime()));
         categoriesField.setText(recipe.getCategory().getName());
+        categoriesField.setBorder(new EmptyBorder(3, 5, 3, 5));
+        categoriesField.setOpaque(true);
+        categoriesField.setBackground(recipe.getCategory().getColor());
         description.setText(recipe.getDescription());
         description.setLineWrap(true);
         description.setWrapStyleWord(true);
