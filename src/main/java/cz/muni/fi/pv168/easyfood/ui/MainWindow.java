@@ -316,6 +316,7 @@ public class MainWindow {
         toolbar.add(addAction);
         toolbar.add(editAction);
         toolbar.add(deleteAction);
+        toolbar.addSeparator();
         toolbar.add(showAction);
         toolbar.add(filterAction);
         toolbar.add(removeFilterAction);
