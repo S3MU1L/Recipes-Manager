@@ -17,17 +17,17 @@ import static javax.swing.JOptionPane.ERROR_MESSAGE;
 
 public class IngredientTableModel extends AbstractTableModel implements EntityTableModel<Ingredient> {
     private List<Ingredient> ingredients;
-    private final List<Recipe> recipes;
+    private final RecipeTableModel recipeTableModel;
     private final CrudService<Ingredient> ingredientCrudService;
 
     private final List<Column<Ingredient, ?>> columns =
             List.of(Column.readonly("Name", String.class, Ingredient::getName),
                     Column.readonly("Calories", String.class, Ingredient::getFormattedCalories));
 
-    public IngredientTableModel(CrudService<Ingredient> ingredientCrudService, List<Recipe> recipes, List<Ingredient> ingredients) {
+    public IngredientTableModel(CrudService<Ingredient> ingredientCrudService, RecipeTableModel recipeTableModel, List<Ingredient> ingredients) {
         this.ingredientCrudService = ingredientCrudService;
         this.ingredients = ingredients;
-        this.recipes = recipes;
+        this.recipeTableModel = recipeTableModel;
     }
 
     @Override
@@ -84,14 +84,14 @@ public class IngredientTableModel extends AbstractTableModel implements EntityTa
     public void deleteRow(int rowIndex) {
         var toDelete = ingredients.get(rowIndex);
         List<Recipe> usedIn = new ArrayList<>();
-        recipes.forEach(recipe -> {
-            if (recipe.getIngredients().stream().map(IngredientWithAmount::getIngredient)
-                    .filter(ingredient -> ingredient.getName().equals(toDelete.getName())).toList().size() > 0) {
+        recipeTableModel.getEntity().forEach(recipe -> {
+            if (!recipe.getIngredients().stream().map(IngredientWithAmount::getIngredient)
+                    .filter(ingredient -> ingredient.getName().equals(toDelete.getName())).toList().isEmpty()) {
                 usedIn.add(recipe);
             }
         });
 
-        if (usedIn.size() > 0) {
+        if (!usedIn.isEmpty()) {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append("Unable to delete Ingredient : ").append(toDelete.getName()).append("\nIt is used in Recipes: ");
             for (Recipe recipe : usedIn) {
@@ -119,6 +119,11 @@ public class IngredientTableModel extends AbstractTableModel implements EntityTa
 
     public Ingredient getEntity(int rowIndex) {
         return ingredients.get(rowIndex);
+    }
+
+    @Override
+    public List<Ingredient> getEntity() {
+        return ingredients;
     }
 
 }

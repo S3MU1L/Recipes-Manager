@@ -19,20 +19,20 @@ import static javax.swing.JOptionPane.ERROR_MESSAGE;
 
 public class CategoryTableModel extends AbstractTableModel implements EntityTableModel<Category> {
     private List<Category> categories;
-    private List<Recipe> recipes;
+    private RecipeTableModel recipeTableModel;
     private final CrudService<Category> categoryCrudService;
 
-    public CategoryTableModel(CrudService<Category> categoryCrudService, List<Recipe> recipes,
+    public CategoryTableModel(CrudService<Category> categoryCrudService, RecipeTableModel recipeTableModel,
                               List<Category> categories) {
         this.categoryCrudService = categoryCrudService;
-        this.recipes = recipes;
+        this.recipeTableModel = recipeTableModel;
         this.categories = categories;
     }
 
     private final List<Column<Category, ?>> columns = List.of(Column.readonly("Name", String.class, Category::getName),
                                                               Column.readonly("Recipes per category", String.class,
                                                                               category -> StatisticsService.calculateCategoryStatistics(
-                                                                                      category, recipes).toString()));
+                                                                                      category, recipeTableModel.getEntity()).toString()));
 
     @Override
     public int getRowCount() {
@@ -93,11 +93,10 @@ public class CategoryTableModel extends AbstractTableModel implements EntityTabl
     public void updateAll() {
         categories = new ArrayList<>(categoryCrudService.findAll());
     }
-
     public void deleteRow(int rowIndex) {
         var toDelete = categories.get(rowIndex);
         List<Recipe> usedIn = new ArrayList<>();
-        recipes.forEach(recipe -> {
+        recipeTableModel.getEntity().forEach(recipe -> {
             if (recipe.getCategory().equals(toDelete)) {
                 usedIn.add(recipe);
             }
@@ -144,6 +143,11 @@ public class CategoryTableModel extends AbstractTableModel implements EntityTabl
 
     public Category getEntity(int rowIndex) {
         return categories.get(rowIndex);
+    }
+
+    @Override
+    public List<Category> getEntity() {
+        return categories;
     }
 
 }

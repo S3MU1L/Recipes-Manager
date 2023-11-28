@@ -65,6 +65,10 @@ public class CategoryDialog extends EntityDialog<Category> implements ActionList
             JOptionPane.showMessageDialog(null, "Empty Name", "Error", ERROR_MESSAGE, null);
             return false;
         }
+        if(category.getName().length() <= 1){
+            JOptionPane.showMessageDialog(null, "Name too short", "Error", ERROR_MESSAGE, null);
+            return false;
+        }
         return true;
     }
 

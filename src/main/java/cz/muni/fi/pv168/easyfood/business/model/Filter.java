@@ -13,7 +13,8 @@ public class Filter {
     private int preparationTime;
     private int minimumNutritionalValue;
     private int maximumNutritionalValue;
-    private int portions;
+    private int minPortion;
+    private int maxPortion;
 
     public static Filter createEmptyFilter() {
         return new Filter();
@@ -33,7 +34,10 @@ public class Filter {
                     (maximumNutritionalValue != 0 && nutritionalValue > maximumNutritionalValue)) {
                 continue;
             }
-            if (portions != 0 && ((portions == 6 && recipe.getPortions() <= 5) || portions != recipe.getPortions())) {
+            int recipePortion = recipe.getPortions();
+            if ((recipePortion < minPortion && minPortion != 0 && minPortion != 6) ||
+                    (maxPortion != 0 && recipePortion > maxPortion && maxPortion != 6) ||
+                    (minPortion == 6 && recipePortion < 5)){
                 continue;
             }
             if (!categories.isEmpty() && !categories.contains(recipe.getCategory())) {
@@ -101,11 +105,19 @@ public class Filter {
         this.maximumNutritionalValue = maximumNutritionalValue;
     }
 
-    public int getPortions() {
-        return portions;
+    public void setMinPortion(int minPortion) {
+        this.minPortion = minPortion;
     }
 
-    public void setPortions(int portions) {
-        this.portions = portions;
+    public void setMaxPortion(int maxPortion) {
+        this.maxPortion = maxPortion;
+    }
+
+    public int getMinPortion() {
+        return minPortion;
+    }
+
+    public int getMaxPortion() {
+        return maxPortion;
     }
 }

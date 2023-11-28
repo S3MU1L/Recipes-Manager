@@ -6,6 +6,7 @@ import cz.muni.fi.pv168.easyfood.business.model.Recipe;
 import javax.swing.JTable;
 import javax.swing.table.TableModel;
 import java.awt.Component;
+import java.util.List;
 
 /**
  * The {@link EntityTableModel} interface provides an ability to get the actual entity at a certain index.
@@ -22,6 +23,7 @@ public interface EntityTableModel<E> extends TableModel {
      *                                   than number of items in the table
      */
     E getEntity(int rowIndex);
+    List<E> getEntity();
 
     default void customizeTableCell(Component cell, Object value, int row, JTable table) {
     }

@@ -52,4 +52,5 @@ public class Category extends Entity {
                 ", color='" + color.toString() + '\'' +
                 "}";
     }
+
 }
