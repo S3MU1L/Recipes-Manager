@@ -138,9 +138,9 @@ public class MainWindow {
         }
 
         recipeTableModel = new RecipeTableModel(recipeCrudService, dependencyProvider, recipes, this);
-        ingredientTableModel = new IngredientTableModel(ingredientCrudService, recipes, ingredients);
-        categoryTableModel = new CategoryTableModel(categoryCrudService, recipes, categories);
-        unitTableModel = new UnitTableModel(unitCrudService, ingredients, units);
+        ingredientTableModel = new IngredientTableModel(ingredientCrudService, recipeTableModel, ingredients);
+        categoryTableModel = new CategoryTableModel(categoryCrudService, recipeTableModel, categories);
+        unitTableModel = new UnitTableModel(unitCrudService, ingredientTableModel, units);
 
         unitTable = createUnitTable(unitTableModel, units);
         ingredientTable = createIngredientTable(ingredientTableModel, ingredients, units);
@@ -354,12 +354,5 @@ public class MainWindow {
     public void updateRecipeCountLabel() {
         int recipeCount = recipeTable.getModel().getRowCount();
         recipeCountLabel.setText("Amount of recipes: " + recipeCount);
-    }
-
-    public void updateStatistics(List<Recipe> recipes) {
-        categoryTableModel.updateAll(recipes);
-        for (var recipe : recipes) {
-            System.out.println(recipe.getName());
-        }
     }
 }

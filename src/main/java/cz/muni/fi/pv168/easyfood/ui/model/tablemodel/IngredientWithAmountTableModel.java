@@ -125,4 +125,9 @@ public class IngredientWithAmountTableModel extends AbstractTableModel implement
         return ingredients.get(rowIndex);
     }
 
+    @Override
+    public List<IngredientWithAmount> getEntity() {
+        return ingredients;
+    }
+
 }

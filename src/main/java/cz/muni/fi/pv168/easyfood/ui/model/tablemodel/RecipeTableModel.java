@@ -63,6 +63,10 @@ public class RecipeTableModel extends AbstractTableModel implements EntityTableM
         return recipes.get(rowIndex);
     }
 
+    public List<Recipe> getEntity(){
+        return recipes;
+    }
+
     protected void updateEntity(Recipe entity) {
     }
 
@@ -78,7 +82,6 @@ public class RecipeTableModel extends AbstractTableModel implements EntityTableM
         addIngredients(recipe);
         int newRowIndex = recipes.size();
         recipes.add(recipe);
-        mainWindow.updateStatistics(recipes);
         fireTableRowsInserted(newRowIndex, newRowIndex);
     }
 
@@ -93,7 +96,6 @@ public class RecipeTableModel extends AbstractTableModel implements EntityTableM
     public void updateRow(Recipe recipe) {
         recipeCrudService.update(recipe);
         int rowIndex = recipes.indexOf(recipe);
-        mainWindow.updateStatistics(recipes);
         fireTableRowsUpdated(rowIndex, rowIndex);
     }
 
@@ -103,7 +105,7 @@ public class RecipeTableModel extends AbstractTableModel implements EntityTableM
     }
     public void updateRecipes() {
         recipes = recipeCrudService.findAll();
-    
+
         fireTableDataChanged();
         setActiveFiter(false);
     }

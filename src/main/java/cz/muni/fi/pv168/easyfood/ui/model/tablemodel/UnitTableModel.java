@@ -19,7 +19,7 @@ import static javax.swing.JOptionPane.ERROR_MESSAGE;
 
 public class UnitTableModel extends AbstractTableModel implements EntityTableModel<Unit> {
     private List<Unit> units;
-    private final List<Ingredient> ingredients;
+    private final IngredientTableModel ingredientTableModel;
     private final CrudService<Unit> unitCrudService;
 
     private final List<Column<Unit, ?>> columns = List.of(
@@ -28,9 +28,9 @@ public class UnitTableModel extends AbstractTableModel implements EntityTableMod
             Column.readonly("In Base Unit", String.class, Unit::getFormattedBaseUnit)
     );
 
-    public UnitTableModel(CrudService<Unit> unitCrudService, List<Ingredient> ingredients, List<Unit> units) {
+    public UnitTableModel(CrudService<Unit> unitCrudService, IngredientTableModel ingredientTableModel, List<Unit> units) {
         this.unitCrudService = unitCrudService;
-        this.ingredients = ingredients;
+        this.ingredientTableModel = ingredientTableModel;
         this.units = units;
     }
 
@@ -41,6 +41,11 @@ public class UnitTableModel extends AbstractTableModel implements EntityTableMod
     @Override
     public Unit getEntity(int rowIndex) {
         return units.get(rowIndex);
+    }
+
+    @Override
+    public List<Unit> getEntity() {
+        return units;
     }
 
     @Override
@@ -134,7 +139,7 @@ public class UnitTableModel extends AbstractTableModel implements EntityTableMod
         }
 
         List<Ingredient> usedIn = new ArrayList<>();
-        for (Ingredient ingredient : ingredients) {
+        for (Ingredient ingredient : ingredientTableModel.getEntity()) {
             if (ingredient.getUnit().equals(toDelete)) {
                 usedIn.add(ingredient);
             }
