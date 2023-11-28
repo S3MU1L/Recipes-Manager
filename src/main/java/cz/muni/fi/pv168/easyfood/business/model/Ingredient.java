@@ -74,12 +74,12 @@ public class Ingredient extends Entity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Ingredient that)) return false;
-        return Double.compare(calories, that.calories) == 0 && Objects.equals(name, that.name) && unit == that.unit;
+        return name.equals(that.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, calories, unit);
+        return Objects.hash(name);
     }
 
     @Override

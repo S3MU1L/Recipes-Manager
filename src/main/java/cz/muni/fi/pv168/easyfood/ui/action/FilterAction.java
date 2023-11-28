@@ -23,7 +23,6 @@ public final class FilterAction extends AbstractAction {
 
     private final TabContainer tabContainer;
     private final TabContainer filterContainer;
-    private final List<Recipe> originalRecipes;
     private final List<Recipe> recipes;
     private final List<Ingredient> ingredients;
     private final List<Category> categories;
@@ -46,7 +45,6 @@ public final class FilterAction extends AbstractAction {
         this.ingredients = ingredients;
         this.categories = categories;
         this.units = units;
-        originalRecipes = this.recipes;
         putValue(SHORT_DESCRIPTION, "Filter recipes");
         putValue(MNEMONIC_KEY, KeyEvent.VK_F);
     }
@@ -64,14 +62,16 @@ public final class FilterAction extends AbstractAction {
         }
 
         Filter filter = dialog.show(filterContainer.getComponent(), "Filter").orElse(null);
-
-        if (filter != null && filter.getName().equals("") && filter.getCategories().size() == 0 &&
-                filter.getIngredients().size() == 0 &&
-                filter.getPreparationTime() == 0 && filter.getMinimumNutritionalValue() == 0 &&
-                filter.getMaximumNutritionalValue() == 0 && filter.getPortions() == 0) {
+        if (filter != null && filter.getName().isEmpty() &&
+                filter.getCategories().isEmpty() &&
+                filter.getIngredients().isEmpty() &&
+                filter.getPreparationTime() == 0 &&
+                filter.getMinimumNutritionalValue() == 0 &&
+                filter.getMaximumNutritionalValue() == 0 &&
+                filter.getMaxPortion() == 0 &&
+                filter.getMinPortion() == 0)
+        {
             recipeTableModel.updateRecipes();
-            //recipeTableModel.updateAll();
-            //recipeTableModel.fireTableDataChanged();
         } else if (filter != null) {
             recipeTableModel.updateWithFilter(filter);
         }

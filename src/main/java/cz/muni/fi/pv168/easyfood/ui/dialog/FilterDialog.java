@@ -38,7 +38,8 @@ public class FilterDialog extends EntityDialog<Filter> {
     private static final JSpinner timeField = new JSpinner(new SpinnerNumberModel());
     private static final JSpinner minNutritionalValueField = new JSpinner(new SpinnerNumberModel());
     private static final JSpinner maxNutritionalValueField = new JSpinner(new SpinnerNumberModel());
-    private static final JSlider portionsField = new JSlider(0, 6, 0);
+    private static final JSlider minPortionField = new JSlider(0, 6, 0);
+    private static final JSlider maxPortionField = new JSlider(0, 6, 0);
     private static final JButton resetButton = new JButton();
     private static final Set<Category> filterCategories = new HashSet<>();
     private static final Set<Ingredient> filterIngredients = new HashSet<>();
@@ -65,7 +66,8 @@ public class FilterDialog extends EntityDialog<Filter> {
         filter.setPreparationTime((int) timeField.getValue());
         filter.setMinimumNutritionalValue((int) minNutritionalValueField.getValue());
         filter.setMaximumNutritionalValue((int) maxNutritionalValueField.getValue());
-        filter.setPortions(portionsField.getValue());
+        filter.setMinPortion(minPortionField.getValue());
+        filter.setMaxPortion(maxPortionField.getValue());
         return filter;
     }
 
@@ -73,6 +75,10 @@ public class FilterDialog extends EntityDialog<Filter> {
     public boolean valid(Filter filter) {
         if (filter.getMinimumNutritionalValue() > filter.getMaximumNutritionalValue()) {
             JOptionPane.showMessageDialog(null, "Minimum nutrition value can't be higher than maximum nutrition value", "Error", ERROR_MESSAGE, null);
+            return false;
+        }
+        if(filter.getMinPortion() > filter.getMaxPortion()){
+            JOptionPane.showMessageDialog(null, "Minimum portion value can't be higher than maximum portion value", "Error", ERROR_MESSAGE, null);
             return false;
         }
         return true;
@@ -95,7 +101,8 @@ public class FilterDialog extends EntityDialog<Filter> {
         add("Preparation time:", timeField);
         add("Min nutritional value:", minNutritionalValueField);
         add("Max nutritional value:", maxNutritionalValueField);
-        add("Portions:", portionsField);
+        add("Min portion:", minPortionField);
+        add("Max portion:", maxPortionField);
         add("", resetButton);
     }
 
@@ -145,16 +152,23 @@ public class FilterDialog extends EntityDialog<Filter> {
         ((SpinnerNumberModel) minNutritionalValueField.getModel()).setMinimum(0);
         ((SpinnerNumberModel) maxNutritionalValueField.getModel()).setMinimum(0);
 
-        Hashtable<Integer, JComponent> labelTable = portionsField.createStandardLabels(1);
-        labelTable.put(0, new JLabel("Any"));
-        labelTable.put(6, new JLabel(">5"));
-        portionsField.setLabelTable(labelTable);
-        //portionsField.setMinimum(0);
-        //portionsField.setMaximum(6);
-        portionsField.setMajorTickSpacing(1);
-        portionsField.setPaintLabels(true);
-        portionsField.setPaintTicks(true);
-        portionsField.setSnapToTicks(true);
+        Hashtable<Integer, JComponent> labelTableMin = minPortionField.createStandardLabels(1);
+        labelTableMin.put(0, new JLabel("Any"));
+        labelTableMin.put(6, new JLabel(">5"));
+        minPortionField.setLabelTable(labelTableMin);
+        minPortionField.setMajorTickSpacing(1);
+        minPortionField.setPaintLabels(true);
+        minPortionField.setPaintTicks(true);
+        minPortionField.setSnapToTicks(true);
+
+        Hashtable<Integer, JComponent> labelTableMax = maxPortionField.createStandardLabels(1);
+        labelTableMax.put(0, new JLabel("Any"));
+        labelTableMax.put(6, new JLabel(">5"));
+        maxPortionField.setLabelTable(labelTableMax);
+        maxPortionField.setMajorTickSpacing(1);
+        maxPortionField.setPaintLabels(true);
+        maxPortionField.setPaintTicks(true);
+        maxPortionField.setSnapToTicks(true);
 
         resetButton.setText("Reset");
         resetButton.addActionListener(e -> {
@@ -168,7 +182,8 @@ public class FilterDialog extends EntityDialog<Filter> {
         timeField.setValue(0);
         minNutritionalValueField.setValue(0);
         maxNutritionalValueField.setValue(0);
-        portionsField.setValue(0);
+        minPortionField.setValue(0);
+        maxPortionField.setValue(0);
         categories.forEach(filterCategories::remove);
         ingredients.forEach(filterIngredients::remove);
     }
