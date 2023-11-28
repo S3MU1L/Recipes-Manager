@@ -93,7 +93,12 @@ public class CategoryTableModel extends AbstractTableModel implements EntityTabl
     public void updateAll() {
         categories = new ArrayList<>(categoryCrudService.findAll());
     }
+    public void updateAll(List<Recipe> recipes){
+        updateAll();
+        this.recipes = recipes;
 
+        fireTableDataChanged();
+    }
     public void deleteRow(int rowIndex) {
         var toDelete = categories.get(rowIndex);
         List<Recipe> usedIn = new ArrayList<>();

@@ -3,6 +3,7 @@ package cz.muni.fi.pv168.easyfood.ui.model.tablemodel;
 import cz.muni.fi.pv168.easyfood.business.model.Filter;
 import cz.muni.fi.pv168.easyfood.business.model.Recipe;
 import cz.muni.fi.pv168.easyfood.business.service.crud.CrudService;
+import cz.muni.fi.pv168.easyfood.ui.MainWindow;
 import cz.muni.fi.pv168.easyfood.ui.model.Column;
 import cz.muni.fi.pv168.easyfood.wiring.DependencyProvider;
 
@@ -13,9 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RecipeTableModel extends AbstractTableModel implements EntityTableModel<Recipe> {
+    private final MainWindow mainWindow;
     private List<Recipe> recipes;
     private final CrudService<Recipe> recipeCrudService;
     private final DependencyProvider dependencyProvider;
+    private boolean activeFiter;
 
     private final List<Column<Recipe, ?>> columns = List.of(
             Column.readonly("Name", String.class, Recipe::getName),
@@ -23,10 +26,12 @@ public class RecipeTableModel extends AbstractTableModel implements EntityTableM
             Column.readonly("Preparation time", String.class, Recipe::getFormattedPreparationTime)
     );
 
-    public RecipeTableModel(CrudService<Recipe> recipeCrudService, DependencyProvider dependencyProvider, List<Recipe> recipes) {
+    public RecipeTableModel(CrudService<Recipe> recipeCrudService, DependencyProvider dependencyProvider, List<Recipe> recipes, MainWindow mainWindow) {
         this.recipeCrudService = recipeCrudService;
         this.recipes = recipes;
         this.dependencyProvider = dependencyProvider;
+        this.mainWindow = mainWindow;
+        activeFiter = false;
     }
 
     @Override
@@ -73,6 +78,7 @@ public class RecipeTableModel extends AbstractTableModel implements EntityTableM
         addIngredients(recipe);
         int newRowIndex = recipes.size();
         recipes.add(recipe);
+        mainWindow.updateStatistics(recipes);
         fireTableRowsInserted(newRowIndex, newRowIndex);
     }
 
@@ -87,6 +93,7 @@ public class RecipeTableModel extends AbstractTableModel implements EntityTableM
     public void updateRow(Recipe recipe) {
         recipeCrudService.update(recipe);
         int rowIndex = recipes.indexOf(recipe);
+        mainWindow.updateStatistics(recipes);
         fireTableRowsUpdated(rowIndex, rowIndex);
     }
 
@@ -94,18 +101,21 @@ public class RecipeTableModel extends AbstractTableModel implements EntityTableM
     public void updateAll() {
         recipes = new ArrayList<>(recipeCrudService.findAll());
     }
-    public void setRecipes(List<Recipe> recipes) {
-        this.recipes = recipes;
+    public void updateRecipes() {
+        recipes = recipeCrudService.findAll();
+    
+        fireTableDataChanged();
+        setActiveFiter(false);
     }
 
     public void updateWithFilter(Filter filter){
         List<Recipe> allRecipes = new ArrayList<>(recipeCrudService.findAll());
-
         List<Recipe> filteredRecipes = filter.getFilteredRecipes(allRecipes);
 
-        recipes.clear();
+        recipes = new ArrayList<>();
         recipes.addAll(filteredRecipes);
 
+        setActiveFiter(true);
         fireTableDataChanged();
     }
 
@@ -124,6 +134,15 @@ public class RecipeTableModel extends AbstractTableModel implements EntityTableM
         recipes.clear();
         recipeCrudService.deleteAll();
         fireTableRowsDeleted(0, last_index - 1);
+    }
+
+    public boolean isActiveFiter() {
+        return activeFiter;
+    }
+
+    public void setActiveFiter(boolean activeFiter) {
+        this.activeFiter = activeFiter;
+        mainWindow.updateFilterStatus();
     }
 
     public void customizeTableCell(Component cell, Object value, int row, JTable table) {

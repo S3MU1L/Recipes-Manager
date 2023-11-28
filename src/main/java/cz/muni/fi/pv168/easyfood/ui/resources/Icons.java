@@ -17,6 +17,7 @@ public final class Icons {
     public static final Icon QUIT_ICON = createIcon("exit.png");
     public static final Icon SHOW_ICON = createIcon("show.png");
     public static final Icon FILTER_ICON = createIcon("filter.png");
+    public static final Icon FILTER_REMOVE_ICON = createIcon("removeFilter.png");
     public static final Icon IMPORT_ICON = createIcon("import.png");
     public static final Icon EXPORT_ICON = createIcon("export.png");
     public static final Icon NUCLEAR_QUIT_ICON = createIcon("nuclear.png");

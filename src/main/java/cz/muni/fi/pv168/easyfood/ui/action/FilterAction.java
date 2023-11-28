@@ -46,7 +46,7 @@ public final class FilterAction extends AbstractAction {
         this.ingredients = ingredients;
         this.categories = categories;
         this.units = units;
-        originalRecipes = new ArrayList<>(this.recipes);
+        originalRecipes = this.recipes;
         putValue(SHORT_DESCRIPTION, "Filter recipes");
         putValue(MNEMONIC_KEY, KeyEvent.VK_F);
     }
@@ -55,22 +55,27 @@ public final class FilterAction extends AbstractAction {
     public void actionPerformed(ActionEvent e) {
         var dialog =
                 (FilterDialog) filterContainer.getSelectedTab().getDialog().createNewDialog(Filter.createEmptyFilter(), recipes, ingredients, categories, units);
-        Filter filter = dialog.show(filterContainer.getComponent(), "Filter").orElse(null);
+
         JTable recipeTable = tabContainer.getSelectedTab().getTable();
         RecipeTableModel recipeTableModel = (RecipeTableModel) recipeTable.getModel();
+
+        if(!recipeTableModel.isActiveFiter()){
+            dialog.resetFilter();
+        }
+
+        Filter filter = dialog.show(filterContainer.getComponent(), "Filter").orElse(null);
 
         if (filter != null && filter.getName().equals("") && filter.getCategories().size() == 0 &&
                 filter.getIngredients().size() == 0 &&
                 filter.getPreparationTime() == 0 && filter.getMinimumNutritionalValue() == 0 &&
                 filter.getMaximumNutritionalValue() == 0 && filter.getPortions() == 0) {
-            recipeTableModel.setRecipes(originalRecipes);
-            //originalRecipes.forEach(recipeTableModel::addRow);
+            recipeTableModel.updateRecipes();
+            //recipeTableModel.updateAll();
+            //recipeTableModel.fireTableDataChanged();
         } else if (filter != null) {
-            //List<Recipe> filteredRecipes = filter.getFilteredRecipes(recipes);
-            //recipeTableModel.clear();
-            //filteredRecipes.forEach(recipeTableModel::addRow);
             recipeTableModel.updateWithFilter(filter);
         }
+
         mainWindow.updateRecipeCountLabel();
     }
 }

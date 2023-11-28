@@ -158,15 +158,18 @@ public class FilterDialog extends EntityDialog<Filter> {
 
         resetButton.setText("Reset");
         resetButton.addActionListener(e -> {
-            nameField.setText("");
-            for (JCheckBox checkBox : categoriesCheckboxes) checkBox.setSelected(false);
-            for (JCheckBox checkBox : ingredientsCheckboxes) checkBox.setSelected(false);
-            timeField.setValue(0);
-            minNutritionalValueField.setValue(0);
-            maxNutritionalValueField.setValue(0);
-            portionsField.setValue(0);
-            categories.forEach(filterCategories::remove);
-            ingredients.forEach(filterIngredients::remove);
+            resetFilter();
         });
+    }
+    public void resetFilter(){
+        nameField.setText("");
+        for (JCheckBox checkBox : categoriesCheckboxes) checkBox.setSelected(false);
+        for (JCheckBox checkBox : ingredientsCheckboxes) checkBox.setSelected(false);
+        timeField.setValue(0);
+        minNutritionalValueField.setValue(0);
+        maxNutritionalValueField.setValue(0);
+        portionsField.setValue(0);
+        categories.forEach(filterCategories::remove);
+        ingredients.forEach(filterIngredients::remove);
     }
 }

@@ -27,6 +27,7 @@ import cz.muni.fi.pv168.easyfood.ui.action.ExportAction;
 import cz.muni.fi.pv168.easyfood.ui.action.FilterAction;
 import cz.muni.fi.pv168.easyfood.ui.action.ImportAction;
 import cz.muni.fi.pv168.easyfood.ui.action.QuitAction;
+import cz.muni.fi.pv168.easyfood.ui.action.RemoveFilterAction;
 import cz.muni.fi.pv168.easyfood.ui.action.ShowAction;
 import cz.muni.fi.pv168.easyfood.ui.dialog.CategoryDialog;
 import cz.muni.fi.pv168.easyfood.ui.dialog.FilterDialog;
@@ -76,6 +77,7 @@ public class MainWindow {
     private final DeleteAction deleteAction;
     private final EditAction editAction;
     private final FilterAction filterAction;
+    private final RemoveFilterAction removeFilterAction;
     private final ExportAction exportAction;
     private final ImportAction importAction;
     private final TabContainer tabContainer;
@@ -135,7 +137,7 @@ public class MainWindow {
             System.out.println(recipe);
         }
 
-        recipeTableModel = new RecipeTableModel(recipeCrudService, dependencyProvider, recipes);
+        recipeTableModel = new RecipeTableModel(recipeCrudService, dependencyProvider, recipes, this);
         ingredientTableModel = new IngredientTableModel(ingredientCrudService, recipes, ingredients);
         categoryTableModel = new CategoryTableModel(categoryCrudService, recipes, categories);
         unitTableModel = new UnitTableModel(unitCrudService, ingredients, units);
@@ -155,7 +157,7 @@ public class MainWindow {
         tabContainer.addChangeListener(this::tabChangeListener);
 
         TabContainer filterContainer = new TabContainer();
-        var model = new RecipeTableModel(recipeCrudService, dependencyProvider, recipes);
+        var model = new RecipeTableModel(recipeCrudService, dependencyProvider, recipes, this);
         var table = new JTable(model);
         Tab filterTab = new Tab("Filter", table, model, new FilterDialog(categories, ingredients));
         filterContainer.addTab(filterTab);
@@ -165,6 +167,7 @@ public class MainWindow {
         editAction = new EditAction(tabContainer, recipes, ingredients, categories, units);
         showAction = new ShowAction(tabContainer);
         filterAction = new FilterAction(this, tabContainer, filterContainer, recipes, ingredients, categories, units);
+        removeFilterAction = new RemoveFilterAction(this, tabContainer);
         importAction = new ImportAction();
         exportAction = new ExportAction();
 
@@ -188,6 +191,12 @@ public class MainWindow {
         categoryTable.clearSelection();
         unitTable.clearSelection();
         filterAction.setEnabled(tabContainer.getSelectedTab().getModel().getClass().equals(RecipeTableModel.class));
+        removeFilterAction.setEnabled(tabContainer.getSelectedTab().getModel().getClass().equals(RecipeTableModel.class) && recipeTableModel.isActiveFiter());
+    }
+
+    public void updateFilterStatus(){
+        removeFilterAction.setEnabled(recipeTableModel.isActiveFiter());
+        addAction.setEnabled(!recipeTableModel.isActiveFiter());
     }
 
     public void show() {
@@ -309,6 +318,7 @@ public class MainWindow {
         toolbar.add(deleteAction);
         toolbar.add(showAction);
         toolbar.add(filterAction);
+        toolbar.add(removeFilterAction);
         return toolbar;
     }
 
@@ -344,6 +354,12 @@ public class MainWindow {
     public void updateRecipeCountLabel() {
         int recipeCount = recipeTable.getModel().getRowCount();
         recipeCountLabel.setText("Amount of recipes: " + recipeCount);
+    }
 
+    public void updateStatistics(List<Recipe> recipes) {
+        categoryTableModel.updateAll(recipes);
+        for (var recipe : recipes) {
+            System.out.println(recipe.getName());
+        }
     }
 }
