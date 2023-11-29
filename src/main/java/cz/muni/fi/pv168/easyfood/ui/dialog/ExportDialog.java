@@ -1,12 +1,19 @@
 package cz.muni.fi.pv168.easyfood.ui.dialog;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.itextpdf.text.Anchor;
 import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Chapter;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.Section;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import cz.muni.fi.pv168.easyfood.business.model.Category;
 import cz.muni.fi.pv168.easyfood.business.model.Export;
@@ -24,7 +31,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class ExportDialog extends EntityDialog<Export> {
     private final Export export;
@@ -100,13 +109,50 @@ public class ExportDialog extends EntityDialog<Export> {
             PdfWriter.getInstance(document, new FileOutputStream(file));
 
             document.open();
+            PdfPTable table = new PdfPTable(3);
+            writeHeader(table,"Name", "Abbreviation", "Conversion");
             for (Unit unit : units) {
-                Font font = FontFactory.getFont(FontFactory.COURIER, 12, BaseColor.BLACK);
-                String unitText = String.format("%s (%s) is equivalent to %.2f %s", unit.getName(), unit.getAbbreviation(), unit.getConversion(), unit.getBaseUnit().toString());
-                System.out.println(unitText);
-                Chunk chunk = new Chunk(unitText, font);
-                document.add(chunk);
+                table.addCell(unit.getName());
+                table.addCell(unit.getAbbreviation());
+                table.addCell(unit.getFormattedBaseUnit());
             }
+            document.add(table);
+
+            table = new PdfPTable(1);
+            writeHeader(table, "Name");
+            for (Category category : categories) {
+                table.addCell(category.getName());
+            }
+            document.add(table);
+
+            table = new PdfPTable(3);
+            writeHeader(table, "Name", "Calories", "Unit");
+            for (Ingredient ingredient : ingredients) {
+                table.addCell(ingredient.getName());
+                table.addCell(String.valueOf(ingredient.getCalories()));
+                table.addCell(ingredient.getUnit().getAbbreviation());
+            }
+            document.add(table);
+
+            table = new PdfPTable(6);
+            writeHeader(table, "Name", "Ingredients", "Description", "PreparationTime", "Portions", "Category");
+            for (Recipe recipe : recipes) {
+                table.addCell(recipe.getName());
+                table.addCell(
+                        String.join(", ",
+                            recipe.getIngredients().stream()
+                                    .map(
+                                            i -> String.format(i.getFormattedAmount() + " " + i.getIngredient().getName())
+                                    )
+                                    .toList()
+                        )
+                );
+                table.addCell(recipe.getDescription());
+                table.addCell(recipe.getFormattedPreparationTime());
+                table.addCell(String.valueOf(recipe.getPortions()));
+                table.addCell(recipe.getCategory().getName());
+            }
+            document.add(table);
 
             document.close();
         } catch (DocumentException e) {
@@ -114,6 +160,17 @@ public class ExportDialog extends EntityDialog<Export> {
         } catch (FileNotFoundException e) {
             Logger.error("Failed to create file");
         }
+    }
+
+    private void writeHeader(PdfPTable table, String... titles) {
+        Arrays.stream(titles)
+                .forEach(title -> {
+                    PdfPCell header = new PdfPCell();
+                    header.setBackgroundColor(BaseColor.LIGHT_GRAY);
+                    header.setBorderWidth(2);
+                    header.setPhrase(new Phrase(title));
+                    table.addCell(header);
+                });
     }
 
     private <E> void writeXMLBlock(XmlMapper mapper, String blockName, FileWriter writer, List<E> values) throws IOException {
@@ -146,7 +203,6 @@ public class ExportDialog extends EntityDialog<Export> {
     }
 
     private void setValues() {
-        pdfFormatButton.setEnabled(false);
         buttonGroup.add(xmlFormatButton);
         buttonGroup.add(pdfFormatButton);
     }
