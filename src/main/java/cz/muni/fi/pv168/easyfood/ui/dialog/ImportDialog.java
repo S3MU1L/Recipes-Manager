@@ -135,7 +135,6 @@ public class ImportDialog extends EntityDialog<Import> {
         } catch (JsonMappingException e) {
             Logger.error("Failed to map XML");
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
             Logger.error("Failed to process XML");
         } catch (IOException e) {
             Logger.error("Failed to read file");
