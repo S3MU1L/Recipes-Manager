@@ -11,6 +11,8 @@ import cz.muni.fi.pv168.easyfood.ui.resources.Icons;
 import cz.muni.fi.pv168.easyfood.ui.tab.TabContainer;
 
 import javax.swing.AbstractAction;
+import javax.swing.JTable;
+import javax.swing.table.AbstractTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.List;
@@ -22,6 +24,7 @@ public final class ImportAction extends AbstractAction {
     private final List<Ingredient> ingredients;
     private final List<Category> categories;
     private final List<Unit> units;
+    private final AbstractTableModel[] tableModels;
 
     public ImportAction(
             MainWindow mainWindow,
@@ -29,7 +32,8 @@ public final class ImportAction extends AbstractAction {
             List<Recipe> recipes,
             List<Ingredient> ingredients,
             List<Category> categories,
-            List<Unit> units
+            List<Unit> units,
+            AbstractTableModel[] tableModels
     ) {
         super("Import", Icons.IMPORT_ICON);
         putValue(SHORT_DESCRIPTION, "Import recipes");
@@ -41,11 +45,13 @@ public final class ImportAction extends AbstractAction {
         this.ingredients = ingredients;
         this.categories = categories;
         this.units = units;
+        this.tableModels = tableModels;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         var dialog = (ImportDialog) importContainer.getSelectedTab().getDialog().createNewDialog(new Import(), recipes, ingredients, categories, units);
         dialog.show(importContainer.getComponent(), "Import").orElse(null);
+        for (AbstractTableModel tableModel : tableModels) tableModel.fireTableDataChanged();
     }
 }
