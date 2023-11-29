@@ -7,9 +7,16 @@ import cz.muni.fi.pv168.easyfood.business.model.BaseUnit;
 import cz.muni.fi.pv168.easyfood.business.model.Category;
 import cz.muni.fi.pv168.easyfood.business.model.Import;
 import cz.muni.fi.pv168.easyfood.business.model.Ingredient;
+import cz.muni.fi.pv168.easyfood.business.model.IngredientWithAmount;
 import cz.muni.fi.pv168.easyfood.business.model.Recipe;
 import cz.muni.fi.pv168.easyfood.business.model.Unit;
 import cz.muni.fi.pv168.easyfood.business.repository.Repository;
+import cz.muni.fi.pv168.easyfood.storage.DataStorageException;
+import cz.muni.fi.pv168.easyfood.storage.sql.dao.IngredientDao;
+import cz.muni.fi.pv168.easyfood.storage.sql.dao.IngredientWithAmountDao;
+import cz.muni.fi.pv168.easyfood.storage.sql.dao.RecipeDao;
+import cz.muni.fi.pv168.easyfood.storage.sql.entity.IngredientEntity;
+import cz.muni.fi.pv168.easyfood.storage.sql.entity.RecipeEntity;
 import cz.muni.fi.pv168.easyfood.wiring.DependencyProvider;
 import org.tinylog.Logger;
 import org.w3c.dom.Document;
@@ -79,6 +86,10 @@ public class ImportDialog extends EntityDialog<Import> {
             List<String> categoryNames = categoryRepository.findAll().stream().map(Category::getName).toList();
             List<String> unitNames = unitRepository.findAll().stream().map(Unit::getName).toList();
 
+            IngredientWithAmountDao ingredientWithAmountDao = dependencyProvider.getIngredientWithAmountDao();
+            RecipeDao recipeDao = dependencyProvider.getRecipeDao();
+            IngredientDao ingredientDao = dependencyProvider.getIngredientDao();
+
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 if (line.startsWith("<Unit>")) {
@@ -90,6 +101,7 @@ public class ImportDialog extends EntityDialog<Import> {
                 } else if (line.startsWith("<Ingredient>")) {
                     Ingredient i = mapper.readValue(line, Ingredient.class);
                     if (!ingredientNames.contains(i.getName())) {
+                        System.out.println("ingredient name: " + i.getName());
                         ingredientRepository.create(i);
                         ingredients.add(i);
                     }
@@ -104,6 +116,11 @@ public class ImportDialog extends EntityDialog<Import> {
                     if (!recipeNames.contains(r.getName())) {
                         recipeRepository.create(r);
                         recipes.add(r);
+                        RecipeEntity recipeEntity = recipeDao.findByGuid(r.getGuid()).get();
+                        for (IngredientWithAmount ingredientWithAmount : r.getIngredients()) {
+                            IngredientEntity ingredientEntity = ingredientDao.findByGuid(ingredientWithAmount.getIngredient().getGuid()).get();
+                            ingredientWithAmountDao.addRecipeIngredient(ingredientWithAmount, recipeEntity.id(), ingredientEntity.id());
+                        }
                     }
                 }
             }
