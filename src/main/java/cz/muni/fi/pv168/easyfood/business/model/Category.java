@@ -1,12 +1,16 @@
 package cz.muni.fi.pv168.easyfood.business.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.awt.Color;
 import java.util.Objects;
 import java.util.UUID;
 
 public class Category extends Entity {
     private String name;
-    private Color color;
+    private Color color = new Color(255, 255, 255);
+
+    public Category() {}
 
     public Category(
             String name,
@@ -32,6 +36,7 @@ public class Category extends Entity {
         return name;
     }
 
+    @JsonIgnore
     public Color getColor() {
         return color;
     }

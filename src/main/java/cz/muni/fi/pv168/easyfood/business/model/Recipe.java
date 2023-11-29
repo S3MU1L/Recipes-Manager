@@ -1,5 +1,7 @@
 package cz.muni.fi.pv168.easyfood.business.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -13,6 +15,8 @@ public class Recipe extends Entity {
     private int preparationTime;
     private int portions;
     private Category category;
+
+    public Recipe() {}
 
     public Recipe(String guid,
                   String name,
@@ -72,6 +76,7 @@ public class Recipe extends Entity {
         this.ingredients = Objects.requireNonNull(ingredients, "ingredients must not be null");
     }
 
+    @JsonIgnore
     public double getCalories() {
         double total = 0;
         for (var ingredient : ingredients) {
@@ -104,6 +109,7 @@ public class Recipe extends Entity {
         this.portions = portions;
     }
 
+    @JsonIgnore
     public String getFormattedPreparationTime() {
         StringBuilder result = new StringBuilder();
         if (preparationTime >= 60) {
@@ -119,6 +125,7 @@ public class Recipe extends Entity {
         return result.toString();
     }
 
+    @JsonIgnore
     public String getFormattedCalories() {
         return Double.valueOf(getCalories()).intValue() + " kJ";
     }

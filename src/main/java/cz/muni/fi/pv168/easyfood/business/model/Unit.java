@@ -1,5 +1,7 @@
 package cz.muni.fi.pv168.easyfood.business.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.text.DecimalFormat;
 import java.util.Objects;
 
@@ -8,6 +10,8 @@ public class Unit extends Entity {
     private String abbreviation;
     private BaseUnit baseUnit;
     private double conversion;
+
+    public Unit() {}
 
     public Unit(
             String guid,
@@ -63,10 +67,12 @@ public class Unit extends Entity {
         this.conversion = conversion;
     }
 
+    @JsonIgnore
     public String getFormattedBaseUnit() {
         return new DecimalFormat("#.##").format(conversion) + " " + BaseUnit.getAbbreviation(baseUnit);
     }
 
+    @JsonIgnore
     public String getFormattedConversionRatio() {
         return String.valueOf(conversion);
     }

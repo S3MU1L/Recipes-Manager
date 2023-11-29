@@ -1,11 +1,15 @@
 package cz.muni.fi.pv168.easyfood.business.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.Objects;
 
 public class Ingredient extends Entity {
     private String name;
     private double calories;
     private Unit unit;
+
+    public Ingredient() {}
 
     public Ingredient(
             String guid,
@@ -43,6 +47,7 @@ public class Ingredient extends Entity {
         return calories;
     }
 
+    @JsonIgnore
     public String getFormattedCalories() {
         if (calories == 0.0) {
             return "";
