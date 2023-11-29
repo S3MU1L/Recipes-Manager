@@ -209,6 +209,8 @@ public class MainWindow {
         removeFilterAction.setEnabled(recipeTableModel.isActiveFiter());
         addAction.setEnabled(!recipeTableModel.isActiveFiter());
         deleteAction.setEnabled(!recipeTableModel.isActiveFiter());
+        exportAction.setEnabled(!recipeTableModel.isActiveFiter());
+        importAction.setEnabled(!recipeTableModel.isActiveFiter());
     }
 
     public void show() {
