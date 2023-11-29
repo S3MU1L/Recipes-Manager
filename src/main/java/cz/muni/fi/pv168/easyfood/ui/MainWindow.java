@@ -163,7 +163,7 @@ public class MainWindow {
         filterContainer.addTab(filterTab);
 
         TabContainer exportContainer = new TabContainer();
-        Tab exportTab = new Tab("Export", table, model, new ExportDialog(recipes, ingredients, categories, units));
+        Tab exportTab = new Tab("Export", table, model, new ExportDialog(dependencyProvider));
         exportContainer.addTab(exportTab);
 
         TabContainer importContainer = new TabContainer();

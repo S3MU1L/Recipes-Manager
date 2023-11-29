@@ -13,6 +13,8 @@ import cz.muni.fi.pv168.easyfood.business.model.Export;
 import cz.muni.fi.pv168.easyfood.business.model.Ingredient;
 import cz.muni.fi.pv168.easyfood.business.model.Recipe;
 import cz.muni.fi.pv168.easyfood.business.model.Unit;
+import cz.muni.fi.pv168.easyfood.business.repository.Repository;
+import cz.muni.fi.pv168.easyfood.wiring.DependencyProvider;
 import org.tinylog.Logger;
 
 import javax.swing.ButtonGroup;
@@ -29,27 +31,30 @@ import java.util.List;
 
 public class ExportDialog extends EntityDialog<Export> {
     private final Export export;
-    private final List<Recipe> recipes;
-    private final List<Ingredient> ingredients;
-    private final List<Category> categories;
-    private final List<Unit> units;
+    private final DependencyProvider dependencyProvider;
+    private final Repository<Recipe> recipeRepository;
+    private final Repository<Ingredient> ingredientRepository;
+    private final Repository<Category> categoryRepository;
+    private final Repository<Unit> unitRepository;
     private static String lastPath = System.getProperty("user.dir");
     private final ButtonGroup buttonGroup = new ButtonGroup();
     private final JRadioButton xmlFormatButton = new JRadioButton("XML");
     private final JRadioButton pdfFormatButton = new JRadioButton("PDF");
 
-    public ExportDialog(Export export, List<Recipe> recipes, List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
+    public ExportDialog(Export export, DependencyProvider dependencyProvider) {
         this.export = export;
-        this.recipes = recipes;
-        this.ingredients = ingredients;
-        this.categories = categories;
-        this.units = units;
+        this.dependencyProvider = dependencyProvider;
+        this.recipeRepository = dependencyProvider.getRecipeRepository();
+        this.ingredientRepository = dependencyProvider.getIngredientRepository();
+        this.categoryRepository = dependencyProvider.getCategoryRepository();
+        this.unitRepository = dependencyProvider.getUnitRepository();
+
         addFields();
         setValues();
     }
 
-    public ExportDialog(List<Recipe> recipes, List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
-        this(new Export(), recipes, ingredients, categories, units);
+    public ExportDialog(DependencyProvider dependencyProvider) {
+        this(new Export(), dependencyProvider);
     }
 
     @Override
@@ -75,8 +80,13 @@ public class ExportDialog extends EntityDialog<Export> {
             file = new File(file.getAbsolutePath() + "." + format);
         }
 
+        List<Recipe> recipes = recipeRepository.findAll();
+        List<Ingredient> ingredients = ingredientRepository.findAll();
+        List<Category> categories = categoryRepository.findAll();
+        List<Unit> units = unitRepository.findAll();
+
         if (pdfFormatButton.isSelected()) {
-            writePDF(file);
+            writePDF(file, recipes, ingredients, categories, units);
             return null;
         }
 
@@ -95,7 +105,7 @@ public class ExportDialog extends EntityDialog<Export> {
         return null;
     }
 
-    private void writePDF(File file) {
+    private void writePDF(File file, List<Recipe> recipes, List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
         try {
             Document document = new Document();
             PdfWriter.getInstance(document, new FileOutputStream(file));
@@ -181,12 +191,12 @@ public class ExportDialog extends EntityDialog<Export> {
 
     @Override
     public EntityDialog<?> createNewDialog(List<Recipe> recipes, List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
-        return new ExportDialog(new Export(), recipes, ingredients, categories, units);
+        return new ExportDialog(new Export(), dependencyProvider);
     }
 
     @Override
     public EntityDialog<Export> createNewDialog(Export entity, List<Recipe> recipes, List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
-        return new ExportDialog(export, recipes, ingredients, categories, units);
+        return new ExportDialog(export, dependencyProvider);
     }
 
     private void addFields() {
