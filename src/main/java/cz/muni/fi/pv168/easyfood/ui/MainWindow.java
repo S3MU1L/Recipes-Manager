@@ -3,6 +3,7 @@ package cz.muni.fi.pv168.easyfood.ui;
 
 import cz.muni.fi.pv168.easyfood.business.model.BaseUnit;
 import cz.muni.fi.pv168.easyfood.business.model.Category;
+import cz.muni.fi.pv168.easyfood.business.model.Import;
 import cz.muni.fi.pv168.easyfood.business.model.Ingredient;
 import cz.muni.fi.pv168.easyfood.business.model.IngredientWithAmount;
 import cz.muni.fi.pv168.easyfood.business.model.Recipe;
@@ -30,7 +31,9 @@ import cz.muni.fi.pv168.easyfood.ui.action.QuitAction;
 import cz.muni.fi.pv168.easyfood.ui.action.RemoveFilterAction;
 import cz.muni.fi.pv168.easyfood.ui.action.ShowAction;
 import cz.muni.fi.pv168.easyfood.ui.dialog.CategoryDialog;
+import cz.muni.fi.pv168.easyfood.ui.dialog.ExportDialog;
 import cz.muni.fi.pv168.easyfood.ui.dialog.FilterDialog;
+import cz.muni.fi.pv168.easyfood.ui.dialog.ImportDialog;
 import cz.muni.fi.pv168.easyfood.ui.dialog.IngredientDialog;
 import cz.muni.fi.pv168.easyfood.ui.dialog.RecipeDialog;
 import cz.muni.fi.pv168.easyfood.ui.dialog.UnitDialog;
@@ -158,14 +161,22 @@ public class MainWindow {
         Tab filterTab = new Tab("Filter", table, model, new FilterDialog(categories, ingredients));
         filterContainer.addTab(filterTab);
 
+        TabContainer exportContainer = new TabContainer();
+        Tab exportTab = new Tab("Export", table, model, new ExportDialog(recipes, ingredients, categories, units));
+        exportContainer.addTab(exportTab);
+
+        TabContainer importContainer = new TabContainer();
+        Tab importTab = new Tab("Import", table, model, new ImportDialog(new Import()));
+        importContainer.addTab(importTab);
+
         addAction = new AddAction(this, tabContainer, recipes, ingredients, categories, units);
         deleteAction = new DeleteAction(this, tabContainer);
         editAction = new EditAction(tabContainer, recipes, ingredients, categories, units);
         showAction = new ShowAction(tabContainer);
         filterAction = new FilterAction(this, tabContainer, filterContainer, recipes, ingredients, categories, units);
         removeFilterAction = new RemoveFilterAction(this, tabContainer, recipeTableModel);
-        importAction = new ImportAction();
-        exportAction = new ExportAction();
+        importAction = new ImportAction(this, importContainer, recipes, ingredients, categories, units);
+        exportAction = new ExportAction(this, exportContainer, recipes, ingredients, categories, units);
 
         recipeTable.setComponentPopupMenu(createExtendedTablePopupMenu());
         ingredientTable.setComponentPopupMenu(createBasicTablePopupMenu());
