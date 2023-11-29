@@ -4,6 +4,7 @@ import cz.muni.fi.pv168.easyfood.business.model.Category;
 import cz.muni.fi.pv168.easyfood.business.model.Ingredient;
 import cz.muni.fi.pv168.easyfood.business.model.Recipe;
 import cz.muni.fi.pv168.easyfood.business.model.Unit;
+import cz.muni.fi.pv168.easyfood.ui.model.tablemodel.UnitTableModel;
 
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -24,18 +25,18 @@ public class IngredientDialog extends EntityDialog<Ingredient> {
     private final JList<String> unitsList;
     private final Ingredient ingredient;
     private final List<Ingredient> ingredients;
-    private final List<Unit> units;
+    private final UnitTableModel unitTableModel;
 
-    public IngredientDialog(List<Ingredient> ingredients, List<Unit> units) {
-        this(Ingredient.createEmptyIngredient(), ingredients, units);
+    public IngredientDialog(List<Ingredient> ingredients, UnitTableModel unitTableModel) {
+        this(Ingredient.createEmptyIngredient(), ingredients, unitTableModel);
     }
 
-    public IngredientDialog(Ingredient ingredient, List<Ingredient> ingredients, List<Unit> units) {
+    public IngredientDialog(Ingredient ingredient, List<Ingredient> ingredients, UnitTableModel unitTableModel) {
         this.ingredient = ingredient;
         this.ingredients = ingredients;
-        this.units = units;
+        this.unitTableModel = unitTableModel;
 
-        unitsList = new JList<>(units.stream().map(Unit::getName).toArray(String[]::new));
+        unitsList = new JList<>(unitTableModel.getEntity().stream().map(Unit::getName).toArray(String[]::new));
         unitsField.setViewportView(unitsList);
         setValues();
         addFields();
@@ -47,7 +48,7 @@ public class IngredientDialog extends EntityDialog<Ingredient> {
 
         Dimension dimension = new Dimension(150, 100);
         unitsField.setMaximumSize(dimension);
-        unitsList.setSelectedIndex(units.indexOf(ingredient.getUnit()));
+        unitsList.setSelectedIndex(unitTableModel.getEntity().indexOf(ingredient.getUnit()));
     }
 
     private void addFields() {
@@ -59,7 +60,7 @@ public class IngredientDialog extends EntityDialog<Ingredient> {
     @Override
     public Ingredient getEntity() {
         ingredient.setName(nameField.getText().trim());
-        ingredient.setUnit(unitsList.getSelectedIndex() != -1 ? units.get(unitsList.getSelectedIndex()) : null);
+        ingredient.setUnit(unitsList.getSelectedIndex() != -1 ? unitTableModel.getEntity().get(unitsList.getSelectedIndex()) : null);
         ingredient.setCalories((double) caloriesField.getValue());
         return ingredient;
     }
@@ -90,7 +91,7 @@ public class IngredientDialog extends EntityDialog<Ingredient> {
     @Override
     public EntityDialog<?> createNewDialog(List<Recipe> recipes, List<Ingredient> ingredients,
                                            List<Category> categories, List<Unit> units) {
-        return new IngredientDialog(ingredients, units);
+        return new IngredientDialog(ingredients, unitTableModel);
     }
 
 
@@ -98,6 +99,6 @@ public class IngredientDialog extends EntityDialog<Ingredient> {
     public EntityDialog<Ingredient> createNewDialog(Ingredient entity, List<Recipe> recipes,
                                                     List<Ingredient> ingredients, List<Category> categories,
                                                     List<Unit> units) {
-        return new IngredientDialog(entity, ingredients, units);
+        return new IngredientDialog(entity, ingredients, unitTableModel);
     }
 }
