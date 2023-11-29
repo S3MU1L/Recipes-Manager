@@ -141,7 +141,7 @@ public class ExportDialog extends EntityDialog<Export> {
             for (Recipe recipe : recipes) {
                 table.addCell(recipe.getName());
                 table.addCell(
-                        String.join(", ",
+                        String.join("\n",
                             recipe.getIngredients().stream()
                                     .map(
                                             i -> String.format(i.getFormattedAmount() + " " + i.getIngredient().getName())
