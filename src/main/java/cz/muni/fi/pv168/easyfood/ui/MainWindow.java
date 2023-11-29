@@ -285,7 +285,7 @@ public class MainWindow {
 
         TestDataGenerator testDataGenerator = new TestDataGenerator();
         if (unitTableModel.getSize() == 0) {
-            for (Unit unit : testDataGenerator.createTestUnits(10)) {
+            for (Unit unit : testDataGenerator.createTestUnits(3)) {
                 unitTableModel.addRow(unit);
             }
         }
