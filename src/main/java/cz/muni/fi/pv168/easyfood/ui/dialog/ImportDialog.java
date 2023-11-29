@@ -119,7 +119,8 @@ public class ImportDialog extends EntityDialog<Import> {
                         categories.add(c);
                     }
                 } else if (line.startsWith("<Recipe>")) {
-                    Recipe r = mapper.readValue(line, Recipe.class);
+                    System.out.println("here?");
+                    Recipe r = mapper.readValue(line.replace("\\n", "\n"), Recipe.class);
                     if (!recipeNames.contains(r.getName())) {
                         recipeRepository.create(r);
                         recipes.add(r);
@@ -134,6 +135,7 @@ public class ImportDialog extends EntityDialog<Import> {
         } catch (JsonMappingException e) {
             Logger.error("Failed to map XML");
         } catch (JsonProcessingException e) {
+            e.printStackTrace();
             Logger.error("Failed to process XML");
         } catch (IOException e) {
             Logger.error("Failed to read file");

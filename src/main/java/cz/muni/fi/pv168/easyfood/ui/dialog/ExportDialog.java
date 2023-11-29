@@ -178,7 +178,7 @@ public class ExportDialog extends EntityDialog<Export> {
     private <E> void writeXMLBlock(XmlMapper mapper, String blockName, FileWriter writer, List<E> values) throws IOException {
         writer.write("<" + blockName + ">\n");
         for (E value : values) {
-            writer.write(mapper.writeValueAsString(value));
+            writer.write(mapper.writeValueAsString(value).replace("\n", "\\n"));
             writer.write('\n');
         }
         writer.write("</" + blockName + ">\n");
