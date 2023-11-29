@@ -1,5 +1,7 @@
 package cz.muni.fi.pv168.easyfood.business.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.Objects;
 import java.util.UUID;
 
@@ -7,6 +9,8 @@ public class IngredientWithAmount extends Entity {
     private Ingredient ingredient;
     private double amount;
 
+    public IngredientWithAmount() {}
+
     public IngredientWithAmount(
             String guid,
             String name,
@@ -45,6 +49,7 @@ public class IngredientWithAmount extends Entity {
         this.amount = amount;
     }
 
+    @JsonIgnore
     public String getName() {
         return ingredient.getName();
     }
@@ -53,6 +58,7 @@ public class IngredientWithAmount extends Entity {
         return amount;
     }
 
+    @JsonIgnore
     public String getFormattedAmount() {
         return amount + " (" + ingredient.getUnit().getAbbreviation() + ")";
     }
@@ -61,6 +67,7 @@ public class IngredientWithAmount extends Entity {
         return ingredient;
     }
 
+    @JsonIgnore
     public String getFormattedCalories() {
         return getIngredient().getCalories() * amount + " kJ";
     }

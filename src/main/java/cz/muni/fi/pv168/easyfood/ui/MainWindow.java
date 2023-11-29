@@ -166,7 +166,7 @@ public class MainWindow {
         exportContainer.addTab(exportTab);
 
         TabContainer importContainer = new TabContainer();
-        Tab importTab = new Tab("Import", table, model, new ImportDialog(new Import()));
+        Tab importTab = new Tab("Import", table, model, new ImportDialog(new Import(), dependencyProvider, recipes, ingredients, categories, units));
         importContainer.addTab(importTab);
 
         addAction = new AddAction(this, tabContainer, recipes, ingredients, categories, units);
