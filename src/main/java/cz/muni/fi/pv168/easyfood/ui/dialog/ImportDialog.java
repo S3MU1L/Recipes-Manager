@@ -15,6 +15,7 @@ import cz.muni.fi.pv168.easyfood.storage.DataStorageException;
 import cz.muni.fi.pv168.easyfood.storage.sql.dao.IngredientDao;
 import cz.muni.fi.pv168.easyfood.storage.sql.dao.IngredientWithAmountDao;
 import cz.muni.fi.pv168.easyfood.storage.sql.dao.RecipeDao;
+import cz.muni.fi.pv168.easyfood.storage.sql.dao.UnitDao;
 import cz.muni.fi.pv168.easyfood.storage.sql.entity.IngredientEntity;
 import cz.muni.fi.pv168.easyfood.storage.sql.entity.RecipeEntity;
 import cz.muni.fi.pv168.easyfood.wiring.DependencyProvider;
@@ -35,7 +36,9 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class ImportDialog extends EntityDialog<Import> {
@@ -84,7 +87,8 @@ public class ImportDialog extends EntityDialog<Import> {
             List<String> recipeNames = recipeRepository.findAll().stream().map(Recipe::getName).toList();
             List<String> ingredientNames = ingredientRepository.findAll().stream().map(Ingredient::getName).toList();
             List<String> categoryNames = categoryRepository.findAll().stream().map(Category::getName).toList();
-            List<String> unitNames = unitRepository.findAll().stream().map(Unit::getName).toList();
+            Map<String, Unit> unitNames = new HashMap<>();
+            unitRepository.findAll().forEach(u -> unitNames.put(u.getName(), u));
 
             IngredientWithAmountDao ingredientWithAmountDao = dependencyProvider.getIngredientWithAmountDao();
             RecipeDao recipeDao = dependencyProvider.getRecipeDao();
@@ -94,14 +98,17 @@ public class ImportDialog extends EntityDialog<Import> {
                 String line = scanner.nextLine();
                 if (line.startsWith("<Unit>")) {
                     Unit u = mapper.readValue(line, Unit.class);
-                    if (!unitNames.contains(u.getName())) {
+                    if (!unitNames.containsKey(u.getName())) {
                         unitRepository.create(u);
                         units.add(u);
                     }
                 } else if (line.startsWith("<Ingredient>")) {
                     Ingredient i = mapper.readValue(line, Ingredient.class);
                     if (!ingredientNames.contains(i.getName())) {
-                        System.out.println("ingredient name: " + i.getName());
+                        Unit existingUnit = unitNames.getOrDefault(i.getUnit().getName(), null);
+                        if (existingUnit != null) {
+                            i.getUnit().setGuid(existingUnit.getGuid());
+                        }
                         ingredientRepository.create(i);
                         ingredients.add(i);
                     }
