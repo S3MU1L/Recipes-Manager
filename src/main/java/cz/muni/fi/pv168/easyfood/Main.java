@@ -1,6 +1,7 @@
 package cz.muni.fi.pv168.easyfood;
 
 
+import com.formdev.flatlaf.FlatLightLaf;
 import cz.muni.fi.pv168.easyfood.ui.MainWindow;
 import cz.muni.fi.pv168.easyfood.ui.action.QuitAction;
 import cz.muni.fi.pv168.easyfood.wiring.DependencyProvider;
@@ -18,7 +19,7 @@ public class Main {
 
     public static void main(String[] args) {
         try {
-            initNimbusLookAndFeel();
+            FlatLightLaf.setup();
             final DependencyProvider dependencyProvider = new ProductionDependencyProvider();
             EventQueue.invokeAndWait(() -> new MainWindow(dependencyProvider).show());
         } catch (InterruptedException ex) {
