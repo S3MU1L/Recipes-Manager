@@ -5,6 +5,7 @@ import cz.muni.fi.pv168.easyfood.business.model.Category;
 import cz.muni.fi.pv168.easyfood.business.model.Ingredient;
 import cz.muni.fi.pv168.easyfood.business.model.Recipe;
 import cz.muni.fi.pv168.easyfood.business.model.Unit;
+import cz.muni.fi.pv168.easyfood.ui.SingularConverter;
 import cz.muni.fi.pv168.easyfood.ui.resources.Icons;
 import cz.muni.fi.pv168.easyfood.ui.tab.TabContainer;
 
@@ -53,8 +54,7 @@ public final class EditAction extends AbstractAction {
 
         var model = tabContainer.getSelectedTab().getModel();
         int modelRow = table.convertRowIndexToModel(selectedRows[0]);
-        StringBuilder title = new StringBuilder("Edit ").append(tabContainer.getSelectedTab().getTitle());
-        title.deleteCharAt(title.length() - 1);
+        StringBuilder title = new StringBuilder("Edit ").append(SingularConverter.dictionary.get(tabContainer.getSelectedTab().getTitle()));
         var entity = tabContainer.getSelectedTab().getModel().getEntity(modelRow);
         var dialog = tabContainer.getSelectedTab().getDialog().createNewDialog(entity, recipes, ingredients, categories, units);
         var result = dialog.show(table, title.toString());
