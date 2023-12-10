@@ -43,7 +43,7 @@ public class CategoryDialog extends EntityDialog<Category> implements ActionList
     }
 
     private void addFields() {
-        add("Name:", nameField);
+        add("*Name:", nameField);
         getPanel().add(colorButton, "width 100px, left");
     }
 

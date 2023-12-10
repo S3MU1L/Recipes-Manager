@@ -52,9 +52,9 @@ public class IngredientDialog extends EntityDialog<Ingredient> {
     }
 
     private void addFields() {
-        add("Name:", nameField);
-        add("Nutritional value (kJ): ", caloriesField);
-        add("Unit: ", unitsField);
+        add("*Name:", nameField);
+        add("*Nutritional value (kJ): ", caloriesField);
+        add("*Unit: ", unitsField);
     }
 
     @Override

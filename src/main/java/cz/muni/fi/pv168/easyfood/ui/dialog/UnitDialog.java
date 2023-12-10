@@ -47,10 +47,10 @@ public class UnitDialog extends EntityDialog<Unit> {
     }
 
     private void addFields() {
-        add("Name:", nameField);
-        add("Abbreviation", abbreviationField);
-        add("Base Unit: ", baseUnitField);
-        add("Amount in Base Unit", conversionRatio);
+        add("*Name:", nameField);
+        add("*Abbreviation", abbreviationField);
+        add("*Base Unit: ", baseUnitField);
+        add("*Amount in Base Unit", conversionRatio);
     }
 
     @Override
@@ -78,7 +78,7 @@ public class UnitDialog extends EntityDialog<Unit> {
             return false;
         }
         if (!units.stream().filter(unit1 -> !unit1.getGuid().equals(unit.getGuid()) && unit1.getName().equals(unit.getName())).toList()
-                  .isEmpty()) {
+                .isEmpty()) {
             JOptionPane.showMessageDialog(null, "Duplicate name: " + unit.getName(), "Error", ERROR_MESSAGE, null);
             return false;
         }
@@ -97,8 +97,4 @@ public class UnitDialog extends EntityDialog<Unit> {
         return new UnitDialog(unit, units);
     }
 
-    /*@Override
-    public void changeEntityInDialog(Unit entity) {
-
-    }*/
 }
