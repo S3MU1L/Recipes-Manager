@@ -245,7 +245,7 @@ public class MainWindow {
         table.setAutoCreateRowSorter(true);
         table.setDefaultRenderer(Object.class, new CustomTableCellRenderer<>(recipeTableModel));
         table.getSelectionModel().addListSelectionListener(this::rowSelectionChanged);
-        recipeTab = new Tab("recipes", table, recipeTableModel,
+        recipeTab = new Tab("recipe", table, recipeTableModel,
                             new RecipeDialog(Recipe.createEmptyRecipe(), recipes, ingredientTableModel,
                                              categoryTableModel, ingredientWithAmountCrudService, dependencyProvider));
         return table;
@@ -257,7 +257,7 @@ public class MainWindow {
         table.setAutoCreateRowSorter(true);
         table.setDefaultRenderer(Object.class, new CustomTableCellRenderer<>(ingredientTableModel));
         table.getSelectionModel().addListSelectionListener(this::rowSelectionChanged);
-        ingredientTab = new Tab("ingredients", table, ingredientTableModel, new IngredientDialog(ingredients, unitTableModel));
+        ingredientTab = new Tab("ingredient", table, ingredientTableModel, new IngredientDialog(ingredients, unitTableModel));
 
         return table;
     }
@@ -267,7 +267,7 @@ public class MainWindow {
         table.setAutoCreateRowSorter(true);
         table.setDefaultRenderer(Object.class, new CustomTableCellRenderer<>(categoryTableModel));
         table.getSelectionModel().addListSelectionListener(this::rowSelectionChanged);
-        categoryTab = new Tab("categories", table, categoryTableModel, new CategoryDialog(categories));
+        categoryTab = new Tab("category", table, categoryTableModel, new CategoryDialog(categories));
 
         return table;
     }
@@ -277,7 +277,7 @@ public class MainWindow {
         unitTable.setAutoCreateRowSorter(true);
         unitTable.setDefaultRenderer(Object.class, new CustomTableCellRenderer<>(unitTableModel));
         unitTable.getSelectionModel().addListSelectionListener(this::rowSelectionChanged);
-        unitTab = new Tab("units", unitTable, unitTableModel, new UnitDialog(units));
+        unitTab = new Tab("unit", unitTable, unitTableModel, new UnitDialog(units));
         Box tables = Box.createVerticalBox();
         tables.add(new JLabel(" "));
         tables.add((unitTable.getTableHeader()));
