@@ -30,9 +30,9 @@ public class CategoryTableModel extends AbstractTableModel implements EntityTabl
     }
 
     private final List<Column<Category, ?>> columns = List.of(Column.readonly("Name", String.class, Category::getName),
-                                                              Column.readonly("Recipes per category", String.class,
-                                                                              category -> StatisticsService.calculateCategoryStatistics(
-                                                                                      category, recipeTableModel.getEntity()).toString()));
+            Column.readonly("Recipes per category", String.class,
+                    category -> StatisticsService.calculateCategoryStatistics(
+                            category, recipeTableModel.getEntity()).toString()));
 
     @Override
     public int getRowCount() {
@@ -87,12 +87,14 @@ public class CategoryTableModel extends AbstractTableModel implements EntityTabl
                 .intoException();
         int rowIndex = categories.indexOf(category);
         fireTableRowsUpdated(rowIndex, rowIndex);
+        recipeTableModel.updateAll();
     }
 
     @Override
     public void updateAll() {
         categories = new ArrayList<>(categoryCrudService.findAll());
     }
+
     public void deleteRow(int rowIndex) {
         var toDelete = categories.get(rowIndex);
         List<Recipe> usedIn = new ArrayList<>();

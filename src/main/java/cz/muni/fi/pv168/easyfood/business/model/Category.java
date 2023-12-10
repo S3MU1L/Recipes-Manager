@@ -9,14 +9,16 @@ import java.util.UUID;
 public class Category extends Entity {
     private String name;
     private Color color = new Color(255, 255, 255);
+    private String htmlColor;
 
-    public Category() {}
+    public Category() {
+    }
 
     public Category(
             String name,
             Color color) {
-        this.name = name;
-        this.color = color;
+        setName(name);
+        setColor(color);
     }
 
     public Category(
@@ -24,8 +26,20 @@ public class Category extends Entity {
             String name,
             Color color) {
         super(guid);
-        this.name = name;
-        this.color = color;
+        setName(name);
+        setColor(color);
+    }
+
+    public String getHtmlColor() {
+        return htmlColor;
+    }
+
+
+    public void setHTMLColor() {
+        Color rectangleColor = getColor();
+        String hexColor = String.format("#%02x%02x%02x", rectangleColor.getRed(), rectangleColor.getGreen(), rectangleColor.getBlue());
+        String formattedString = "<html><div style='width: 100px; height: 20px; background-color: " + hexColor + ";'></div></html>";
+        htmlColor = formattedString;
     }
 
     public static Category createEmptyCategory() {
@@ -48,6 +62,7 @@ public class Category extends Entity {
 
     public void setColor(Color color) {
         this.color = Objects.requireNonNull(color, "color must not be null");
+        setHTMLColor();
     }
 
     @Override

@@ -2,8 +2,6 @@ package cz.muni.fi.pv168.easyfood.business.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import javax.swing.JLabel;
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -61,13 +59,6 @@ public class Recipe extends Entity {
 
     public Category getCategory() {
         return category;
-    }
-
-    public String getFormattedCategory() {
-        Color rectangleColor = category.getColor();
-        String hexColor = String.format("#%02x%02x%02x", rectangleColor.getRed(), rectangleColor.getGreen(), rectangleColor.getBlue());
-        String formattedString = "<html><div style='width: 100px; height: 20px; background-color: " + hexColor + ";'></div></html>";
-        return formattedString;
     }
 
     public String getName() {

@@ -28,7 +28,7 @@ public class RecipeTableModel extends AbstractTableModel implements EntityTableM
             Column.readonly("Name", String.class, Recipe::getName),
             Column.readonly("Calories", String.class, Recipe::getFormattedCalories),
             Column.readonly("Preparation time", String.class, Recipe::getFormattedPreparationTime),
-            Column.readonly("Category", String.class, Recipe::getFormattedCategory)
+            Column.readonly("Category", String.class, recipe -> recipe.getCategory().getHtmlColor())
     );
 
     public RecipeTableModel(CrudService<Recipe> recipeCrudService, DependencyProvider dependencyProvider, List<Recipe> recipes, MainWindow mainWindow) {
