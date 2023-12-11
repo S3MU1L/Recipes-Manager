@@ -30,10 +30,12 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +55,7 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
     private static final JSpinner portionField = new JSpinner(new SpinnerNumberModel());
     private final JSpinner amountField = new JSpinner(new SpinnerNumberModel(0.0, 0.0, Integer.MAX_VALUE, 0.5));
     private final JTextArea descriptionArea = new JTextArea();
-    private final JScrollPane categoriesPane = new JScrollPane();
+    private final JComboBox categoryComboBox;
     private final JButton addIngredientButton = new JButton("add Ingredient");
     private final JComboBox<Ingredient> ingredientJComboBox;
     private final JTable table;
@@ -106,13 +108,22 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
                 .mapToObj(ingredientTableModel::getEntity)
                 .collect(Collectors.toList());
 
-        JList<String> categoriesList = new JList<>(categories.stream().map(Category::getName).toArray(String[]::new));
-        categoriesList.setCellRenderer(new CategoryListCellRenderer(categories));
+        categoryComboBox = new JComboBox<>(categories.stream().map(Category::getName).toArray(String[]::new));
+        categoryComboBox.setMaximumRowCount(4);
+        var categoryListCellRendered = new CategoryListCellRenderer(categories);
+        categoryComboBox.setRenderer(categoryListCellRendered);
+        categoryComboBox.addActionListener(
+                e -> categoryComboBox.setBackground(categoryListCellRendered.findCategoryByName(categoryComboBox.getSelectedItem().toString()).getColor())
+        );
 
         if (recipe.getCategory() != null) {
-            categoriesList.setSelectedValue(recipe.getCategory().getName(), true);
+            categoryComboBox.setSelectedItem(recipe.getCategory().getName());
+            categoryComboBox.setBackground(recipe.getCategory().getColor());
         }
-        categoriesPane.setViewportView(categoriesList);
+        else if (categoryComboBox.getItemCount() > 0) {
+            categoryComboBox.setBackground(categoryListCellRendered.findCategoryByName(categoryComboBox.getItemAt(0).toString()).getColor());
+        }
+
         withAmountTableModel = new IngredientWithAmountTableModel(recipe.getIngredients(), ingredientWithAmountCrudService, dependencyProvider);
         table = new JTable(withAmountTableModel);
 
@@ -147,17 +158,14 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
 
         ((SpinnerNumberModel) prepTimeField.getModel()).setMinimum(0);
         ((SpinnerNumberModel) portionField.getModel()).setMinimum(0);
-
-        Dimension dimension = new Dimension(150, 100);
-        categoriesPane.setMaximumSize(dimension);
     }
 
     private void addFields() {
-        add("Name: ", nameField);
+        add("*Name: ", nameField);
         add("Description: ", createDescriptionScrollPane(new Dimension(300, 100)));
-        add("Time to prepare (minutes): ", prepTimeField);
-        add("Portions: ", portionField);
-        add("Category: ", categoriesPane);
+        add("*Time to prepare (minutes): ", prepTimeField);
+        add("*Portions: ", portionField);
+        add("*Category: ", categoryComboBox);
 
         JLabel chooseIngredientsLabel = new JLabel("Choose Ingredients");
         chooseIngredientsLabel.setFont(new Font("Arial", Font.BOLD, 20));
@@ -192,8 +200,7 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
         recipe.setName(nameField.getText().trim());
         recipe.setDescription(descriptionArea.getText().trim());
 
-        JList<String> categoriesNames = (JList<String>) categoriesPane.getViewport().getView();
-        String categoryName = categoriesNames.getSelectedValue();
+        String categoryName = (String) categoryComboBox.getSelectedItem(); // Use the new JComboBox
         List<IngredientWithAmount> ingredientsInRecipe = new ArrayList<>();
         List<Category> categorySelected =
                 categories.stream().filter(category1 -> category1.getName().equals(categoryName)).toList();
@@ -207,7 +214,6 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
         recipe.setIngredients(ingredientsInRecipe);
         return recipe;
     }
-
     @Override
     public boolean valid(Recipe recipe) {
         if (recipe.getName().equals("")) {

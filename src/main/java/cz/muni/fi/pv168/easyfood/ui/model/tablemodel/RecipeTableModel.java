@@ -7,8 +7,12 @@ import cz.muni.fi.pv168.easyfood.ui.MainWindow;
 import cz.muni.fi.pv168.easyfood.ui.model.Column;
 import cz.muni.fi.pv168.easyfood.wiring.DependencyProvider;
 
+import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellRenderer;
+import java.awt.Color;
 import java.awt.Component;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +27,8 @@ public class RecipeTableModel extends AbstractTableModel implements EntityTableM
     private final List<Column<Recipe, ?>> columns = List.of(
             Column.readonly("Name", String.class, Recipe::getName),
             Column.readonly("Calories", String.class, Recipe::getFormattedCalories),
-            Column.readonly("Preparation time", String.class, Recipe::getFormattedPreparationTime)
+            Column.readonly("Preparation time", String.class, Recipe::getFormattedPreparationTime),
+            Column.readonly("Category", String.class, recipe -> recipe.getCategory().getHtmlColor())
     );
 
     public RecipeTableModel(CrudService<Recipe> recipeCrudService, DependencyProvider dependencyProvider, List<Recipe> recipes, MainWindow mainWindow) {
@@ -63,11 +68,8 @@ public class RecipeTableModel extends AbstractTableModel implements EntityTableM
         return recipes.get(rowIndex);
     }
 
-    public List<Recipe> getEntity(){
+    public List<Recipe> getEntity() {
         return recipes;
-    }
-
-    protected void updateEntity(Recipe entity) {
     }
 
     @Override
@@ -103,6 +105,7 @@ public class RecipeTableModel extends AbstractTableModel implements EntityTableM
     public void updateAll() {
         recipes = new ArrayList<>(recipeCrudService.findAll());
     }
+
     public void updateRecipes() {
         recipes = recipeCrudService.findAll();
 
@@ -110,7 +113,7 @@ public class RecipeTableModel extends AbstractTableModel implements EntityTableM
         setActiveFiter(false);
     }
 
-    public void updateWithFilter(Filter filter){
+    public void updateWithFilter(Filter filter) {
         List<Recipe> allRecipes = new ArrayList<>(recipeCrudService.findAll());
         List<Recipe> filteredRecipes = filter.getFilteredRecipes(allRecipes);
 

@@ -16,7 +16,8 @@ public class Recipe extends Entity {
     private int portions;
     private Category category;
 
-    public Recipe() {}
+    public Recipe() {
+    }
 
     public Recipe(String guid,
                   String name,
