@@ -51,3 +51,7 @@ Welcome to Easy Food, a user-friendly desktop application designed to simplify t
 
 ![Use case diagram](diagrams/UC.png)
 
+### Class diagrams
+
+![Class diagram](diagrams/ClassDiagram.png)
+
