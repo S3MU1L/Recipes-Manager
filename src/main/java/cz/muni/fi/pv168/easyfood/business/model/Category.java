@@ -38,7 +38,7 @@ public class Category extends Entity {
     public void setHTMLColor() {
         Color rectangleColor = getColor();
         String hexColor = String.format("#%02x%02x%02x", rectangleColor.getRed(), rectangleColor.getGreen(), rectangleColor.getBlue());
-        String formattedString = "<html><div style='width: 100px; height: 20px; background-color: " + hexColor + ";'></div></html>";
+        String formattedString = "<html><div style='width: 1000px; height: 20px; background-color: " + hexColor + ";'></div></html>";
         htmlColor = formattedString;
     }
 
