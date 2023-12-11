@@ -24,6 +24,10 @@ Welcome to Easy Food, a user-friendly desktop application designed to simplify t
 
 - Import and Export: Import or export your recipes in various formats.
 
+## App Demo
+![Recipe Table](demo/app.png)
+
+
 ## Team Information
 
 | Seminar Group | Team |
