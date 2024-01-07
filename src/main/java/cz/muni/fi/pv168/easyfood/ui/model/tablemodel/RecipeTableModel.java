@@ -7,14 +7,9 @@ import cz.muni.fi.pv168.easyfood.ui.MainWindow;
 import cz.muni.fi.pv168.easyfood.ui.model.Column;
 import cz.muni.fi.pv168.easyfood.wiring.DependencyProvider;
 
-import javax.swing.JLabel;
-import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableCellRenderer;
-import java.awt.Color;
-import java.awt.Component;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class RecipeTableModel extends AbstractTableModel implements EntityTableModel<Recipe> {
@@ -31,7 +26,8 @@ public class RecipeTableModel extends AbstractTableModel implements EntityTableM
             Column.readonly("Category", String.class, recipe -> recipe.getCategory().getHtmlColor())
     );
 
-    public RecipeTableModel(CrudService<Recipe> recipeCrudService, DependencyProvider dependencyProvider, List<Recipe> recipes, MainWindow mainWindow) {
+    public RecipeTableModel(CrudService<Recipe> recipeCrudService, DependencyProvider dependencyProvider,
+                            List<Recipe> recipes, MainWindow mainWindow) {
         this.recipeCrudService = recipeCrudService;
         this.recipes = recipes;
         this.dependencyProvider = dependencyProvider;
@@ -80,7 +76,7 @@ public class RecipeTableModel extends AbstractTableModel implements EntityTableM
 
     public void addRow(Recipe recipe) {
         recipeCrudService.create(recipe)
-                .intoException();
+                         .intoException();
         addIngredients(recipe);
         int newRowIndex = recipes.size();
         recipes.add(recipe);
@@ -90,8 +86,11 @@ public class RecipeTableModel extends AbstractTableModel implements EntityTableM
     private void addIngredients(Recipe recipe) {
         var recipeEntity = dependencyProvider.getRecipeDao().findByGuid(recipe.getGuid());
         for (var ingredientAmount : recipe.getIngredients()) {
-            var ingredientEntity = dependencyProvider.getIngredientDao().findByGuid(ingredientAmount.getIngredient().getGuid());
-            dependencyProvider.getIngredientWithAmountDao().addRecipeIngredient(ingredientAmount, recipeEntity.get().id(), ingredientEntity.get().id());
+            var ingredientEntity =
+                    dependencyProvider.getIngredientDao().findByGuid(ingredientAmount.getIngredient().getGuid());
+            dependencyProvider.getIngredientWithAmountDao()
+                              .addRecipeIngredient(ingredientAmount, recipeEntity.get().id(),
+                                                   ingredientEntity.get().id());
         }
     }
 
@@ -124,11 +123,15 @@ public class RecipeTableModel extends AbstractTableModel implements EntityTableM
         fireTableDataChanged();
     }
 
-    public void deleteRow(int rowIndex) {
-        var toDelete = getEntity(rowIndex);
-        recipeCrudService.deleteByGuid(toDelete.getGuid());
-        recipes.remove(rowIndex);
-        fireTableRowsDeleted(rowIndex, rowIndex);
+
+    public void deleteRows(int[] rowIndexes) {
+        List<Recipe> toDelete =
+                Arrays.stream(rowIndexes).sequential().mapToObj(rowIndex -> recipes.get(rowIndex)).toList();
+        for (Recipe recipe : toDelete) {
+            recipeCrudService.deleteByGuid(recipe.getGuid());
+        }
+        recipes.removeAll(toDelete);
+        fireTableRowsDeleted(rowIndexes[0], rowIndexes[rowIndexes.length - 1]);
     }
 
     public void clear() {
@@ -148,11 +151,5 @@ public class RecipeTableModel extends AbstractTableModel implements EntityTableM
     public void setActiveFiter(boolean activeFiter) {
         this.activeFiter = activeFiter;
         mainWindow.updateFilterStatus();
-    }
-
-    public void customizeTableCell(Component cell, Object value, int row, JTable table) {
-    }
-
-    public void customizeTable(JTable table) {
     }
 }

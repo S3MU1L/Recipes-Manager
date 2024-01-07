@@ -23,6 +23,7 @@ public interface EntityTableModel<E> extends TableModel {
      *                                   than number of items in the table
      */
     E getEntity(int rowIndex);
+
     List<E> getEntity();
 
     default void customizeTableCell(Component cell, Object value, int row, JTable table) {
@@ -38,7 +39,7 @@ public interface EntityTableModel<E> extends TableModel {
 
     void updateAll();
 
-    void deleteRow(int modelRow);
+    void deleteRows(int[] modelRows);
 
     default void addRow(IngredientWithAmount ingredient, Recipe recipe) {
     }

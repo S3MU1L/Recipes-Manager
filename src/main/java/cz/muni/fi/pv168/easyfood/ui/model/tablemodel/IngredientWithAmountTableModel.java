@@ -12,7 +12,8 @@ import java.awt.Component;
 import java.util.ArrayList;
 import java.util.List;
 
-public class IngredientWithAmountTableModel extends AbstractTableModel implements EntityTableModel<IngredientWithAmount> {
+public class IngredientWithAmountTableModel extends AbstractTableModel
+        implements EntityTableModel<IngredientWithAmount> {
     private final List<IngredientWithAmount> ingredients;
     private final CrudService<IngredientWithAmount> ingredientCrudService;
 
@@ -79,17 +80,24 @@ public class IngredientWithAmountTableModel extends AbstractTableModel implement
         }
 
         var ingredientEntity = dependencyProvider.getIngredientDao().findByGuid(ingredient.getIngredient().getGuid());
-        dependencyProvider.getIngredientWithAmountDao().addRecipeIngredient(ingredient, recipeEntity.get().id(), ingredientEntity.get().id());
+        dependencyProvider.getIngredientWithAmountDao()
+                          .addRecipeIngredient(ingredient, recipeEntity.get().id(), ingredientEntity.get().id());
     }
 
     @Override
     public void updateRow(IngredientWithAmount ingredient) {
         ingredientCrudService.update(ingredient)
-                .intoException();
+                             .intoException();
         int rowIndex = ingredients.indexOf(ingredient);
         fireTableRowsUpdated(rowIndex, rowIndex);
     }
 
+    @Override
+    public void deleteRows(int[] rowIndexes) {
+        for (int rowIndex : rowIndexes) {
+            deleteRow(rowIndex);
+        }
+    }
 
     public void deleteRow(int rowIndex) {
         ingredients.remove(rowIndex);
