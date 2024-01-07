@@ -122,7 +122,7 @@ public class Recipe extends Entity {
             if (!result.isEmpty()) {
                 result.append(" ");
             }
-            result.append(preptime % 60).append(" m");
+            result.append(preptime % 60).append(" min");
         }
         return result.toString();
     }
