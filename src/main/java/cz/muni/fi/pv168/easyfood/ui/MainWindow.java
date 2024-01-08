@@ -177,7 +177,7 @@ public class MainWindow {
         editAction = new EditAction(tabContainer, recipes, ingredients, categories, units);
         showAction = new ShowAction(tabContainer);
         filterAction = new FilterAction(this, tabContainer, filterContainer, recipes, ingredients, categories, units);
-        removeFilterAction = new RemoveFilterAction(this, tabContainer, recipeTableModel);
+        removeFilterAction = new RemoveFilterAction(recipeTableModel);
         importAction = new ImportAction(this, importContainer, recipes, ingredients, categories, units,
                                         new AbstractTableModel[]{recipeTableModel, ingredientTableModel,
                                                                  categoryTableModel, unitTableModel});
@@ -207,7 +207,7 @@ public class MainWindow {
 
     public void updateFilterStatus() {
         removeFilterAction.setEnabled(recipeTableModel.isActiveFiter());
-        addAction.setEnabled(!recipeTableModel.isActiveFiter());
+        //addAction.setEnabled(!recipeTableModel.isActiveFiter());
         deleteAction.setEnabled(!recipeTableModel.isActiveFiter());
         exportAction.setEnabled(!recipeTableModel.isActiveFiter());
         importAction.setEnabled(!recipeTableModel.isActiveFiter());
@@ -257,7 +257,8 @@ public class MainWindow {
         table.setAutoCreateRowSorter(true);
         table.setDefaultRenderer(Object.class, new CustomTableCellRenderer<>(ingredientTableModel));
         table.getSelectionModel().addListSelectionListener(this::rowSelectionChanged);
-        ingredientTab = new Tab("ingredient", table, ingredientTableModel, new IngredientDialog(ingredients, unitTableModel));
+        ingredientTab =
+                new Tab("ingredient", table, ingredientTableModel, new IngredientDialog(ingredients, unitTableModel));
 
         return table;
     }

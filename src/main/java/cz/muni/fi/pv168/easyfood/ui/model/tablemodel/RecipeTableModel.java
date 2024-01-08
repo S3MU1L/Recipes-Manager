@@ -17,7 +17,7 @@ public class RecipeTableModel extends AbstractTableModel implements EntityTableM
     private List<Recipe> recipes;
     private final CrudService<Recipe> recipeCrudService;
     private final DependencyProvider dependencyProvider;
-    private boolean activeFiter;
+    private Filter activeFiter = null;
 
     private final List<Column<Recipe, ?>> columns = List.of(
             Column.readonly("Name", String.class, Recipe::getName),
@@ -32,7 +32,6 @@ public class RecipeTableModel extends AbstractTableModel implements EntityTableM
         this.recipes = recipes;
         this.dependencyProvider = dependencyProvider;
         this.mainWindow = mainWindow;
-        activeFiter = false;
     }
 
     @Override
@@ -75,6 +74,7 @@ public class RecipeTableModel extends AbstractTableModel implements EntityTableM
     }
 
     public void addRow(Recipe recipe) {
+        reset();
         recipeCrudService.create(recipe)
                          .intoException();
         addIngredients(recipe);
@@ -109,7 +109,7 @@ public class RecipeTableModel extends AbstractTableModel implements EntityTableM
         recipes = recipeCrudService.findAll();
 
         fireTableDataChanged();
-        setActiveFiter(false);
+        setActiveFiter(null);
     }
 
     public void updateWithFilter(Filter filter) {
@@ -119,7 +119,7 @@ public class RecipeTableModel extends AbstractTableModel implements EntityTableM
         recipes = new ArrayList<>();
         recipes.addAll(filteredRecipes);
 
-        setActiveFiter(true);
+        setActiveFiter(filter);
         fireTableDataChanged();
     }
 
@@ -145,11 +145,18 @@ public class RecipeTableModel extends AbstractTableModel implements EntityTableM
     }
 
     public boolean isActiveFiter() {
-        return activeFiter;
+        return activeFiter != null;
     }
 
-    public void setActiveFiter(boolean activeFiter) {
+    public void setActiveFiter(Filter activeFiter) {
         this.activeFiter = activeFiter;
         mainWindow.updateFilterStatus();
+    }
+
+    public void reset(){
+        updateAll();
+        setActiveFiter(null);
+        fireTableDataChanged();
+        mainWindow.updateRecipeCountLabel();
     }
 }
