@@ -63,7 +63,6 @@ import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListSelectionEvent;
-import javax.swing.table.AbstractTableModel;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -178,10 +177,8 @@ public class MainWindow {
         showAction = new ShowAction(tabContainer);
         filterAction = new FilterAction(this, tabContainer, filterContainer, recipes, ingredients, categories, units);
         removeFilterAction = new RemoveFilterAction(this, recipeTableModel);
-        importAction = new ImportAction(this, importContainer, recipes, ingredients, categories, units,
-                                        new AbstractTableModel[]{recipeTableModel, ingredientTableModel,
-                                                                 categoryTableModel, unitTableModel});
-        exportAction = new ExportAction(this, exportContainer, recipes, ingredients, categories, units);
+        importAction = new ImportAction(this, importContainer, recipeTableModel, categoryTableModel, ingredientTableModel, unitTableModel);
+        exportAction = new ExportAction(this, exportContainer, recipeTableModel, categoryTableModel, ingredientTableModel, unitTableModel);
 
         recipeTable.setComponentPopupMenu(createExtendedTablePopupMenu());
         ingredientTable.setComponentPopupMenu(createBasicTablePopupMenu());
@@ -207,8 +204,6 @@ public class MainWindow {
 
     public void updateFilterStatus() {
         removeFilterAction.setEnabled(recipeTableModel.isActiveFiter());
-        exportAction.setEnabled(!recipeTableModel.isActiveFiter());
-        importAction.setEnabled(!recipeTableModel.isActiveFiter());
     }
 
     public void show() {
