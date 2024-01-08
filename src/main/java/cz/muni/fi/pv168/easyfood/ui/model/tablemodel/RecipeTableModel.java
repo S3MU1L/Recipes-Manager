@@ -19,12 +19,14 @@ public class RecipeTableModel extends AbstractTableModel implements EntityTableM
     private final DependencyProvider dependencyProvider;
     private Filter activeFiter = null;
 
-    private final List<Column<Recipe, ?>> columns = List.of(
-            Column.readonly("Name", String.class, Recipe::getName),
-            Column.readonly("Calories", String.class, Recipe::getFormattedCalories),
-            Column.readonly("Preparation time", String.class, Recipe::getFormattedPreparationTime),
-            Column.readonly("Category", String.class, recipe -> recipe.getCategory().getHtmlColor())
-    );
+    private final List<Column<Recipe, ?>> columns = List.of(Column.readonly("Name", String.class, Recipe::getName),
+                                                            Column.readonly("Calories", String.class,
+                                                                            Recipe::getFormattedCalories),
+                                                            Column.readonly("Preparation time", String.class,
+                                                                            Recipe::getFormattedPreparationTime),
+                                                            Column.readonly("Category", String.class,
+                                                                            recipe -> recipe.getCategory()
+                                                                                            .getHtmlColor()));
 
     public RecipeTableModel(CrudService<Recipe> recipeCrudService, DependencyProvider dependencyProvider,
                             List<Recipe> recipes, MainWindow mainWindow) {
@@ -80,8 +82,7 @@ public class RecipeTableModel extends AbstractTableModel implements EntityTableM
     public void addRow(Recipe recipe) {
         Filter filter = activeFiter;
         reset();
-        recipeCrudService.create(recipe)
-                         .intoException();
+        recipeCrudService.create(recipe).intoException();
         addIngredients(recipe);
         int newRowIndex = recipes.size();
         recipes.add(recipe);
@@ -120,10 +121,12 @@ public class RecipeTableModel extends AbstractTableModel implements EntityTableM
 
     public void updateWithFilter(Filter filter) {
         List<Recipe> allRecipes = new ArrayList<>(recipeCrudService.findAll());
-        List<Recipe> filteredRecipes = filter.getFilteredRecipes(allRecipes);
+        if (filter != null) {
+            List<Recipe> filteredRecipes = filter.getFilteredRecipes(allRecipes);
 
-        recipes = new ArrayList<>();
-        recipes.addAll(filteredRecipes);
+            recipes = new ArrayList<>();
+            recipes.addAll(filteredRecipes);
+        }
 
         activeFiter = filter;
         fireTableDataChanged();
