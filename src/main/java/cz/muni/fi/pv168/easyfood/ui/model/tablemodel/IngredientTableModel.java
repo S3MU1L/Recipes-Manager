@@ -1,5 +1,6 @@
 package cz.muni.fi.pv168.easyfood.ui.model.tablemodel;
 
+import cz.muni.fi.pv168.easyfood.business.model.Filter;
 import cz.muni.fi.pv168.easyfood.business.model.Ingredient;
 import cz.muni.fi.pv168.easyfood.business.model.IngredientWithAmount;
 import cz.muni.fi.pv168.easyfood.business.model.Recipe;
@@ -84,6 +85,7 @@ public class IngredientTableModel extends AbstractTableModel implements EntityTa
     }
 
     public void deleteRows(int[] rowIndexes) {
+        Filter filter =recipeTableModel.getActiveFiter();
         recipeTableModel.reset();
         List<Ingredient> toDelete =
                 Arrays.stream(rowIndexes).sequential().mapToObj(rowIndex -> ingredients.get(rowIndex)).toList();
@@ -115,6 +117,7 @@ public class IngredientTableModel extends AbstractTableModel implements EntityTa
 
         if (!stringBuilder.isEmpty()) {
             JOptionPane.showMessageDialog(null, stringBuilder.toString(), "Error", ERROR_MESSAGE, null);
+            recipeTableModel.updateWithFilter(filter);
             return;
         }
 
@@ -123,6 +126,7 @@ public class IngredientTableModel extends AbstractTableModel implements EntityTa
         }
         ingredients.removeAll(toDelete);
         fireTableRowsDeleted(rowIndexes[0], rowIndexes[rowIndexes.length - 1]);
+        recipeTableModel.updateWithFilter(filter);
     }
 
     public Ingredient getEntity(int rowIndex) {

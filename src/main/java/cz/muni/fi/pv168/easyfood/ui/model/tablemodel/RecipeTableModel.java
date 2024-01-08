@@ -67,6 +67,10 @@ public class RecipeTableModel extends AbstractTableModel implements EntityTableM
         return recipes;
     }
 
+    public Filter getActiveFiter() {
+        return activeFiter;
+    }
+
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         var recipe = getEntity(rowIndex);
@@ -74,6 +78,7 @@ public class RecipeTableModel extends AbstractTableModel implements EntityTableM
     }
 
     public void addRow(Recipe recipe) {
+        Filter filter = activeFiter;
         reset();
         recipeCrudService.create(recipe)
                          .intoException();
@@ -81,6 +86,7 @@ public class RecipeTableModel extends AbstractTableModel implements EntityTableM
         int newRowIndex = recipes.size();
         recipes.add(recipe);
         fireTableRowsInserted(newRowIndex, newRowIndex);
+        updateWithFilter(filter);
     }
 
     private void addIngredients(Recipe recipe) {
@@ -109,7 +115,7 @@ public class RecipeTableModel extends AbstractTableModel implements EntityTableM
         recipes = recipeCrudService.findAll();
 
         fireTableDataChanged();
-        setActiveFiter(null);
+        activeFiter = null;
     }
 
     public void updateWithFilter(Filter filter) {
@@ -119,12 +125,14 @@ public class RecipeTableModel extends AbstractTableModel implements EntityTableM
         recipes = new ArrayList<>();
         recipes.addAll(filteredRecipes);
 
-        setActiveFiter(filter);
+        activeFiter = filter;
         fireTableDataChanged();
     }
 
 
     public void deleteRows(int[] rowIndexes) {
+        Filter filter = activeFiter;
+        reset();
         List<Recipe> toDelete =
                 Arrays.stream(rowIndexes).sequential().mapToObj(rowIndex -> recipes.get(rowIndex)).toList();
         for (Recipe recipe : toDelete) {
@@ -132,6 +140,7 @@ public class RecipeTableModel extends AbstractTableModel implements EntityTableM
         }
         recipes.removeAll(toDelete);
         fireTableRowsDeleted(rowIndexes[0], rowIndexes[rowIndexes.length - 1]);
+        updateWithFilter(filter);
     }
 
     public void clear() {
@@ -148,14 +157,9 @@ public class RecipeTableModel extends AbstractTableModel implements EntityTableM
         return activeFiter != null;
     }
 
-    public void setActiveFiter(Filter activeFiter) {
-        this.activeFiter = activeFiter;
-        mainWindow.updateFilterStatus();
-    }
-
-    public void reset(){
+    public void reset() {
         updateAll();
-        setActiveFiter(null);
+        activeFiter = null;
         fireTableDataChanged();
         mainWindow.updateRecipeCountLabel();
     }

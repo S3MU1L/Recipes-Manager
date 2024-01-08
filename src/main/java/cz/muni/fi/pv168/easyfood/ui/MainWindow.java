@@ -177,7 +177,7 @@ public class MainWindow {
         editAction = new EditAction(tabContainer, recipes, ingredients, categories, units);
         showAction = new ShowAction(tabContainer);
         filterAction = new FilterAction(this, tabContainer, filterContainer, recipes, ingredients, categories, units);
-        removeFilterAction = new RemoveFilterAction(recipeTableModel);
+        removeFilterAction = new RemoveFilterAction(this, recipeTableModel);
         importAction = new ImportAction(this, importContainer, recipes, ingredients, categories, units,
                                         new AbstractTableModel[]{recipeTableModel, ingredientTableModel,
                                                                  categoryTableModel, unitTableModel});
@@ -203,13 +203,10 @@ public class MainWindow {
         categoryTable.clearSelection();
         unitTable.clearSelection();
         filterAction.setEnabled(tabContainer.getSelectedTab().getModel().getClass().equals(RecipeTableModel.class));
-        removeFilterAction.setEnabled(tabContainer.getSelectedTab().getModel().getClass().equals(RecipeTableModel.class));
     }
 
     public void updateFilterStatus() {
         removeFilterAction.setEnabled(recipeTableModel.isActiveFiter());
-        //addAction.setEnabled(!recipeTableModel.isActiveFiter());
-        deleteAction.setEnabled(!recipeTableModel.isActiveFiter());
         exportAction.setEnabled(!recipeTableModel.isActiveFiter());
         importAction.setEnabled(!recipeTableModel.isActiveFiter());
     }

@@ -1,6 +1,7 @@
 package cz.muni.fi.pv168.easyfood.ui.model.tablemodel;
 
 import cz.muni.fi.pv168.easyfood.business.model.Category;
+import cz.muni.fi.pv168.easyfood.business.model.Filter;
 import cz.muni.fi.pv168.easyfood.business.model.Recipe;
 import cz.muni.fi.pv168.easyfood.business.service.crud.CrudService;
 import cz.muni.fi.pv168.easyfood.services.StatisticsService;
@@ -101,6 +102,7 @@ public class CategoryTableModel extends AbstractTableModel implements EntityTabl
     }
 
     public void deleteRows(int[] rowIndexes) {
+        Filter filter = recipeTableModel.getActiveFiter();
         recipeTableModel.reset();
         List<Category> toDelete =
                 Arrays.stream(rowIndexes).sequential().mapToObj(rowIndex -> categories.get(rowIndex)).toList();
@@ -130,6 +132,7 @@ public class CategoryTableModel extends AbstractTableModel implements EntityTabl
 
         if (!stringBuilder.isEmpty()) {
             JOptionPane.showMessageDialog(null, stringBuilder.toString(), "Error", ERROR_MESSAGE, null);
+            recipeTableModel.updateWithFilter(filter);
             return;
         }
 
@@ -138,6 +141,7 @@ public class CategoryTableModel extends AbstractTableModel implements EntityTabl
         }
         categories.removeAll(toDelete);
         fireTableRowsDeleted(rowIndexes[0], rowIndexes[rowIndexes.length - 1]);
+        recipeTableModel.updateWithFilter(filter);
     }
 
 
