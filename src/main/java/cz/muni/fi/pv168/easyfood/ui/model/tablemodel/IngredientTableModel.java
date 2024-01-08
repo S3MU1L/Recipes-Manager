@@ -84,6 +84,7 @@ public class IngredientTableModel extends AbstractTableModel implements EntityTa
     }
 
     public void deleteRows(int[] rowIndexes) {
+        recipeTableModel.reset();
         List<Ingredient> toDelete =
                 Arrays.stream(rowIndexes).sequential().mapToObj(rowIndex -> ingredients.get(rowIndex)).toList();
         StringBuilder stringBuilder = new StringBuilder();

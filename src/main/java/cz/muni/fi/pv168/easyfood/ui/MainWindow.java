@@ -203,6 +203,7 @@ public class MainWindow {
         categoryTable.clearSelection();
         unitTable.clearSelection();
         filterAction.setEnabled(tabContainer.getSelectedTab().getModel().getClass().equals(RecipeTableModel.class));
+        removeFilterAction.setEnabled(tabContainer.getSelectedTab().getModel().getClass().equals(RecipeTableModel.class));
     }
 
     public void updateFilterStatus() {
@@ -367,9 +368,6 @@ public class MainWindow {
         deleteAction.setEnabled(selectionModel.getSelectedItemsCount() >= 1 && specialEdit);
         showAction.setEnabled(selectionModel.getSelectedItemsCount() == 1 &&
                                       tabContainer.getSelectedTab().getModel() instanceof RecipeTableModel);
-        if (recipeTableModel.isActiveFiter()) {
-            deleteAction.setEnabled(false);
-        }
     }
 
     public void updateRecipeCountLabel() {

@@ -101,6 +101,7 @@ public class CategoryTableModel extends AbstractTableModel implements EntityTabl
     }
 
     public void deleteRows(int[] rowIndexes) {
+        recipeTableModel.reset();
         List<Category> toDelete =
                 Arrays.stream(rowIndexes).sequential().mapToObj(rowIndex -> categories.get(rowIndex)).toList();
         StringBuilder stringBuilder = new StringBuilder();
