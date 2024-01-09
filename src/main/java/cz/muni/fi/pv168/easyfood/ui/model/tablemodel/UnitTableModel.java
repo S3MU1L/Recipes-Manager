@@ -13,7 +13,9 @@ import java.awt.Color;
 import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 
@@ -28,7 +30,8 @@ public class UnitTableModel extends AbstractTableModel implements EntityTableMod
             Column.readonly("In Base Unit", String.class, Unit::getFormattedBaseUnit)
     );
 
-    public UnitTableModel(CrudService<Unit> unitCrudService, IngredientTableModel ingredientTableModel, List<Unit> units) {
+    public UnitTableModel(CrudService<Unit> unitCrudService, IngredientTableModel ingredientTableModel,
+                          List<Unit> units) {
         this.unitCrudService = unitCrudService;
         this.ingredientTableModel = ingredientTableModel;
         this.units = units;
@@ -63,13 +66,9 @@ public class UnitTableModel extends AbstractTableModel implements EntityTableMod
 
     private Unit findUnitByName(String unitName) {
         return units.stream()
-                .filter(category -> category.getName().equals(unitName))
-                .findFirst()
-                .orElse(null);
-    }
-
-    @Override
-    public void customizeTable(JTable table) {
+                    .filter(category -> category.getName().equals(unitName))
+                    .findFirst()
+                    .orElse(null);
     }
 
     @Override
@@ -107,7 +106,7 @@ public class UnitTableModel extends AbstractTableModel implements EntityTableMod
     @Override
     public void addRow(Unit unit) {
         unitCrudService.create(unit)
-                .intoException();
+                       .intoException();
         int newRowIndex = units.size();
         units.add(unit);
         fireTableRowsInserted(newRowIndex, newRowIndex);
@@ -116,7 +115,7 @@ public class UnitTableModel extends AbstractTableModel implements EntityTableMod
     @Override
     public void updateRow(Unit unit) {
         unitCrudService.update(unit)
-                .intoException();
+                       .intoException();
         int rowIndex = units.indexOf(unit);
         fireTableRowsUpdated(rowIndex, rowIndex);
     }
@@ -127,38 +126,50 @@ public class UnitTableModel extends AbstractTableModel implements EntityTableMod
     }
 
 
-    public void deleteRow(int rowIndex) {
-        var toDelete = units.get(rowIndex);
+    public void deleteRows(int[] rowIndexes) {
+        List<Unit> toDelete = Arrays.stream(rowIndexes).sequential().mapToObj(rowIndex -> units.get(rowIndex)).toList();
+        StringBuilder stringBuilder = new StringBuilder();
 
-        for (BaseUnit baseUnit : BaseUnit.values()) {
-            if (toDelete.getName().equals(baseUnit.toString())) {
-                JOptionPane.showMessageDialog(null,
-                        "Cannot delete Base Unit " + baseUnit, "Error", ERROR_MESSAGE, null);
-                return;
+        for (Unit unit : toDelete) {
+            for (BaseUnit baseUnit : BaseUnit.values()) {
+                if (unit.getName().equals(baseUnit.toString())) {
+                    stringBuilder.append("Cannot delete Base Unit ").append(baseUnit).append("\n\n");
+                }
             }
         }
 
-        List<Ingredient> usedIn = new ArrayList<>();
+        Map<Unit, List<Ingredient>> usedIn = new HashMap<>();
         for (Ingredient ingredient : ingredientTableModel.getEntity()) {
-            if (ingredient.getUnit().equals(toDelete)) {
-                usedIn.add(ingredient);
+            Unit unit = ingredient.getUnit();
+
+            if (toDelete.contains(unit)) {
+                usedIn.computeIfAbsent(unit, k -> new ArrayList<>());
+                usedIn.get(unit).add(ingredient);
             }
         }
 
-        if (usedIn.size() > 0) {
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("Unable to delete Unit : ").append(toDelete.getName()).append("\nIt is used in Ingredients:");
-            for (Ingredient ingredient : usedIn) {
-                stringBuilder.append(" ").append(ingredient.getName()).append(",");
+        if (!usedIn.isEmpty()) {
+            for (var entry : usedIn.entrySet()) {
+                stringBuilder.append("Unable to delete Unit : ").append(entry.getKey().getName())
+                             .append("\nIt is used in Ingredients:");
+                for (Ingredient ingredient : entry.getValue()) {
+                    stringBuilder.append(" ").append(ingredient.getName()).append(",");
+                }
+                stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+                stringBuilder.append("\n\n");
             }
-            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+        }
+
+        if (!stringBuilder.isEmpty()) {
             JOptionPane.showMessageDialog(null, stringBuilder.toString(), "Error", ERROR_MESSAGE, null);
             return;
         }
 
-        unitCrudService.deleteByGuid(toDelete.getGuid());
-        units.remove(rowIndex);
-        fireTableRowsDeleted(rowIndex, rowIndex);
+        for (Unit unit : toDelete) {
+            unitCrudService.deleteByGuid(unit.getGuid());
+        }
+        units.removeAll(toDelete);
+        fireTableRowsDeleted(rowIndexes[0], rowIndexes[rowIndexes.length - 1]);
     }
 
 }

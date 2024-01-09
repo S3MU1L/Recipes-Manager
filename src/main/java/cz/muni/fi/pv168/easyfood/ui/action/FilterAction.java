@@ -6,17 +6,16 @@ import cz.muni.fi.pv168.easyfood.business.model.Filter;
 import cz.muni.fi.pv168.easyfood.business.model.Ingredient;
 import cz.muni.fi.pv168.easyfood.business.model.Recipe;
 import cz.muni.fi.pv168.easyfood.business.model.Unit;
-import cz.muni.fi.pv168.easyfood.ui.resources.Icons;
 import cz.muni.fi.pv168.easyfood.ui.MainWindow;
 import cz.muni.fi.pv168.easyfood.ui.dialog.FilterDialog;
 import cz.muni.fi.pv168.easyfood.ui.model.tablemodel.RecipeTableModel;
+import cz.muni.fi.pv168.easyfood.ui.resources.Icons;
 import cz.muni.fi.pv168.easyfood.ui.tab.TabContainer;
 
 import javax.swing.AbstractAction;
 import javax.swing.JTable;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
 import java.util.List;
 
 public final class FilterAction extends AbstractAction {
@@ -71,9 +70,10 @@ public final class FilterAction extends AbstractAction {
                 filter.getMaxPortion() == 0 &&
                 filter.getMinPortion() == 0)
         {
-            recipeTableModel.updateRecipes();
+            recipeTableModel.reset();
         } else if (filter != null) {
             recipeTableModel.updateWithFilter(filter);
+            mainWindow.updateFilterStatus();
         }
 
         mainWindow.updateRecipeCountLabel();

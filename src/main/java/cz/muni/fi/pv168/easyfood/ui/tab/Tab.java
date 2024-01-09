@@ -6,6 +6,7 @@ import cz.muni.fi.pv168.easyfood.ui.model.tablemodel.EntityTableModel;
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import java.util.Arrays;
 
 public class Tab<E extends EntityTableModel> {
     private JComponent component;
@@ -59,11 +60,9 @@ public class Tab<E extends EntityTableModel> {
     }
 
     public void delete() {
-        int[] rows = table.getSelectedRows();
-        for (int i = rows.length - 1; i >= 0; i--) {
-            int modelRow = table.convertRowIndexToModel(rows[i]);
-            model.deleteRow(modelRow);
-        }
+        int[] rows = Arrays.stream(table.getSelectedRows()).sequential().map(row -> table.convertRowIndexToModel(row))
+                           .toArray();
+        model.deleteRows(rows);
     }
 
 }

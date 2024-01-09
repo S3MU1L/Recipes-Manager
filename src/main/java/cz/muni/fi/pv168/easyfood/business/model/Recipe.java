@@ -113,15 +113,16 @@ public class Recipe extends Entity {
     @JsonIgnore
     public String getFormattedPreparationTime() {
         StringBuilder result = new StringBuilder();
-        if (preparationTime >= 60) {
-            result.append(preparationTime / 60).append(" h");
-            preparationTime %= 60;
+        int preptime = preparationTime;
+        if (preptime >= 60) {
+            result.append(preptime / 60).append(" h");
+            preptime %= 60;
         }
-        if (preparationTime % 60 != 0) {
+        if (preptime % 60 != 0) {
             if (!result.isEmpty()) {
                 result.append(" ");
             }
-            result.append(preparationTime % 60).append(" m");
+            result.append(preptime % 60).append(" min");
         }
         return result.toString();
     }
