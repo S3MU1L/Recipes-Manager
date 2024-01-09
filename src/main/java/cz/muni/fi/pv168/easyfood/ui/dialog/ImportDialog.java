@@ -113,9 +113,11 @@ public class ImportDialog extends EntityDialog<Import> {
                         i.getUnit().setGuid(unitGuid.get(i.getUnit().getBaseUnit()));
                         switch (decision) {
                             case 0:
+                                ingredients.removeIf(ingredient -> ingredient.getName().equals(i.getName()));
                                 Ingredient oldIngredient = ingredientRepository.findByName(i.getName()).get();
                                 i.setGuid(oldIngredient.getGuid());
                                 ingredientRepository.update(i);
+                                ingredients.add(i);
                             case 1:
                                 continue;
                             default:
@@ -132,9 +134,11 @@ public class ImportDialog extends EntityDialog<Import> {
                         int decision = JOptionPane.showConfirmDialog(null, "Recipe " + r.getName() + " already exists. Would you like to overwrite it?");
                         switch (decision) {
                             case 0:
+                                recipes.removeIf(recipe -> recipe.getName().equals(r.getName()));
                                 Recipe oldRecipe = recipeRepository.findByName(r.getName()).get();
                                 r.setGuid(oldRecipe.getGuid());
                                 recipeRepository.update(r);
+                                recipes.add(r);
                             case 1:
                                 continue;
                             default:
