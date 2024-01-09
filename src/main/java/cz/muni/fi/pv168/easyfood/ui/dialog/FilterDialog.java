@@ -102,7 +102,7 @@ public class FilterDialog extends EntityDialog<Filter> {
         add("Category:", categoriesField);
         add("Ingredients:", ingredientsField);
         add("Partial match for ingredients:", ingredientPartialMatch);
-        add("Preparation time (min):", timeField);
+        add("Max preparation time (minutes):", timeField);
         add("Min nutritional value:", minNutritionalValueField);
         add("Max nutritional value:", maxNutritionalValueField);
         add("Min portion:", minPortionField);
@@ -138,7 +138,7 @@ public class FilterDialog extends EntityDialog<Filter> {
         }
 
         ingredients.sort(Comparator.comparing(Ingredient::getName));
-        
+
         for (Ingredient ingredient : ingredients) {
             JCheckBox checkBox = new JCheckBox(ingredient.getName());
             ingredientsCheckboxes.add(checkBox);
