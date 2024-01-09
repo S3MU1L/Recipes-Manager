@@ -19,6 +19,7 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import java.awt.Dimension;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
@@ -117,6 +118,8 @@ public class FilterDialog extends EntityDialog<Filter> {
         categoriesBox.removeAll();
         ingredientsBox.removeAll();
 
+        categories.sort(Comparator.comparing(Category::getName));
+
         for (Category category : categories) {
             JCheckBox checkBox = new JCheckBox(category.getName());
             categoriesCheckboxes.add(checkBox);
@@ -134,6 +137,8 @@ public class FilterDialog extends EntityDialog<Filter> {
             }
         }
 
+        ingredients.sort(Comparator.comparing(Ingredient::getName));
+        
         for (Ingredient ingredient : ingredients) {
             JCheckBox checkBox = new JCheckBox(ingredient.getName());
             ingredientsCheckboxes.add(checkBox);
