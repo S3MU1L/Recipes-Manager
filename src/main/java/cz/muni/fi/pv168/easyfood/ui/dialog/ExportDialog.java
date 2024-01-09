@@ -8,9 +8,11 @@ import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import cz.muni.fi.pv168.easyfood.business.model.BaseUnit;
 import cz.muni.fi.pv168.easyfood.business.model.Category;
 import cz.muni.fi.pv168.easyfood.business.model.Export;
 import cz.muni.fi.pv168.easyfood.business.model.Ingredient;
+import cz.muni.fi.pv168.easyfood.business.model.IngredientWithAmount;
 import cz.muni.fi.pv168.easyfood.business.model.Recipe;
 import cz.muni.fi.pv168.easyfood.business.model.Unit;
 import cz.muni.fi.pv168.easyfood.business.repository.Repository;
@@ -26,8 +28,12 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class ExportDialog extends EntityDialog<Export> {
     private final Export export;
@@ -80,13 +86,15 @@ public class ExportDialog extends EntityDialog<Export> {
             file = new File(file.getAbsolutePath() + "." + format);
         }
 
-        List<Recipe> recipes = recipeRepository.findAll();
-        List<Ingredient> ingredients = ingredientRepository.findAll();
-        List<Category> categories = categoryRepository.findAll();
-        List<Unit> units = unitRepository.findAll();
+        List<Recipe> recipes = recipeRepository.findAll().stream()
+                .map(this::getBaseUnitRecipe)
+                .collect(Collectors.toList());
+        List<Ingredient> ingredients = ingredientRepository.findAll().stream()
+                .map(this::getBaseUnitIngredient)
+                .collect(Collectors.toList());
 
         if (pdfFormatButton.isSelected()) {
-            writePDF(file, recipes, ingredients, categories, units);
+            writePDF(file, recipes, ingredients);
             return null;
         }
 
@@ -94,8 +102,6 @@ public class ExportDialog extends EntityDialog<Export> {
             XmlMapper mapper = new XmlMapper();
             writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
             writer.write("<EasyFood>\n");
-            writeXMLBlock(mapper, "Units", writer, units);
-            writeXMLBlock(mapper, "Categories", writer, categories);
             writeXMLBlock(mapper, "Ingredients", writer, ingredients);
             writeXMLBlock(mapper, "Recipes", writer, recipes);
             writer.write("</EasyFood>\n");
@@ -105,29 +111,41 @@ public class ExportDialog extends EntityDialog<Export> {
         return null;
     }
 
-    private void writePDF(File file, List<Recipe> recipes, List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
+    private Recipe getBaseUnitRecipe(Recipe recipe) {
+        recipe = new Recipe(recipe);
+        System.out.println("recipe: " + recipe.getName());
+        List<IngredientWithAmount> ingredients = new ArrayList<>();
+        for (IngredientWithAmount ingredientWithAmount : recipe.getIngredients()) {
+            Ingredient ingredient = ingredientWithAmount.getIngredient();
+            BaseUnit baseUnit = ingredient.getUnit().getBaseUnit();
+            double conversion = ingredient.getUnit().getConversion();
+            ingredients.add(new IngredientWithAmount(
+                    ingredientWithAmount.getGuid(),
+                    ingredientWithAmount.getName(),
+                    ingredient.getCalories(),
+                    new Unit("", "", baseUnit, 1),
+                    ingredientWithAmount.getAmount() * conversion
+            ));
+            System.out.println("guid: " + ingredients.get(0).getIngredient().getUnit().getGuid());
+        }
+        recipe.setIngredients(ingredients);
+        return recipe;
+    }
+
+    private Ingredient getBaseUnitIngredient(Ingredient ingredient) {
+        ingredient = new Ingredient(ingredient);
+        ingredient.setUnit(new Unit("", "", ingredient.getUnit().getBaseUnit(), 1));
+        return ingredient;
+    }
+
+    private void writePDF(File file, List<Recipe> recipes, List<Ingredient> ingredients) {
         try {
             Document document = new Document();
             PdfWriter.getInstance(document, new FileOutputStream(file));
 
             document.open();
+
             PdfPTable table = new PdfPTable(3);
-            writeHeader(table,"Name", "Abbreviation", "Conversion");
-            for (Unit unit : units) {
-                table.addCell(unit.getName());
-                table.addCell(unit.getAbbreviation());
-                table.addCell(unit.getFormattedBaseUnit());
-            }
-            document.add(table);
-
-            table = new PdfPTable(1);
-            writeHeader(table, "Name");
-            for (Category category : categories) {
-                table.addCell(category.getName());
-            }
-            document.add(table);
-
-            table = new PdfPTable(3);
             writeHeader(table, "Name", "Calories", "Unit");
             for (Ingredient ingredient : ingredients) {
                 table.addCell(ingredient.getName());

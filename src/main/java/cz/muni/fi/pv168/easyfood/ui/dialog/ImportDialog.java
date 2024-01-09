@@ -40,6 +40,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class ImportDialog extends EntityDialog<Import> {
     private final Import importObj;
@@ -87,8 +88,7 @@ public class ImportDialog extends EntityDialog<Import> {
             List<String> recipeNames = recipeRepository.findAll().stream().map(Recipe::getName).toList();
             List<String> ingredientNames = ingredientRepository.findAll().stream().map(Ingredient::getName).toList();
             List<String> categoryNames = categoryRepository.findAll().stream().map(Category::getName).toList();
-            Map<String, Unit> unitNames = new HashMap<>();
-            unitRepository.findAll().forEach(u -> unitNames.put(u.getName(), u));
+            Map<BaseUnit, String> unitGuid = unitRepository.findAll().stream().collect(Collectors.toMap(Unit::getBaseUnit, Unit::getGuid));
 
             IngredientWithAmountDao ingredientWithAmountDao = dependencyProvider.getIngredientWithAmountDao();
             RecipeDao recipeDao = dependencyProvider.getRecipeDao();
@@ -96,30 +96,14 @@ public class ImportDialog extends EntityDialog<Import> {
 
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
-                if (line.startsWith("<Unit>")) {
-                    Unit u = mapper.readValue(line, Unit.class);
-                    if (!unitNames.containsKey(u.getName())) {
-                        unitRepository.create(u);
-                        units.add(u);
-                    }
-                } else if (line.startsWith("<Ingredient>")) {
+                if (line.startsWith("<Ingredient>")) {
                     Ingredient i = mapper.readValue(line, Ingredient.class);
                     if (!ingredientNames.contains(i.getName())) {
-                        Unit existingUnit = unitNames.getOrDefault(i.getUnit().getName(), null);
-                        if (existingUnit != null) {
-                            i.getUnit().setGuid(existingUnit.getGuid());
-                        }
+                        i.getUnit().setGuid(unitGuid.get(i.getUnit().getBaseUnit()));
                         ingredientRepository.create(i);
                         ingredients.add(i);
                     }
-                } else if (line.startsWith("<Category>")) {
-                    Category c = mapper.readValue(line, Category.class);
-                    if (!categoryNames.contains(c.getName())) {
-                        categoryRepository.create(c);
-                        categories.add(c);
-                    }
                 } else if (line.startsWith("<Recipe>")) {
-                    System.out.println("here?");
                     Recipe r = mapper.readValue(line.replace("\\n", "\n"), Recipe.class);
                     if (!recipeNames.contains(r.getName())) {
                         recipeRepository.create(r);

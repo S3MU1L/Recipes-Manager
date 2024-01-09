@@ -1,5 +1,7 @@
 package cz.muni.fi.pv168.easyfood.business.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.Objects;
 
 public abstract class Entity {
@@ -15,6 +17,7 @@ public abstract class Entity {
     /**
      * Returns globally unique identifier of the given entity.
      */
+    @JsonIgnore
     public String getGuid() {
         return guid;
     }
