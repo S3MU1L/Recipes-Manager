@@ -27,6 +27,7 @@ import org.xml.sax.SAXException;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -36,10 +37,12 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class ImportDialog extends EntityDialog<Import> {
@@ -85,34 +88,67 @@ public class ImportDialog extends EntityDialog<Import> {
         XmlMapper mapper = new XmlMapper();
         try {
             Scanner scanner = new Scanner(backupFile);
-            List<String> recipeNames = recipeRepository.findAll().stream().map(Recipe::getName).toList();
-            List<String> ingredientNames = ingredientRepository.findAll().stream().map(Ingredient::getName).toList();
-            List<String> categoryNames = categoryRepository.findAll().stream().map(Category::getName).toList();
+            Map<String, Recipe> recipeNames = recipeRepository.findAll().stream().collect(Collectors.toMap(Recipe::getName, r -> r));
+            Map<String, Ingredient> ingredientNames = ingredientRepository.findAll().stream().collect(Collectors.toMap(Ingredient::getName, i -> i));
+            var importedCategoryOptional = categoryRepository.findAll().stream().filter(c -> c.getName().equals("Imported")).findFirst();
             Map<BaseUnit, String> unitGuid = unitRepository.findAll().stream().collect(Collectors.toMap(Unit::getBaseUnit, Unit::getGuid));
 
             IngredientWithAmountDao ingredientWithAmountDao = dependencyProvider.getIngredientWithAmountDao();
             RecipeDao recipeDao = dependencyProvider.getRecipeDao();
             IngredientDao ingredientDao = dependencyProvider.getIngredientDao();
 
+            Category importedCategory = importedCategoryOptional
+                    .orElseGet(
+                            () -> new Category(UUID.randomUUID().toString(), "Imported", Color.WHITE)
+                    );
+            if (importedCategoryOptional.isEmpty()) categoryRepository.create(importedCategory);
+            Map<String, Ingredient> importedIngredients = new HashMap<>();
+
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 if (line.startsWith("<Ingredient>")) {
                     Ingredient i = mapper.readValue(line, Ingredient.class);
-                    if (!ingredientNames.contains(i.getName())) {
+                    if (ingredientNames.containsKey(i.getName())) {
+                        int decision = JOptionPane.showConfirmDialog(null, "Ingredient " + i.getName() + " already exists. Would you like to overwrite it?");
                         i.getUnit().setGuid(unitGuid.get(i.getUnit().getBaseUnit()));
-                        ingredientRepository.create(i);
-                        ingredients.add(i);
+                        switch (decision) {
+                            case 0:
+                                Ingredient oldIngredient = ingredientRepository.findByName(i.getName()).get();
+                                i.setGuid(oldIngredient.getGuid());
+                                ingredientRepository.update(i);
+                            case 1:
+                                continue;
+                            default:
+                                return null;
+                        }
                     }
+                    ingredientRepository.create(i);
+                    ingredients.add(i);
+                    importedIngredients.put(i.getName(), i);
                 } else if (line.startsWith("<Recipe>")) {
                     Recipe r = mapper.readValue(line.replace("\\n", "\n"), Recipe.class);
-                    if (!recipeNames.contains(r.getName())) {
-                        recipeRepository.create(r);
-                        recipes.add(r);
-                        RecipeEntity recipeEntity = recipeDao.findByGuid(r.getGuid()).get();
-                        for (IngredientWithAmount ingredientWithAmount : r.getIngredients()) {
-                            IngredientEntity ingredientEntity = ingredientDao.findByGuid(ingredientWithAmount.getIngredient().getGuid()).get();
-                            ingredientWithAmountDao.addRecipeIngredient(ingredientWithAmount, recipeEntity.id(), ingredientEntity.id());
+                    r.setCategory(importedCategory);
+                    if (recipeNames.containsKey(r.getName())) {
+                        int decision = JOptionPane.showConfirmDialog(null, "Recipe " + r.getName() + " already exists. Would you like to overwrite it?");
+                        switch (decision) {
+                            case 0:
+                                Recipe oldRecipe = recipeRepository.findByName(r.getName()).get();
+                                r.setGuid(oldRecipe.getGuid());
+                                recipeRepository.update(r);
+                            case 1:
+                                continue;
+                            default:
+                                return null;
                         }
+                    }
+                    recipeRepository.create(r);
+                    recipes.add(r);
+                    RecipeEntity recipeEntity = recipeDao.findByGuid(r.getGuid()).get();
+                    System.out.println(ingredientDao.findAll());
+                    for (IngredientWithAmount ingredientWithAmount : r.getIngredients()) {
+                        ingredientWithAmount.setIngredient(importedIngredients.get(ingredientWithAmount.getIngredient().getName()));
+                        IngredientEntity ingredientEntity = ingredientDao.findByGuid(ingredientWithAmount.getIngredient().getGuid()).get();
+                        ingredientWithAmountDao.addRecipeIngredient(ingredientWithAmount, recipeEntity.id(), ingredientEntity.id());
                     }
                 }
             }

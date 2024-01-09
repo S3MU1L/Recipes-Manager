@@ -17,7 +17,6 @@ public abstract class Entity {
     /**
      * Returns globally unique identifier of the given entity.
      */
-    @JsonIgnore
     public String getGuid() {
         return guid;
     }

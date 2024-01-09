@@ -129,6 +129,25 @@ public class UnitDao implements DataAccessObject<UnitEntity> {
     }
 
     @Override
+    public Optional<UnitEntity> findByName(String name) {
+        var sql = "SELECT id, guid, baseUnitOrdinal, name, abbreviation, conversion FROM Unit WHERE name = ?";
+        try (
+                var connection = connections.get();
+                var statement = connection.use().prepareStatement(sql)
+        ) {
+            statement.setString(1, name);
+            var resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return Optional.of(unitFromResultSet(resultSet));
+            } else {
+                return Optional.empty();
+            }
+        } catch (SQLException ex) {
+            throw new DataStorageException("Failed to load unit by guid", ex);
+        }
+    }
+
+    @Override
     public UnitEntity update(UnitEntity entity) {
         var sql = "UPDATE Unit SET baseUnitOrdinal = ?, name = ?, abbreviation = ?, conversion = ? WHERE id = ?";
         try (

@@ -126,6 +126,25 @@ public class IngredientDao implements DataAccessObject<IngredientEntity> {
     }
 
     @Override
+    public Optional<IngredientEntity> findByName(String name) {
+        var sql = "SELECT id, guid, unitId, name, calories FROM Ingredient WHERE name = ?";
+        try (
+                var connection = connections.get();
+                var statement = connection.use().prepareStatement(sql)
+        ) {
+            statement.setString(1, name);
+            var resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return Optional.of(ingredientFromResultSet(resultSet));
+            } else {
+                return Optional.empty();
+            }
+        } catch (SQLException ex) {
+            throw new DataStorageException("Failed to load ingredient by guid", ex);
+        }
+    }
+
+    @Override
     public IngredientEntity update(IngredientEntity entity) {
         var sql = "UPDATE Ingredient SET unitId = ?, name = ?, calories = ? WHERE id = ?";
         try (

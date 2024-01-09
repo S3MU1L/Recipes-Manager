@@ -66,4 +66,11 @@ public class UnitSqlRepository implements Repository<Unit> {
                 .findByGuid(id)
                 .map(unitMapper::mapToBusiness);
     }
+
+    @Override
+    public Optional<Unit> findByName(String name) {
+        return unitDao
+                .findByName(name)
+                .map(unitMapper::mapToBusiness);
+    }
 }
