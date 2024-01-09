@@ -10,6 +10,7 @@ public class Filter {
     private String name;
     private Set<Category> categories;
     private Set<Ingredient> ingredients;
+    private boolean ingredientsPartialMatch;
     private int preparationTime;
     private int minimumNutritionalValue;
     private int maximumNutritionalValue;
@@ -43,14 +44,24 @@ public class Filter {
             if (!categories.isEmpty() && !categories.contains(recipe.getCategory())) {
                 continue;
             }
-            if (!ingredients.isEmpty() && !ingredients.containsAll(
-                    recipe.getIngredients()
+            if (!ingredients.isEmpty()){
+                if (ingredientsPartialMatch) {
+                    if (recipe.getIngredients()
                             .stream()
                             .map(IngredientWithAmount::getIngredient)
-                            .collect(Collectors.toSet())
-            )
-            ) {
-                continue;
+                            .noneMatch(ingredients::contains)) {
+                        continue;
+                    }
+                }else{
+                    if (!ingredients.containsAll(
+                            recipe.getIngredients()
+                                    .stream()
+                                    .map(IngredientWithAmount::getIngredient)
+                                    .collect(Collectors.toSet())
+                    )) {
+                        continue;
+                    }
+                }
             }
             filteredRecipes.add(recipe);
         }
@@ -79,6 +90,10 @@ public class Filter {
 
     public void setIngredients(Set<Ingredient> ingredients) {
         this.ingredients = ingredients;
+    }
+
+    public void setIngredientsPartialMatch(boolean ingredientsPartialMatch) {
+        this.ingredientsPartialMatch = ingredientsPartialMatch;
     }
 
     public int getPreparationTime() {

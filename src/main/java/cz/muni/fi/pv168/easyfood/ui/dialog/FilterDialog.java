@@ -35,6 +35,7 @@ public class FilterDialog extends EntityDialog<Filter> {
     private static final JScrollPane categoriesField = new JScrollPane(categoriesBox);
     private static final Box ingredientsBox = Box.createVerticalBox();
     private static final JScrollPane ingredientsField = new JScrollPane(ingredientsBox);
+    private static final JCheckBox ingredientPartialMatch = new JCheckBox();
     private static final JSpinner timeField = new JSpinner(new SpinnerNumberModel());
     private static final JSpinner minNutritionalValueField = new JSpinner(new SpinnerNumberModel());
     private static final JSpinner maxNutritionalValueField = new JSpinner(new SpinnerNumberModel());
@@ -63,6 +64,7 @@ public class FilterDialog extends EntityDialog<Filter> {
         filter.setName(nameField.getText());
         filter.setCategories(filterCategories);
         filter.setIngredients(filterIngredients);
+        filter.setIngredientsPartialMatch(ingredientPartialMatch.isSelected());
         filter.setPreparationTime((int) timeField.getValue());
         filter.setMinimumNutritionalValue((int) minNutritionalValueField.getValue());
         filter.setMaximumNutritionalValue((int) maxNutritionalValueField.getValue());
@@ -98,6 +100,7 @@ public class FilterDialog extends EntityDialog<Filter> {
         add("Name:", nameField);
         add("Category:", categoriesField);
         add("Ingredients:", ingredientsField);
+        add("Partial match for ingredients:", ingredientPartialMatch);
         add("Preparation time (min):", timeField);
         add("Min nutritional value:", minNutritionalValueField);
         add("Max nutritional value:", maxNutritionalValueField);
@@ -171,14 +174,13 @@ public class FilterDialog extends EntityDialog<Filter> {
         maxPortionField.setSnapToTicks(true);
 
         resetButton.setText("Reset");
-        resetButton.addActionListener(e -> {
-            resetFilter();
-        });
+        resetButton.addActionListener(e -> resetFilter());
     }
     public void resetFilter(){
         nameField.setText("");
         for (JCheckBox checkBox : categoriesCheckboxes) checkBox.setSelected(false);
         for (JCheckBox checkBox : ingredientsCheckboxes) checkBox.setSelected(false);
+        ingredientPartialMatch.setSelected(false);
         timeField.setValue(0);
         minNutritionalValueField.setValue(0);
         maxNutritionalValueField.setValue(0);
