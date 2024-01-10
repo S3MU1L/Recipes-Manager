@@ -19,6 +19,7 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import java.awt.Dimension;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
@@ -35,6 +36,7 @@ public class FilterDialog extends EntityDialog<Filter> {
     private static final JScrollPane categoriesField = new JScrollPane(categoriesBox);
     private static final Box ingredientsBox = Box.createVerticalBox();
     private static final JScrollPane ingredientsField = new JScrollPane(ingredientsBox);
+    private static final JCheckBox ingredientPartialMatch = new JCheckBox();
     private static final JSpinner timeField = new JSpinner(new SpinnerNumberModel());
     private static final JSpinner minNutritionalValueField = new JSpinner(new SpinnerNumberModel());
     private static final JSpinner maxNutritionalValueField = new JSpinner(new SpinnerNumberModel());
@@ -63,6 +65,7 @@ public class FilterDialog extends EntityDialog<Filter> {
         filter.setName(nameField.getText());
         filter.setCategories(filterCategories);
         filter.setIngredients(filterIngredients);
+        filter.setIngredientsPartialMatch(ingredientPartialMatch.isSelected());
         filter.setPreparationTime((int) timeField.getValue());
         filter.setMinimumNutritionalValue((int) minNutritionalValueField.getValue());
         filter.setMaximumNutritionalValue((int) maxNutritionalValueField.getValue());
@@ -98,7 +101,8 @@ public class FilterDialog extends EntityDialog<Filter> {
         add("Name:", nameField);
         add("Category:", categoriesField);
         add("Ingredients:", ingredientsField);
-        add("Preparation time:", timeField);
+        add("Partial match for ingredients:", ingredientPartialMatch);
+        add("Max preparation time (minutes):", timeField);
         add("Min nutritional value:", minNutritionalValueField);
         add("Max nutritional value:", maxNutritionalValueField);
         add("Min portion:", minPortionField);
@@ -113,6 +117,8 @@ public class FilterDialog extends EntityDialog<Filter> {
 
         categoriesBox.removeAll();
         ingredientsBox.removeAll();
+
+        categories.sort(Comparator.comparing(Category::getName));
 
         for (Category category : categories) {
             JCheckBox checkBox = new JCheckBox(category.getName());
@@ -130,6 +136,8 @@ public class FilterDialog extends EntityDialog<Filter> {
                 checkBox.setSelected(true);
             }
         }
+
+        ingredients.sort(Comparator.comparing(Ingredient::getName));
 
         for (Ingredient ingredient : ingredients) {
             JCheckBox checkBox = new JCheckBox(ingredient.getName());
@@ -171,14 +179,13 @@ public class FilterDialog extends EntityDialog<Filter> {
         maxPortionField.setSnapToTicks(true);
 
         resetButton.setText("Reset");
-        resetButton.addActionListener(e -> {
-            resetFilter();
-        });
+        resetButton.addActionListener(e -> resetFilter());
     }
     public void resetFilter(){
         nameField.setText("");
         for (JCheckBox checkBox : categoriesCheckboxes) checkBox.setSelected(false);
         for (JCheckBox checkBox : ingredientsCheckboxes) checkBox.setSelected(false);
+        ingredientPartialMatch.setSelected(false);
         timeField.setValue(0);
         minNutritionalValueField.setValue(0);
         maxNutritionalValueField.setValue(0);
