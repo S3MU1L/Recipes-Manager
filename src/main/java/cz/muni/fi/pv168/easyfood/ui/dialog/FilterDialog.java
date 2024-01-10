@@ -107,9 +107,9 @@ public class FilterDialog extends EntityDialog<Filter> {
         add("Category:", categoriesField);
         add("Ingredients:", ingredientsField);
         add("Partial match for ingredients:", ingredientPartialMatch);
-        add("Max preparation time (minutes):", timeField);
-        add("Min nutritional value:", minNutritionalValueField);
-        add("Max nutritional value:", maxNutritionalValueField);
+        add("Max preparation time (min):", timeField);
+        add("Min nutritional value (kJ):", minNutritionalValueField);
+        add("Max nutritional value: (kJ)", maxNutritionalValueField);
         add("Min portion:", minPortionField);
         add("Max portion:", maxPortionField);
         add("", resetButton);
