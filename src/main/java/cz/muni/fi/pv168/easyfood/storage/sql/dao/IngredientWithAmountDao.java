@@ -121,6 +121,25 @@ public class IngredientWithAmountDao implements DataAccessObject<IngredientWithA
         }
     }
 
+    @Override
+    public Optional<IngredientWithAmountEntity> findByName(String name) {
+        var sql = "SELECT id, guid, recipeId, ingredientId, amount FROM RecipeIngredientWithAmount WHERE name = ?";
+        try (
+                var connection = connections.get();
+                var statement = connection.use().prepareStatement(sql)
+        ) {
+            statement.setString(1, name);
+            var resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return Optional.of(ingredientWithAmountFromResultSet(resultSet));
+            } else {
+                return Optional.empty();
+            }
+        } catch (SQLException ex) {
+            throw new DataStorageException("Failed to load recipe ingredient with amount by guid", ex);
+        }
+    }
+
     public List<IngredientWithAmountEntity> findIngredientsOfRecipe(Long id) {
         var sql = "SELECT id, guid, recipeId, ingredientId, amount FROM RecipeIngredientWithAmount WHERE recipeId = ?";
         List<IngredientWithAmountEntity> ingredientsList = new ArrayList<>();

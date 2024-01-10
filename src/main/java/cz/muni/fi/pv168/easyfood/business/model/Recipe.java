@@ -49,6 +49,19 @@ public class Recipe extends Entity {
         this.category = category;
     }
 
+    // Clone constructor
+    public Recipe(Recipe r) {
+        this(
+                r.guid,
+                r.name,
+                r.ingredients,
+                r.description,
+                r.preparationTime,
+                r.portions,
+                r.category
+        );
+    }
+
     public static Recipe createEmptyRecipe() {
         return new Recipe(UUID.randomUUID().toString(), "", new ArrayList<>(), "", 0, 0, null);
     }
@@ -57,6 +70,7 @@ public class Recipe extends Entity {
         this.category = Objects.requireNonNull(category, "category must not be null");
     }
 
+    @JsonIgnore
     public Category getCategory() {
         return category;
     }

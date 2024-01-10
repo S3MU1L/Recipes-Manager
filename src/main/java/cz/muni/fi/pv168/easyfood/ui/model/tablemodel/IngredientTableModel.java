@@ -84,6 +84,12 @@ public class IngredientTableModel extends AbstractTableModel implements EntityTa
         ingredients = new ArrayList<>(ingredientCrudService.findAll());
     }
 
+    public void updateIngredients() {
+        ingredients = ingredientCrudService.findAll();
+
+        fireTableDataChanged();
+    }
+
     public void deleteRows(int[] rowIndexes) {
         Filter filter =recipeTableModel.getActiveFiter();
         recipeTableModel.reset();

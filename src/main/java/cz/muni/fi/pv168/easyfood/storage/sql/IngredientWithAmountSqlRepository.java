@@ -58,6 +58,13 @@ public class IngredientWithAmountSqlRepository implements Repository<IngredientW
     }
 
     @Override
+    public Optional<IngredientWithAmount> findByName(String name) {
+        return ingredientWithAmountDao
+                .findByName(name)
+                .map(ingredientWithAmountMapper::mapToBusiness);
+    }
+
+    @Override
     public void deleteAll() {
         ingredientWithAmountDao.deleteAll();
     }

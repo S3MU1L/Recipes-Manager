@@ -64,6 +64,7 @@ import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListSelectionEvent;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Toolkit;
@@ -167,8 +168,7 @@ public class MainWindow {
 
         TabContainer importContainer = new TabContainer();
         Tab importTab = new Tab("Import", table, model,
-                                new ImportDialog(new Import(), dependencyProvider, recipes, ingredients, categories,
-                                                 units));
+                                new ImportDialog(dependencyProvider, recipeTableModel, ingredientTableModel));
         importContainer.addTab(importTab);
 
         addAction = new AddAction(this, tabContainer, recipes, ingredients, categories, units);
@@ -177,8 +177,12 @@ public class MainWindow {
         showAction = new ShowAction(tabContainer);
         filterAction = new FilterAction(this, tabContainer, filterContainer, recipes, ingredients, categories, units);
         removeFilterAction = new RemoveFilterAction(this, recipeTableModel);
-        importAction = new ImportAction(this, importContainer, recipeTableModel, categoryTableModel, ingredientTableModel, unitTableModel);
-        exportAction = new ExportAction(this, exportContainer, recipeTableModel, categoryTableModel, ingredientTableModel, unitTableModel);
+        importAction =
+                new ImportAction(this, importContainer, recipeTableModel, categoryTableModel, ingredientTableModel,
+                                 unitTableModel);
+        exportAction =
+                new ExportAction(this, exportContainer, recipeTableModel, categoryTableModel, ingredientTableModel,
+                                 unitTableModel);
 
         recipeTable.setComponentPopupMenu(createExtendedTablePopupMenu());
         ingredientTable.setComponentPopupMenu(createBasicTablePopupMenu());
@@ -262,6 +266,10 @@ public class MainWindow {
         table.setDefaultRenderer(Object.class, new CustomTableCellRenderer<>(categoryTableModel));
         table.getSelectionModel().addListSelectionListener(this::rowSelectionChanged);
         categoryTab = new Tab("category", table, categoryTableModel, new CategoryDialog(categories));
+
+        if (categoryTableModel.getEntity().size() == 0) {
+            categoryTableModel.addRow(new Category("", Color.WHITE));
+        }
 
         return table;
     }
@@ -353,13 +361,22 @@ public class MainWindow {
             specialEdit =
                     Arrays.stream(BaseUnit.values()).map(BaseUnit::toString).filter(name -> unit.getName().equals(name))
                           .toList().isEmpty();
+        } else if (tabContainer.getSelectedTab().getModel() instanceof CategoryTableModel) {
+            var table = tabContainer.getSelectedTab().getTable();
+
+            int index = table.convertRowIndexToModel(table.getSelectedRows()[0]);
+            Category category = (Category) tabContainer.getSelectedTab().getModel().getEntity(index);
+            specialEdit = !category.getName().equals("");
         } else {
             specialEdit = true;
         }
+
         editAction.setEnabled(selectionModel.getSelectedItemsCount() == 1 && specialEdit);
         deleteAction.setEnabled(selectionModel.getSelectedItemsCount() >= 1 && specialEdit);
         showAction.setEnabled(selectionModel.getSelectedItemsCount() == 1 &&
-                                      tabContainer.getSelectedTab().getModel() instanceof RecipeTableModel);
+                                      tabContainer.getSelectedTab().
+
+                                                  getModel() instanceof RecipeTableModel);
     }
 
     public void updateRecipeCountLabel() {

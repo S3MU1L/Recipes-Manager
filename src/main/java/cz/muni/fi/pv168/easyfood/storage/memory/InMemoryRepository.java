@@ -32,6 +32,14 @@ public class InMemoryRepository<T extends Entity> implements Repository<T> {
     }
 
     @Override
+    public Optional<T> findByName(String name) {
+        if (name == null) {
+            throw new IllegalArgumentException("Name cannot be null.");
+        }
+        return Optional.ofNullable(data.get(name));
+    }
+
+    @Override
     public List<T> findAll() {
         return data.values().stream()
                 .toList();
