@@ -107,7 +107,7 @@ public class ImportDialog extends EntityDialog<Import> {
             Map<String, Recipe> recipeNames = recipeRepository.findAll().stream().collect(Collectors.toMap(Recipe::getName, r -> r));
             Map<String, Ingredient> ingredientNames = ingredientRepository.findAll().stream().collect(Collectors.toMap(Ingredient::getName, i -> i));
             var importedCategoryOptional = categoryRepository.findAll().stream().filter(c -> c.getName().equals("Imported")).findFirst();
-            Map<BaseUnit, String> unitGuid = unitRepository.findAll().stream().filter(u -> u.getName().isEmpty()).collect(Collectors.toMap(Unit::getBaseUnit, Unit::getGuid));
+            Map<BaseUnit, String> unitGuid = unitRepository.findAll().stream().filter(u -> u.getName().equals(u.getBaseUnit().toString())).collect(Collectors.toMap(Unit::getBaseUnit, Unit::getGuid));
 
             IngredientWithAmountDao ingredientWithAmountDao = dependencyProvider.getIngredientWithAmountDao();
             RecipeDao recipeDao = dependencyProvider.getRecipeDao();
