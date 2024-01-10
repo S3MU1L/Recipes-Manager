@@ -113,7 +113,6 @@ public class ExportDialog extends EntityDialog<Export> {
 
     private Recipe getBaseUnitRecipe(Recipe recipe) {
         recipe = new Recipe(recipe);
-        System.out.println("recipe: " + recipe.getName());
         List<IngredientWithAmount> ingredients = new ArrayList<>();
         for (IngredientWithAmount ingredientWithAmount : recipe.getIngredients()) {
             Ingredient ingredient = ingredientWithAmount.getIngredient();
@@ -126,7 +125,6 @@ public class ExportDialog extends EntityDialog<Export> {
                     new Unit("", "", baseUnit, 1),
                     ingredientWithAmount.getAmount() * conversion
             ));
-            System.out.println("guid: " + ingredients.get(0).getIngredient().getUnit().getGuid());
         }
         recipe.setIngredients(ingredients);
         return recipe;
