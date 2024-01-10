@@ -1,10 +1,14 @@
 package cz.muni.fi.pv168.easyfood.ui.dialog;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.itextpdf.text.Anchor;
 import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Chapter;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
+import com.itextpdf.text.Section;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -145,17 +149,24 @@ public class ExportDialog extends EntityDialog<Export> {
 
             document.open();
 
+            Chapter chapter = new Chapter(new Paragraph(new Anchor("Ingredients")), 1);
+            chapter.add(new Paragraph(" "));
+
             PdfPTable table = new PdfPTable(3);
             writeHeader(table, "Name", "Calories", "Unit");
             for (Ingredient ingredient : ingredients) {
                 table.addCell(ingredient.getName());
                 table.addCell(String.valueOf(ingredient.getCalories()));
-                table.addCell(ingredient.getUnit().getAbbreviation());
+                table.addCell(ingredient.getUnit().getBaseUnit().toString());
             }
-            document.add(table);
+            chapter.add(table);
+            document.add(chapter);
 
-            table = new PdfPTable(6);
-            writeHeader(table, "Name", "Ingredients", "Description", "PreparationTime", "Portions", "Category");
+            chapter = new Chapter(new Paragraph(new Anchor("Recipes")), 2);
+            chapter.add(new Paragraph(" "));
+
+            table = new PdfPTable(5);
+            writeHeader(table, "Name", "Ingredients", "Description", "Preparation Time", "Portions");
             for (Recipe recipe : recipes) {
                 table.addCell(recipe.getName());
                 table.addCell(
@@ -170,9 +181,9 @@ public class ExportDialog extends EntityDialog<Export> {
                 table.addCell(recipe.getDescription());
                 table.addCell(recipe.getFormattedPreparationTime());
                 table.addCell(String.valueOf(recipe.getPortions()));
-                table.addCell(recipe.getCategory().getName());
             }
-            document.add(table);
+            chapter.add(table);
+            document.add(chapter);
 
             document.close();
         } catch (DocumentException e) {
