@@ -56,20 +56,21 @@ public class CategoryDialog extends EntityDialog<Category> implements ActionList
 
     @Override
     public boolean valid(Category category) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        if (category.getName().trim().equals("")) {
+            stringBuilder.append("Please enter a valid name\n\n");
+        }
         if (!categories.stream().filter(category1 -> !category1.getGuid().equals(category.getGuid()) && category1.getName().equals(category.getName())).toList()
                        .isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Duplicate name: " + category.getName(), "Error", ERROR_MESSAGE, null);
-            return false;
+            stringBuilder.append("Duplicate name: ").append(category.getName()).append("\n\n");
         }
-        if (category.getName().equals("")) {
-            JOptionPane.showMessageDialog(null, "Empty Name", "Error", ERROR_MESSAGE, null);
-            return false;
+
+        if (stringBuilder.isEmpty()){
+            return true;
         }
-        if(category.getName().length() <= 1){
-            JOptionPane.showMessageDialog(null, "Name too short", "Error", ERROR_MESSAGE, null);
-            return false;
-        }
-        return true;
+        JOptionPane.showMessageDialog(null, stringBuilder.toString(), "Error", ERROR_MESSAGE, null);
+        return false;
     }
 
     @Override

@@ -64,25 +64,28 @@ public class UnitDialog extends EntityDialog<Unit> {
 
     @Override
     public boolean valid(Unit unit) {
+        StringBuilder stringBuilder = new StringBuilder();
 
-        if (unit.getName().equals("")) {
-            JOptionPane.showMessageDialog(null, "Empty name", "Error", ERROR_MESSAGE, null);
-            return false;
-        }
-        if (unit.getAbbreviation().equals("")) {
-            JOptionPane.showMessageDialog(null, "Empty abbreviation", "Error", ERROR_MESSAGE, null);
-            return false;
-        }
-        if (unit.getConversion() == 0) {
-            JOptionPane.showMessageDialog(null, "Conversion can't be zero", "Error", ERROR_MESSAGE, null);
-            return false;
+        if (unit.getName().trim().equals("")) {
+            stringBuilder.append("Please enter a valid name\n\n");
         }
         if (!units.stream().filter(unit1 -> !unit1.getGuid().equals(unit.getGuid()) && unit1.getName().equals(unit.getName())).toList()
-                .isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Duplicate name: " + unit.getName(), "Error", ERROR_MESSAGE, null);
-            return false;
+                  .isEmpty()) {
+            stringBuilder.append("Duplicate name: ").append(unit.getName()).append("\n\n");
         }
-        return true;
+        if (unit.getAbbreviation().equals("")) {
+            stringBuilder.append("Please enter a valid abbreviation\n\n");
+        }
+        if (unit.getConversion() == 0) {
+            stringBuilder.append("Conversion can't be zero\n\n");
+        }
+
+
+        if (stringBuilder.isEmpty()){
+            return true;
+        }
+        JOptionPane.showMessageDialog(null, stringBuilder.toString(), "Error", ERROR_MESSAGE, null);
+        return false;
     }
 
     @Override

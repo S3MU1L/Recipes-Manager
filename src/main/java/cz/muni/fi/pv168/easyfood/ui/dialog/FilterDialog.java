@@ -76,15 +76,20 @@ public class FilterDialog extends EntityDialog<Filter> {
 
     @Override
     public boolean valid(Filter filter) {
+        StringBuilder stringBuilder = new StringBuilder();
+
         if (filter.getMinimumNutritionalValue() > filter.getMaximumNutritionalValue()) {
-            JOptionPane.showMessageDialog(null, "Minimum nutrition value can't be higher than maximum nutrition value", "Error", ERROR_MESSAGE, null);
-            return false;
+            stringBuilder.append("Minimum nutrition value can't be higher than maximum nutrition value\n\n");
         }
         if(filter.getMinPortion() > filter.getMaxPortion()){
-            JOptionPane.showMessageDialog(null, "Minimum portion value can't be higher than maximum portion value", "Error", ERROR_MESSAGE, null);
-            return false;
+            stringBuilder.append("Minimum portion value can't be higher than maximum nutrition value\n\n");
         }
-        return true;
+
+        if (stringBuilder.isEmpty()){
+            return true;
+        }
+        JOptionPane.showMessageDialog(null, stringBuilder.toString(), "Error", ERROR_MESSAGE, null);
+        return false;
     }
 
     @Override
@@ -102,9 +107,9 @@ public class FilterDialog extends EntityDialog<Filter> {
         add("Category:", categoriesField);
         add("Ingredients:", ingredientsField);
         add("Partial match for ingredients:", ingredientPartialMatch);
-        add("Max preparation time (minutes):", timeField);
-        add("Min nutritional value:", minNutritionalValueField);
-        add("Max nutritional value:", maxNutritionalValueField);
+        add("Max preparation time (min):", timeField);
+        add("Min nutritional value (kJ):", minNutritionalValueField);
+        add("Max nutritional value: (kJ)", maxNutritionalValueField);
         add("Min portion:", minPortionField);
         add("Max portion:", maxPortionField);
         add("", resetButton);
