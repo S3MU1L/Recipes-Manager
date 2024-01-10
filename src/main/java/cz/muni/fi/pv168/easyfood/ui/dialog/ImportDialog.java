@@ -35,6 +35,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -155,12 +156,12 @@ public class ImportDialog extends EntityDialog<Import> {
                     }
                 }
             }
-        } catch (JsonMappingException e) {
-            Logger.error("Failed to map XML");
         } catch (JsonProcessingException e) {
             Logger.error("Failed to process XML");
-        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "An error occurred while reading the file, not everything could be imported", "Processing Error", JOptionPane.ERROR_MESSAGE);
+        } catch (FileNotFoundException e) {
             Logger.error("Failed to read file");
+            JOptionPane.showMessageDialog(null, "An error occurred while opening the selected file, make sure you have the permissions to do so", "File Error", JOptionPane.ERROR_MESSAGE);
         }
 
         return null;

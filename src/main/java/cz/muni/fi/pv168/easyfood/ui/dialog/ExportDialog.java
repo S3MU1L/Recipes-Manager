@@ -21,6 +21,7 @@ import org.tinylog.Logger;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
@@ -107,6 +108,7 @@ public class ExportDialog extends EntityDialog<Export> {
             writer.write("</EasyFood>\n");
         } catch (IOException e) {
             Logger.error("Failed to save exported file");
+            JOptionPane.showMessageDialog(null, "An error occurred while trying to write the selected file, make sure you have the permissions to do so", "File Error", JOptionPane.ERROR_MESSAGE);
         }
         return null;
     }
@@ -174,9 +176,11 @@ public class ExportDialog extends EntityDialog<Export> {
 
             document.close();
         } catch (DocumentException e) {
-            e.printStackTrace();
+            Logger.error("Failed to write PDF");
+            JOptionPane.showMessageDialog(null, "An error occurred while trying to write into the PDF file", "PDF Error", JOptionPane.ERROR_MESSAGE);
         } catch (FileNotFoundException e) {
             Logger.error("Failed to create file");
+            JOptionPane.showMessageDialog(null, "An error occurred while trying to write the selected file, make sure you have the permissions to do so", "File Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
