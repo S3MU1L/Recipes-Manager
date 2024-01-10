@@ -49,7 +49,7 @@ public class Filter {
                                                      .noneMatch(ingredients::contains)) {
                     continue;
 
-                } else if (!ingredients.containsAll(
+                } else if (!ingredientsPartialMatch && !ingredients.containsAll(
                         recipe.getIngredients().stream().map(IngredientWithAmount::getIngredient)
                               .collect(Collectors.toSet()))) {
                     continue;
