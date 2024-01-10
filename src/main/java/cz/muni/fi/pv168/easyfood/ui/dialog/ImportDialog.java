@@ -17,16 +17,21 @@ import cz.muni.fi.pv168.easyfood.storage.sql.entity.IngredientEntity;
 import cz.muni.fi.pv168.easyfood.storage.sql.entity.RecipeEntity;
 import cz.muni.fi.pv168.easyfood.wiring.DependencyProvider;
 import org.tinylog.Logger;
+import org.xml.sax.SAXException;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,6 +70,24 @@ public class ImportDialog extends EntityDialog<Import> {
     @Override
     public Import getEntity() {
         if (backupFile == null) {
+            return null;
+        }
+
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            // `.parse()` validates XML, return is not needed
+            builder.parse(backupFile);
+        } catch (ParserConfigurationException e) {
+            Logger.error("XML parser configuration error");
+            // Just continue without validation
+        } catch (SAXException e) {
+            Logger.error("Invalid XML format");
+            JOptionPane.showMessageDialog(null, "The selected file is not valid XML.", "XML Error", JOptionPane.ERROR_MESSAGE);
+            return null;
+        } catch (IOException e) {
+            Logger.error("Couldn't open backup file for parsing");
+            JOptionPane.showMessageDialog(null, "Failed to open XML file for parsing, make sure you have the permissions to do so.", "File Error", JOptionPane.ERROR_MESSAGE);
             return null;
         }
 
