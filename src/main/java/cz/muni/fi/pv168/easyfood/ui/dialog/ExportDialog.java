@@ -4,8 +4,11 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.itextpdf.text.Anchor;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chapter;
+import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.Section;
@@ -132,11 +135,9 @@ public class ExportDialog extends EntityDialog<Export> {
         recipe = new Recipe(recipe);
         List<IngredientWithAmount> ingredients = new ArrayList<>();
         for (IngredientWithAmount ingredientWithAmount : recipe.getIngredients()) {
-            System.out.println("old amount: " + ingredientWithAmount.getFormattedAmount());
             Ingredient ingredient = ingredientWithAmount.getIngredient();
             BaseUnit baseUnit = ingredient.getUnit().getBaseUnit();
             double conversion = ingredient.getUnit().getConversion();
-            System.out.println("new amount: " + ingredientWithAmount.getAmount() * conversion);
             ingredients.add(new IngredientWithAmount(
                     ingredientWithAmount.getGuid(),
                     ingredientWithAmount.getName(),
@@ -163,10 +164,10 @@ public class ExportDialog extends EntityDialog<Export> {
             document.open();
 
             Chapter chapter = new Chapter(new Paragraph(new Anchor("Ingredients")), 1);
-            chapter.add(new Paragraph(" "));
+            addEmptyLine(chapter);
 
             PdfPTable table = new PdfPTable(3);
-            writeHeader(table, "Name", "Calories", "Unit");
+            writeHeader(table, "Name", "Energy Value (kJ)", "Unit");
             for (Ingredient ingredient : ingredients) {
                 table.addCell(ingredient.getName());
                 table.addCell(String.valueOf(ingredient.getCalories()));
@@ -176,27 +177,27 @@ public class ExportDialog extends EntityDialog<Export> {
             document.add(chapter);
 
             chapter = new Chapter(new Paragraph(new Anchor("Recipes")), 2);
-            chapter.add(new Paragraph(" "));
+            addEmptyLine(chapter);
 
             for (Recipe recipe : recipes) {
                 Section section = chapter.addSection(new Paragraph(recipe.getName()));
-                addToSection(section, recipe.getDescription());
-                addToSection(section, "Portions: " + recipe.getPortions());
-                addToSection(section, "Preparation time: " + recipe.getFormattedPreparationTime());
-                addToSection(section, "Energy value: " + recipe.getFormattedCalories());
-                addToSection(section, " ");
+                addToSection(section, "Description", recipe.getDescription());
+                addToSection(section, "Portions", String.valueOf(recipe.getPortions()));
+                addToSection(section, "Preparation time",  recipe.getFormattedPreparationTime());
+                addToSection(section, "Energy value",  recipe.getFormattedCalories());
+                addEmptyLine(section);
                 table = new PdfPTable(2);
                 writeHeader(table, "Ingredient", "Amount");
                 for (IngredientWithAmount ingredient : recipe.getIngredients()) {
                     table.addCell(ingredient.getName());
                     table.addCell(String.format(
-                            "%s %s",
+                            "%.2f %s",
                             ingredient.getAmount(),
                             BaseUnit.getAbbreviation(ingredient.getIngredient().getUnit().getBaseUnit())
                     ));
                 }
                 section.add(table);
-                addToSection(section, " ");
+                addEmptyLine(section);
             }
             document.add(chapter);
 
@@ -210,8 +211,18 @@ public class ExportDialog extends EntityDialog<Export> {
         }
     }
 
-    private void addToSection(Section section, String text) {
-        section.add(new Paragraph(text));
+    private void addEmptyLine(Section element) {
+        element.add(new Paragraph(" "));
+    }
+
+    private void addToSection(Section section, String title, String value) {
+        Chunk titleChunk = new Chunk(title, new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD));
+        Chunk valueChunk = new Chunk(title, new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.NORMAL));
+        Paragraph paragraph = new Paragraph();
+        paragraph.add(titleChunk);
+        paragraph.add(": ");
+        paragraph.add(valueChunk);
+        section.add(paragraph);
     }
 
     private void writeHeader(PdfPTable table, String... titles) {
