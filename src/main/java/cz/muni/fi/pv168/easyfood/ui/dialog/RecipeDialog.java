@@ -175,7 +175,7 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
         chooseIngredientsLabel.setBorder(BorderFactory.createEmptyBorder(20, 10, 20, 10));
         add("", chooseIngredientsLabel);
 
-        add("Amount: ", amountField);
+        add("*Amount: ", amountField);
         add("Ingredients: ", ingredientJComboBox);
         add("", addIngredientButton);
         add("", createTableScrollPane(new Dimension(300, 150)));
@@ -292,24 +292,27 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
     }
 
     private boolean validAddIngredient() {
+        StringBuilder stringBuilder = new StringBuilder();
         Ingredient selectedIngredient = (Ingredient) ingredientJComboBox.getSelectedItem();
         double amount = (double) amountField.getValue();
         if (amount <= 0) {
-            JOptionPane.showMessageDialog(null, "Invalid amount of ingredient", "Error", ERROR_MESSAGE, null);
-            return false;
+            stringBuilder.append("Invalid amount of ingredient\n\n");
         }
-        System.out.println("Ingredient Name " + selectedIngredient.getName());
+        //System.out.println("Ingredient Name " + selectedIngredient.getName());
         IngredientWithAmount ingredient = new IngredientWithAmount(selectedIngredient, (Double) amountField.getValue());
         int rows = withAmountTableModel.getRowCount();
 
         for (int i = 0; i < rows; i++) {
             if (withAmountTableModel.getEntity(i).getName().equals(ingredient.getName())) {
-                JOptionPane.showMessageDialog(null, "Ingredient already present", "Error", ERROR_MESSAGE, null);
-                return false;
+                stringBuilder.append("Ingredient already present\n\n");
             }
         }
 
-        return true;
+        if (stringBuilder.isEmpty()) {
+            return true;
+        }
+        JOptionPane.showMessageDialog(null, stringBuilder.toString(), "Error", ERROR_MESSAGE, null);
+        return false;
     }
 
     private void deleteSelected() {
