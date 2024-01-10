@@ -148,7 +148,6 @@ public class ImportDialog extends EntityDialog<Import> {
                     recipeRepository.create(r);
                     recipes.add(r);
                     RecipeEntity recipeEntity = recipeDao.findByGuid(r.getGuid()).get();
-                    System.out.println(ingredientDao.findAll());
                     for (IngredientWithAmount ingredientWithAmount : r.getIngredients()) {
                         ingredientWithAmount.setIngredient(importedIngredients.get(ingredientWithAmount.getIngredient().getName()));
                         IngredientEntity ingredientEntity = ingredientDao.findByGuid(ingredientWithAmount.getIngredient().getGuid()).get();
