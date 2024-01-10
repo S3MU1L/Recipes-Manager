@@ -38,30 +38,23 @@ public class Filter {
             int recipePortion = recipe.getPortions();
             if ((recipePortion < minPortion && minPortion != 0 && minPortion != 6) ||
                     (maxPortion != 0 && recipePortion > maxPortion && maxPortion != 6) ||
-                    (minPortion == 6 && recipePortion < 5)){
+                    (minPortion == 6 && recipePortion < 5)) {
                 continue;
             }
             if (!categories.isEmpty() && !categories.contains(recipe.getCategory())) {
                 continue;
             }
-            if (!ingredients.isEmpty()){
-                if (ingredientsPartialMatch) {
-                    if (recipe.getIngredients()
-                            .stream()
-                            .map(IngredientWithAmount::getIngredient)
-                            .noneMatch(ingredients::contains)) {
-                        continue;
-                    }
-                }else{
-                    if (!ingredients.containsAll(
-                            recipe.getIngredients()
-                                    .stream()
-                                    .map(IngredientWithAmount::getIngredient)
-                                    .collect(Collectors.toSet())
-                    )) {
-                        continue;
-                    }
+            if (!ingredients.isEmpty()) {
+                if (ingredientsPartialMatch && recipe.getIngredients().stream().map(IngredientWithAmount::getIngredient)
+                                                     .noneMatch(ingredients::contains)) {
+                    continue;
+
+                } else if (!ingredients.containsAll(
+                        recipe.getIngredients().stream().map(IngredientWithAmount::getIngredient)
+                              .collect(Collectors.toSet()))) {
+                    continue;
                 }
+
             }
             filteredRecipes.add(recipe);
         }
