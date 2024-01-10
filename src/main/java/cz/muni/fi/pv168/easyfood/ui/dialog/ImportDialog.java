@@ -91,9 +91,9 @@ public class ImportDialog extends EntityDialog<Import> {
                 String line = scanner.nextLine();
                 if (line.startsWith("<Ingredient>")) {
                     Ingredient i = mapper.readValue(line, Ingredient.class);
+                    i.getUnit().setGuid(unitGuid.get(i.getUnit().getBaseUnit()));
                     if (ingredientNames.containsKey(i.getName())) {
                         int decision = JOptionPane.showConfirmDialog(null, "Ingredient " + i.getName() + " already exists. Would you like to overwrite it?");
-                        i.getUnit().setGuid(unitGuid.get(i.getUnit().getBaseUnit()));
                         switch (decision) {
                             case 0:
                                 ingredients.removeIf(ingredient -> ingredient.getName().equals(i.getName()));

@@ -121,9 +121,11 @@ public class ExportDialog extends EntityDialog<Export> {
         recipe = new Recipe(recipe);
         List<IngredientWithAmount> ingredients = new ArrayList<>();
         for (IngredientWithAmount ingredientWithAmount : recipe.getIngredients()) {
+            System.out.println("old amount: " + ingredientWithAmount.getFormattedAmount());
             Ingredient ingredient = ingredientWithAmount.getIngredient();
             BaseUnit baseUnit = ingredient.getUnit().getBaseUnit();
             double conversion = ingredient.getUnit().getConversion();
+            System.out.println("new amount: " + ingredientWithAmount.getAmount() * conversion);
             ingredients.add(new IngredientWithAmount(
                     ingredientWithAmount.getGuid(),
                     ingredientWithAmount.getName(),
@@ -165,24 +167,26 @@ public class ExportDialog extends EntityDialog<Export> {
             chapter = new Chapter(new Paragraph(new Anchor("Recipes")), 2);
             chapter.add(new Paragraph(" "));
 
-            table = new PdfPTable(5);
-            writeHeader(table, "Name", "Ingredients", "Description", "Preparation Time", "Portions");
             for (Recipe recipe : recipes) {
-                table.addCell(recipe.getName());
-                table.addCell(
-                        String.join("\n",
-                            recipe.getIngredients().stream()
-                                    .map(
-                                            i -> String.format(i.getFormattedAmount() + " " + i.getIngredient().getName())
-                                    )
-                                    .toList()
-                        )
-                );
-                table.addCell(recipe.getDescription());
-                table.addCell(recipe.getFormattedPreparationTime());
-                table.addCell(String.valueOf(recipe.getPortions()));
+                Section section = chapter.addSection(new Paragraph(recipe.getName()));
+                addToSection(section, recipe.getDescription());
+                addToSection(section, "Portions: " + recipe.getPortions());
+                addToSection(section, "Preparation time: " + recipe.getFormattedPreparationTime());
+                addToSection(section, "Energy value: " + recipe.getFormattedCalories());
+                addToSection(section, " ");
+                table = new PdfPTable(2);
+                writeHeader(table, "Ingredient", "Amount");
+                for (IngredientWithAmount ingredient : recipe.getIngredients()) {
+                    table.addCell(ingredient.getName());
+                    table.addCell(String.format(
+                            "%s %s",
+                            ingredient.getAmount(),
+                            BaseUnit.getAbbreviation(ingredient.getIngredient().getUnit().getBaseUnit())
+                    ));
+                }
+                section.add(table);
+                addToSection(section, " ");
             }
-            chapter.add(table);
             document.add(chapter);
 
             document.close();
@@ -193,6 +197,10 @@ public class ExportDialog extends EntityDialog<Export> {
             Logger.error("Failed to create file");
             JOptionPane.showMessageDialog(null, "An error occurred while trying to write the selected file, make sure you have the permissions to do so", "File Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private void addToSection(Section section, String text) {
+        section.add(new Paragraph(text));
     }
 
     private void writeHeader(PdfPTable table, String... titles) {
