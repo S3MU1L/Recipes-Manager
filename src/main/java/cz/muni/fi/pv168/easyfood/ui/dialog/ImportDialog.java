@@ -120,7 +120,7 @@ public class ImportDialog extends EntityDialog<Import> {
 
             Category importedCategory = importedCategoryOptional
                     .orElseGet(
-                            () -> new Category(UUID.randomUUID().toString(), "Imported", Color.WHITE)
+                            () -> new Category(UUID.randomUUID().toString(), "", Color.WHITE)
                     );
             if (importedCategoryOptional.isEmpty()) categoryRepository.create(importedCategory);
             Map<String, Ingredient> importedIngredients = new HashMap<>();
