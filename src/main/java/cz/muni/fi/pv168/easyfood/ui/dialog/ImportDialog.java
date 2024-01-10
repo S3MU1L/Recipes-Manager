@@ -15,6 +15,8 @@ import cz.muni.fi.pv168.easyfood.storage.sql.dao.IngredientWithAmountDao;
 import cz.muni.fi.pv168.easyfood.storage.sql.dao.RecipeDao;
 import cz.muni.fi.pv168.easyfood.storage.sql.entity.IngredientEntity;
 import cz.muni.fi.pv168.easyfood.storage.sql.entity.RecipeEntity;
+import cz.muni.fi.pv168.easyfood.ui.model.tablemodel.IngredientTableModel;
+import cz.muni.fi.pv168.easyfood.ui.model.tablemodel.RecipeTableModel;
 import cz.muni.fi.pv168.easyfood.wiring.DependencyProvider;
 import org.tinylog.Logger;
 import org.xml.sax.SAXException;
@@ -45,14 +47,17 @@ public class ImportDialog extends EntityDialog<Import> {
     private final Repository<Ingredient> ingredientRepository;
     private final Repository<Category> categoryRepository;
     private final Repository<Unit> unitRepository;
-    private final List<Recipe> recipes;
-    private final List<Ingredient> ingredients;
+    private final RecipeTableModel recipeTableModel;
+    private final IngredientTableModel ingredientTableModel;
     private File backupFile = null;
     private static String lastPath = System.getProperty("user.dir");
     private final JLabel fileNameLabel = new JLabel("<none>");
     private final JButton fileSelectorButton = new JButton("Select file");
 
-    public ImportDialog(DependencyProvider dependencyProvider, List<Recipe> recipes, List<Ingredient> ingredients) {
+    public ImportDialog(
+            DependencyProvider dependencyProvider,
+            RecipeTableModel recipeTableModel,
+            IngredientTableModel ingredientTableModel) {
         this.dependencyProvider = dependencyProvider;
 
         this.recipeRepository = dependencyProvider.getRecipeRepository();
@@ -60,8 +65,8 @@ public class ImportDialog extends EntityDialog<Import> {
         this.categoryRepository = dependencyProvider.getCategoryRepository();
         this.unitRepository = dependencyProvider.getUnitRepository();
 
-        this.recipes = recipes;
-        this.ingredients = ingredients;
+        this.recipeTableModel = recipeTableModel;
+        this.ingredientTableModel = ingredientTableModel;
 
         addFields();
         setValues();
@@ -129,11 +134,9 @@ public class ImportDialog extends EntityDialog<Import> {
                         int decision = JOptionPane.showConfirmDialog(null, "Ingredient " + i.getName() + " already exists. Would you like to overwrite it?");
                         switch (decision) {
                             case 0:
-                                ingredients.removeIf(ingredient -> ingredient.getName().equals(i.getName()));
                                 Ingredient oldIngredient = ingredientRepository.findByName(i.getName()).get();
                                 i.setGuid(oldIngredient.getGuid());
                                 ingredientRepository.update(i);
-                                ingredients.add(i);
                             case 1:
                                 continue;
                             default:
@@ -141,7 +144,6 @@ public class ImportDialog extends EntityDialog<Import> {
                         }
                     }
                     ingredientRepository.create(i);
-                    ingredients.add(i);
                     importedIngredients.put(i.getName(), i);
                 } else if (line.startsWith("<Recipe>")) {
                     Recipe r = mapper.readValue(line.replace("\\n", "\n"), Recipe.class);
@@ -150,11 +152,9 @@ public class ImportDialog extends EntityDialog<Import> {
                         int decision = JOptionPane.showConfirmDialog(null, "Recipe " + r.getName() + " already exists. Would you like to overwrite it?");
                         switch (decision) {
                             case 0:
-                                recipes.removeIf(recipe -> recipe.getName().equals(r.getName()));
                                 Recipe oldRecipe = recipeRepository.findByName(r.getName()).get();
                                 r.setGuid(oldRecipe.getGuid());
                                 recipeRepository.update(r);
-                                recipes.add(r);
                             case 1:
                                 continue;
                             default:
@@ -162,7 +162,6 @@ public class ImportDialog extends EntityDialog<Import> {
                         }
                     }
                     recipeRepository.create(r);
-                    recipes.add(r);
                     RecipeEntity recipeEntity = recipeDao.findByGuid(r.getGuid()).get();
                     for (IngredientWithAmount ingredientWithAmount : r.getIngredients()) {
                         ingredientWithAmount.setIngredient(importedIngredients.get(ingredientWithAmount.getIngredient().getName()));
@@ -178,6 +177,9 @@ public class ImportDialog extends EntityDialog<Import> {
             Logger.error("Failed to read file");
             JOptionPane.showMessageDialog(null, "An error occurred while opening the selected file, make sure you have the permissions to do so", "File Error", JOptionPane.ERROR_MESSAGE);
         }
+
+        recipeTableModel.updateRecipes();
+        ingredientTableModel.updateIngredients();
     }
 
     @Override
@@ -187,12 +189,12 @@ public class ImportDialog extends EntityDialog<Import> {
 
     @Override
     public EntityDialog<?> createNewDialog(List<Recipe> recipes, List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
-        return new ImportDialog(dependencyProvider, recipes, ingredients);
+        return new ImportDialog(dependencyProvider, recipeTableModel, ingredientTableModel);
     }
 
     @Override
     public EntityDialog<Import> createNewDialog(Import entity, List<Recipe> recipes, List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
-        return new ImportDialog(dependencyProvider, recipes, ingredients);
+        return new ImportDialog(dependencyProvider, recipeTableModel, ingredientTableModel);
     }
 
     private void addFields() {
