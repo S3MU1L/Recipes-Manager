@@ -91,6 +91,18 @@ public class ExportDialog extends EntityDialog<Export> {
             file = new File(file.getAbsolutePath() + "." + format);
         }
 
+        // Make `file` final, so I can use it inside Runnable
+        final File f = file;
+
+        new Thread(() -> {
+            threadExport(f);
+            JOptionPane.showMessageDialog(null, "Export complete", "Notice", JOptionPane.INFORMATION_MESSAGE);
+        }).start();
+
+        return null;
+    }
+
+    private void threadExport(File file) {
         List<Recipe> recipes = recipeRepository.findAll().stream()
                 .map(this::getBaseUnitRecipe)
                 .collect(Collectors.toList());
@@ -100,7 +112,7 @@ public class ExportDialog extends EntityDialog<Export> {
 
         if (pdfFormatButton.isSelected()) {
             writePDF(file, recipes, ingredients);
-            return null;
+            return;
         }
 
         try(FileWriter writer = new FileWriter(file.getAbsolutePath())) {
@@ -114,7 +126,6 @@ public class ExportDialog extends EntityDialog<Export> {
             Logger.error("Failed to save exported file");
             JOptionPane.showMessageDialog(null, "An error occurred while trying to write the selected file, make sure you have the permissions to do so", "File Error", JOptionPane.ERROR_MESSAGE);
         }
-        return null;
     }
 
     private Recipe getBaseUnitRecipe(Recipe recipe) {

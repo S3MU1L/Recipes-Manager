@@ -69,12 +69,22 @@ public class ImportDialog extends EntityDialog<Import> {
         }
 
         XmlMapper mapper = new XmlMapper();
+
+        new Thread(() -> {
+            threadImport(mapper);
+            JOptionPane.showMessageDialog(null, "Import complete", "Notice", JOptionPane.INFORMATION_MESSAGE);
+        }).start();
+
+        return null;
+    }
+
+    private void threadImport(XmlMapper mapper) {
         try {
             Scanner scanner = new Scanner(backupFile);
             Map<String, Recipe> recipeNames = recipeRepository.findAll().stream().collect(Collectors.toMap(Recipe::getName, r -> r));
             Map<String, Ingredient> ingredientNames = ingredientRepository.findAll().stream().collect(Collectors.toMap(Ingredient::getName, i -> i));
             var importedCategoryOptional = categoryRepository.findAll().stream().filter(c -> c.getName().equals("Imported")).findFirst();
-            Map<BaseUnit, String> unitGuid = unitRepository.findAll().stream().collect(Collectors.toMap(Unit::getBaseUnit, Unit::getGuid));
+            Map<BaseUnit, String> unitGuid = unitRepository.findAll().stream().filter(u -> u.getName().isEmpty()).collect(Collectors.toMap(Unit::getBaseUnit, Unit::getGuid));
 
             IngredientWithAmountDao ingredientWithAmountDao = dependencyProvider.getIngredientWithAmountDao();
             RecipeDao recipeDao = dependencyProvider.getRecipeDao();
@@ -104,7 +114,7 @@ public class ImportDialog extends EntityDialog<Import> {
                             case 1:
                                 continue;
                             default:
-                                return null;
+                                return;
                         }
                     }
                     ingredientRepository.create(i);
@@ -125,7 +135,7 @@ public class ImportDialog extends EntityDialog<Import> {
                             case 1:
                                 continue;
                             default:
-                                return null;
+                                return;
                         }
                     }
                     recipeRepository.create(r);
@@ -145,8 +155,6 @@ public class ImportDialog extends EntityDialog<Import> {
             Logger.error("Failed to read file");
             JOptionPane.showMessageDialog(null, "An error occurred while opening the selected file, make sure you have the permissions to do so", "File Error", JOptionPane.ERROR_MESSAGE);
         }
-
-        return null;
     }
 
     @Override
