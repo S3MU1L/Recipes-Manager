@@ -217,7 +217,7 @@ public class ExportDialog extends EntityDialog<Export> {
 
     private void addToSection(Section section, String title, String value) {
         Chunk titleChunk = new Chunk(title, new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD));
-        Chunk valueChunk = new Chunk(title, new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.NORMAL));
+        Chunk valueChunk = new Chunk(value, new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.NORMAL));
         Paragraph paragraph = new Paragraph();
         paragraph.add(titleChunk);
         paragraph.add(": ");
