@@ -88,7 +88,7 @@ public class FilterDialog extends EntityDialog<Filter> {
         if (stringBuilder.isEmpty()){
             return true;
         }
-        JOptionPane.showMessageDialog(null, stringBuilder.toString(), "Error", ERROR_MESSAGE, null);
+        JOptionPane.showMessageDialog(null, stringBuilder.toString(), "Filter Dialog Error", ERROR_MESSAGE, null);
         return false;
     }
 

@@ -69,7 +69,7 @@ public class CategoryDialog extends EntityDialog<Category> implements ActionList
         if (stringBuilder.isEmpty()){
             return true;
         }
-        JOptionPane.showMessageDialog(null, stringBuilder.toString(), "Error", ERROR_MESSAGE, null);
+        JOptionPane.showMessageDialog(null, stringBuilder.toString(), "Category Dialog Error", ERROR_MESSAGE, null);
         return false;
     }
 

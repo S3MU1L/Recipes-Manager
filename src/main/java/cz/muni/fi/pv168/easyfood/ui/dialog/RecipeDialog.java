@@ -243,7 +243,7 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
         if (stringBuilder.isEmpty()) {
             return true;
         }
-        JOptionPane.showMessageDialog(null, stringBuilder.toString(), "Error", ERROR_MESSAGE, null);
+        JOptionPane.showMessageDialog(null, stringBuilder.toString(), "Add Ingredient Error", ERROR_MESSAGE, null);
         return false;
     }
 
@@ -311,7 +311,7 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
         if (stringBuilder.isEmpty()) {
             return true;
         }
-        JOptionPane.showMessageDialog(null, stringBuilder.toString(), "Error", ERROR_MESSAGE, null);
+        JOptionPane.showMessageDialog(null, stringBuilder.toString(), "Recipe Dialog Error", ERROR_MESSAGE, null);
         return false;
     }
 
