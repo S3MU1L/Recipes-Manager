@@ -10,6 +10,7 @@ public class Filter {
     private String name;
     private Set<Category> categories;
     private Set<Ingredient> ingredients;
+    private boolean ingredientsPartialMatch;
     private int preparationTime;
     private int minimumNutritionalValue;
     private int maximumNutritionalValue;
@@ -37,20 +38,23 @@ public class Filter {
             int recipePortion = recipe.getPortions();
             if ((recipePortion < minPortion && minPortion != 0 && minPortion != 6) ||
                     (maxPortion != 0 && recipePortion > maxPortion && maxPortion != 6) ||
-                    (minPortion == 6 && recipePortion < 5)){
+                    (minPortion == 6 && recipePortion < 5)) {
                 continue;
             }
             if (!categories.isEmpty() && !categories.contains(recipe.getCategory())) {
                 continue;
             }
-            if (!ingredients.isEmpty() && !ingredients.containsAll(
-                    recipe.getIngredients()
-                            .stream()
-                            .map(IngredientWithAmount::getIngredient)
-                            .collect(Collectors.toSet())
-            )
-            ) {
-                continue;
+            if (!ingredients.isEmpty()) {
+                if (ingredientsPartialMatch && recipe.getIngredients().stream().map(IngredientWithAmount::getIngredient)
+                                                     .noneMatch(ingredients::contains)) {
+                    continue;
+
+                } else if (!ingredientsPartialMatch && !ingredients.containsAll(
+                        recipe.getIngredients().stream().map(IngredientWithAmount::getIngredient)
+                              .collect(Collectors.toSet()))) {
+                    continue;
+                }
+
             }
             filteredRecipes.add(recipe);
         }
@@ -79,6 +83,10 @@ public class Filter {
 
     public void setIngredients(Set<Ingredient> ingredients) {
         this.ingredients = ingredients;
+    }
+
+    public void setIngredientsPartialMatch(boolean ingredientsPartialMatch) {
+        this.ingredientsPartialMatch = ingredientsPartialMatch;
     }
 
     public int getPreparationTime() {

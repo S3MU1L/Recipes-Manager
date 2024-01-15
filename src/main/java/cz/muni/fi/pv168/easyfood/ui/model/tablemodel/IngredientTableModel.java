@@ -1,5 +1,6 @@
 package cz.muni.fi.pv168.easyfood.ui.model.tablemodel;
 
+import cz.muni.fi.pv168.easyfood.business.model.Filter;
 import cz.muni.fi.pv168.easyfood.business.model.Ingredient;
 import cz.muni.fi.pv168.easyfood.business.model.IngredientWithAmount;
 import cz.muni.fi.pv168.easyfood.business.model.Recipe;
@@ -7,11 +8,12 @@ import cz.muni.fi.pv168.easyfood.business.service.crud.CrudService;
 import cz.muni.fi.pv168.easyfood.ui.model.Column;
 
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
-import java.awt.Component;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 
@@ -24,7 +26,8 @@ public class IngredientTableModel extends AbstractTableModel implements EntityTa
             List.of(Column.readonly("Name", String.class, Ingredient::getName),
                     Column.readonly("Calories", String.class, Ingredient::getFormattedCalories));
 
-    public IngredientTableModel(CrudService<Ingredient> ingredientCrudService, RecipeTableModel recipeTableModel, List<Ingredient> ingredients) {
+    public IngredientTableModel(CrudService<Ingredient> ingredientCrudService, RecipeTableModel recipeTableModel,
+                                List<Ingredient> ingredients) {
         this.ingredientCrudService = ingredientCrudService;
         this.ingredients = ingredients;
         this.recipeTableModel = recipeTableModel;
@@ -63,7 +66,7 @@ public class IngredientTableModel extends AbstractTableModel implements EntityTa
 
     public void addRow(Ingredient ingredient) {
         ingredientCrudService.create(ingredient)
-                .intoException();
+                             .intoException();
         int newRowIndex = ingredients.size();
         ingredients.add(ingredient);
         fireTableRowsInserted(newRowIndex, newRowIndex);
@@ -71,7 +74,7 @@ public class IngredientTableModel extends AbstractTableModel implements EntityTa
 
     public void updateRow(Ingredient ingredient) {
         ingredientCrudService.update(ingredient)
-                .intoException();
+                             .intoException();
         int rowIndex = ingredients.indexOf(ingredient);
         fireTableRowsUpdated(rowIndex, rowIndex);
     }
@@ -81,40 +84,55 @@ public class IngredientTableModel extends AbstractTableModel implements EntityTa
         ingredients = new ArrayList<>(ingredientCrudService.findAll());
     }
 
-    public void deleteRow(int rowIndex) {
-        var toDelete = ingredients.get(rowIndex);
-        List<Recipe> usedIn = new ArrayList<>();
-        recipeTableModel.getEntity().forEach(recipe -> {
-            if (!recipe.getIngredients().stream().map(IngredientWithAmount::getIngredient)
-                    .filter(ingredient -> ingredient.getName().equals(toDelete.getName())).toList().isEmpty()) {
-                usedIn.add(recipe);
+    public void updateIngredients() {
+        ingredients = ingredientCrudService.findAll();
+
+        fireTableDataChanged();
+    }
+
+    public void deleteRows(int[] rowIndexes) {
+        Filter filter =recipeTableModel.getActiveFiter();
+        recipeTableModel.reset();
+        List<Ingredient> toDelete =
+                Arrays.stream(rowIndexes).sequential().mapToObj(rowIndex -> ingredients.get(rowIndex)).toList();
+        StringBuilder stringBuilder = new StringBuilder();
+
+        Map<Ingredient, List<Recipe>> usedIn = new HashMap<>();
+        for (Recipe recipe : recipeTableModel.getEntity()) {
+            List<IngredientWithAmount> ingredients = recipe.getIngredients();
+            for (Ingredient ingredient : ingredients.stream().map(IngredientWithAmount::getIngredient).toList()) {
+                if (toDelete.contains(ingredient)) {
+                    usedIn.computeIfAbsent(ingredient, k -> new ArrayList<>());
+                    usedIn.get(ingredient).add(recipe);
+                }
             }
-        });
+
+        }
 
         if (!usedIn.isEmpty()) {
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("Unable to delete Ingredient : ").append(toDelete.getName()).append("\nIt is used in Recipes: ");
-            for (Recipe recipe : usedIn) {
-                stringBuilder.append(" ").append(recipe.getName()).append(",");
+            for (var entry : usedIn.entrySet()) {
+                stringBuilder.append("Unable to delete Ingredient : ").append(entry.getKey().getName())
+                             .append("\nIt is used in Recipes:");
+                for (Recipe recipe : entry.getValue()) {
+                    stringBuilder.append(" ").append(recipe.getName()).append(",");
+                }
+                stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+                stringBuilder.append("\n\n");
             }
-            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+        }
+
+        if (!stringBuilder.isEmpty()) {
             JOptionPane.showMessageDialog(null, stringBuilder.toString(), "Error", ERROR_MESSAGE, null);
+            recipeTableModel.updateWithFilter(filter);
             return;
         }
 
-        ingredientCrudService.deleteByGuid(toDelete.getGuid());
-        ingredients.remove(rowIndex);
-        fireTableRowsDeleted(rowIndex, rowIndex);
-    }
-
-    @Override
-    public void customizeTableCell(Component cell, Object value, int row, JTable table) {
-
-    }
-
-    @Override
-    public void customizeTable(JTable table) {
-
+        for (Ingredient ingredient : toDelete) {
+            ingredientCrudService.deleteByGuid(ingredient.getGuid());
+        }
+        ingredients.removeAll(toDelete);
+        fireTableRowsDeleted(rowIndexes[0], rowIndexes[rowIndexes.length - 1]);
+        recipeTableModel.updateWithFilter(filter);
     }
 
     public Ingredient getEntity(int rowIndex) {

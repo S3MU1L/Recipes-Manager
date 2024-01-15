@@ -46,6 +46,14 @@ public interface DataAccessObject<E> {
     Optional<E> findByGuid(String guid);
 
     /**
+     * Finds entity by name
+     *
+     * @param name entity name
+     * @return empty optional or the first entity if found
+     */
+    Optional<E> findByName(String name);
+
+    /**
      * Updates an entity using the underlying data source.
      *
      * @param entity entity to be deleted

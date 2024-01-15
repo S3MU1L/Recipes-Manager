@@ -1,6 +1,7 @@
 package cz.muni.fi.pv168.easyfood.ui.model.tablemodel;
 
 import cz.muni.fi.pv168.easyfood.business.model.Category;
+import cz.muni.fi.pv168.easyfood.business.model.Filter;
 import cz.muni.fi.pv168.easyfood.business.model.Recipe;
 import cz.muni.fi.pv168.easyfood.business.service.crud.CrudService;
 import cz.muni.fi.pv168.easyfood.services.StatisticsService;
@@ -12,7 +13,10 @@ import javax.swing.table.AbstractTableModel;
 import java.awt.Color;
 import java.awt.Component;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 
@@ -32,7 +36,9 @@ public class CategoryTableModel extends AbstractTableModel implements EntityTabl
     private final List<Column<Category, ?>> columns = List.of(Column.readonly("Name", String.class, Category::getName),
                                                               Column.readonly("Recipes per category", String.class,
                                                                               category -> StatisticsService.calculateCategoryStatistics(
-                                                                                      category, recipeTableModel.getEntity()).toString()));
+                                                                                                                   category,
+                                                                                                                   recipeTableModel.getEntity())
+                                                                                                           .toString()));
 
     @Override
     public int getRowCount() {
@@ -76,7 +82,7 @@ public class CategoryTableModel extends AbstractTableModel implements EntityTabl
 
     public void addRow(Category category) {
         categoryCrudService.create(category)
-                .intoException();
+                           .intoException();
         int newRowIndex = categories.size();
         categories.add(category);
         fireTableRowsInserted(newRowIndex, newRowIndex);
@@ -84,37 +90,58 @@ public class CategoryTableModel extends AbstractTableModel implements EntityTabl
 
     public void updateRow(Category category) {
         categoryCrudService.update(category)
-                .intoException();
+                           .intoException();
         int rowIndex = categories.indexOf(category);
         fireTableRowsUpdated(rowIndex, rowIndex);
+        recipeTableModel.updateAll();
     }
 
     @Override
     public void updateAll() {
         categories = new ArrayList<>(categoryCrudService.findAll());
     }
-    public void deleteRow(int rowIndex) {
-        var toDelete = categories.get(rowIndex);
-        List<Recipe> usedIn = new ArrayList<>();
-        recipeTableModel.getEntity().forEach(recipe -> {
-            if (recipe.getCategory().equals(toDelete)) {
-                usedIn.add(recipe);
-            }
-        });
 
-        if (usedIn.size() > 0) {
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("Unable to delete Category : ").append(toDelete.getName()).append("\nIt is used in Recipes:");
-            for (Recipe recipe : usedIn) {
-                stringBuilder.append(" ").append(recipe.getName()).append(",");
+    public void deleteRows(int[] rowIndexes) {
+        Filter filter = recipeTableModel.getActiveFiter();
+        recipeTableModel.reset();
+        List<Category> toDelete =
+                Arrays.stream(rowIndexes).sequential().mapToObj(rowIndex -> categories.get(rowIndex)).toList();
+        StringBuilder stringBuilder = new StringBuilder();
+
+        Map<Category, List<Recipe>> usedIn = new HashMap<>();
+        for (Recipe recipe : recipeTableModel.getEntity()) {
+            Category category = recipe.getCategory();
+
+            if (toDelete.contains(category)) {
+                usedIn.computeIfAbsent(category, k -> new ArrayList<>());
+                usedIn.get(category).add(recipe);
             }
-            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+        }
+
+        if (!usedIn.isEmpty()) {
+            for (var entry : usedIn.entrySet()) {
+                stringBuilder.append("Unable to delete Category : ").append(entry.getKey().getName())
+                             .append("\nIt is used in Recipes:");
+                for (Recipe recipe : entry.getValue()) {
+                    stringBuilder.append(" ").append(recipe.getName()).append(",");
+                }
+                stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+                stringBuilder.append("\n\n");
+            }
+        }
+
+        if (!stringBuilder.isEmpty()) {
             JOptionPane.showMessageDialog(null, stringBuilder.toString(), "Error", ERROR_MESSAGE, null);
+            recipeTableModel.updateWithFilter(filter);
             return;
         }
-        categoryCrudService.deleteByGuid(toDelete.getGuid());
-        categories.remove(rowIndex);
-        fireTableRowsDeleted(rowIndex, rowIndex);
+
+        for (Category category : toDelete) {
+            categoryCrudService.deleteByGuid(category.getGuid());
+        }
+        categories.removeAll(toDelete);
+        fireTableRowsDeleted(rowIndexes[0], rowIndexes[rowIndexes.length - 1]);
+        recipeTableModel.updateWithFilter(filter);
     }
 
 
@@ -130,16 +157,11 @@ public class CategoryTableModel extends AbstractTableModel implements EntityTabl
 
     public Category findCategoryByName(String categoryName) {
         return categories.stream()
-                .filter(category -> category.getName().equals(categoryName))
-                .findFirst()
-                .orElse(null);
+                         .filter(category -> category.getName().equals(categoryName))
+                         .findFirst()
+                         .orElse(null);
     }
 
-
-    @Override
-    public void customizeTable(JTable table) {
-
-    }
 
     public Category getEntity(int rowIndex) {
         return categories.get(rowIndex);

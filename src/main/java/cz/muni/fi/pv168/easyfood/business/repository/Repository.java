@@ -40,6 +40,11 @@ public interface Repository<T extends Entity> {
     Optional<T> findByGuid(String guid);
 
     /**
+     * Find the first entity by its {@code name}
+     */
+    Optional<T> findByName(String name);
+
+    /**
      * Delete all entities.
      */
     void deleteAll();

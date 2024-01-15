@@ -52,9 +52,9 @@ public class IngredientDialog extends EntityDialog<Ingredient> {
     }
 
     private void addFields() {
-        add("Name:", nameField);
-        add("Nutritional value (kJ): ", caloriesField);
-        add("Unit: ", unitsField);
+        add("*Name:", nameField);
+        add("*Nutritional value (kJ): ", caloriesField);
+        add("*Unit: ", unitsField);
     }
 
     @Override
@@ -67,25 +67,27 @@ public class IngredientDialog extends EntityDialog<Ingredient> {
 
     @Override
     public boolean valid(Ingredient ingredient) {
-        if (ingredient.getName().equals("")) {
-            JOptionPane.showMessageDialog(null, "Empty Name", "Error", ERROR_MESSAGE, null);
-            return false;
-        }
-        if (ingredient.getUnit() == null) {
-            JOptionPane.showMessageDialog(null, "Unit not selected", "Error", ERROR_MESSAGE, null);
-            return false;
-        }
-        if (ingredient.getCalories() == 0) {
-            JOptionPane.showMessageDialog(null, "Nutritional value can't be zero", "Error", ERROR_MESSAGE, null);
-            return false;
+        StringBuilder stringBuilder = new StringBuilder();
+
+        if (ingredient.getName().trim().equals("")) {
+            stringBuilder.append("Please enter a valid name\n\n");
         }
         if (!ingredients.stream().filter(ingredient1 -> !ingredient1.getGuid().equals(ingredient.getGuid()) &&
                 ingredient1.getName().equals(ingredient.getName())).toList().isEmpty()) {
-            JOptionPane.showMessageDialog(null,
-                                          "Duplicate name: " + ingredient.getName(), "Error", ERROR_MESSAGE, null);
-            return false;
+            stringBuilder.append("Duplicate name: ").append(ingredient.getName()).append("\n\n");
         }
-        return true;
+        if (ingredient.getUnit() == null) {
+            stringBuilder.append("Please select a unit\n\n");
+        }
+        if (ingredient.getCalories() == 0) {
+            stringBuilder.append("Nutritional value can't be zero\n\n");
+        }
+
+        if (stringBuilder.isEmpty()){
+            return true;
+        }
+        JOptionPane.showMessageDialog(null, stringBuilder.toString(), "Error", ERROR_MESSAGE, null);
+        return false;
     }
 
     @Override

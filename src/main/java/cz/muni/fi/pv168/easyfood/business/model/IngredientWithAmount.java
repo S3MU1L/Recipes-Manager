@@ -60,7 +60,7 @@ public class IngredientWithAmount extends Entity {
 
     @JsonIgnore
     public String getFormattedAmount() {
-        return amount + " (" + ingredient.getUnit().getAbbreviation() + ")";
+        return String.format("%.2f", amount) + " (" + ingredient.getUnit().getAbbreviation() + ")";
     }
 
     public Ingredient getIngredient() {

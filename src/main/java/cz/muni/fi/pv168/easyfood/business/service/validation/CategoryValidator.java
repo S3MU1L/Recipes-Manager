@@ -9,7 +9,7 @@ public class CategoryValidator implements Validator<Category> {
     @Override
     public ValidationResult validate(Category model) {
         var validators = List.of(
-                Validator.extracting(Category::getName, new StringLengthValidator(2, 150, "First name"))
+                Validator.extracting(Category::getName, new StringLengthValidator(0, 150, "First name"))
         );
 
         return Validator.compose(validators).validate(model);

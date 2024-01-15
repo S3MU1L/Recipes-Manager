@@ -116,6 +116,25 @@ public class CategoryDao implements DataAccessObject<CategoryEntity> {
     }
 
     @Override
+    public Optional<CategoryEntity> findByName(String name) {
+        var sql = "SELECT id, guid, name, color FROM Category WHERE name = ?";
+        try (
+                var connection = connections.get();
+                var statement = connection.use().prepareStatement(sql)
+        ) {
+            statement.setString(1, name);
+            var resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return Optional.of(categoryFromResultSet(resultSet));
+            } else {
+                return Optional.empty();
+            }
+        } catch (SQLException ex) {
+            throw new DataStorageException("Failed to load category by guid", ex);
+        }
+    }
+
+    @Override
     public CategoryEntity update(CategoryEntity entity) {
         var sql = "UPDATE Category SET name = ?, color = ? WHERE id = ?";
         try (

@@ -63,8 +63,8 @@ import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListSelectionEvent;
-import javax.swing.table.AbstractTableModel;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Toolkit;
@@ -168,8 +168,7 @@ public class MainWindow {
 
         TabContainer importContainer = new TabContainer();
         Tab importTab = new Tab("Import", table, model,
-                                new ImportDialog(new Import(), dependencyProvider, recipes, ingredients, categories,
-                                                 units));
+                                new ImportDialog(dependencyProvider, recipeTableModel, ingredientTableModel));
         importContainer.addTab(importTab);
 
         addAction = new AddAction(this, tabContainer, recipes, ingredients, categories, units);
@@ -177,11 +176,13 @@ public class MainWindow {
         editAction = new EditAction(tabContainer, recipes, ingredients, categories, units);
         showAction = new ShowAction(tabContainer);
         filterAction = new FilterAction(this, tabContainer, filterContainer, recipes, ingredients, categories, units);
-        removeFilterAction = new RemoveFilterAction(this, tabContainer, recipeTableModel);
-        importAction = new ImportAction(this, importContainer, recipes, ingredients, categories, units,
-                                        new AbstractTableModel[]{recipeTableModel, ingredientTableModel,
-                                                                 categoryTableModel, unitTableModel});
-        exportAction = new ExportAction(this, exportContainer, recipes, ingredients, categories, units);
+        removeFilterAction = new RemoveFilterAction(this, recipeTableModel);
+        importAction =
+                new ImportAction(this, importContainer, recipeTableModel, categoryTableModel, ingredientTableModel,
+                                 unitTableModel);
+        exportAction =
+                new ExportAction(this, exportContainer, recipeTableModel, categoryTableModel, ingredientTableModel,
+                                 unitTableModel);
 
         recipeTable.setComponentPopupMenu(createExtendedTablePopupMenu());
         ingredientTable.setComponentPopupMenu(createBasicTablePopupMenu());
@@ -207,10 +208,6 @@ public class MainWindow {
 
     public void updateFilterStatus() {
         removeFilterAction.setEnabled(recipeTableModel.isActiveFiter());
-        addAction.setEnabled(!recipeTableModel.isActiveFiter());
-        deleteAction.setEnabled(!recipeTableModel.isActiveFiter());
-        exportAction.setEnabled(!recipeTableModel.isActiveFiter());
-        importAction.setEnabled(!recipeTableModel.isActiveFiter());
     }
 
     public void show() {
@@ -245,7 +242,7 @@ public class MainWindow {
         table.setAutoCreateRowSorter(true);
         table.setDefaultRenderer(Object.class, new CustomTableCellRenderer<>(recipeTableModel));
         table.getSelectionModel().addListSelectionListener(this::rowSelectionChanged);
-        recipeTab = new Tab("recipes", table, recipeTableModel,
+        recipeTab = new Tab("recipe", table, recipeTableModel,
                             new RecipeDialog(Recipe.createEmptyRecipe(), recipes, ingredientTableModel,
                                              categoryTableModel, ingredientWithAmountCrudService, dependencyProvider));
         return table;
@@ -257,7 +254,8 @@ public class MainWindow {
         table.setAutoCreateRowSorter(true);
         table.setDefaultRenderer(Object.class, new CustomTableCellRenderer<>(ingredientTableModel));
         table.getSelectionModel().addListSelectionListener(this::rowSelectionChanged);
-        ingredientTab = new Tab("ingredients", table, ingredientTableModel, new IngredientDialog(ingredients, unitTableModel));
+        ingredientTab =
+                new Tab("ingredient", table, ingredientTableModel, new IngredientDialog(ingredients, unitTableModel));
 
         return table;
     }
@@ -267,7 +265,11 @@ public class MainWindow {
         table.setAutoCreateRowSorter(true);
         table.setDefaultRenderer(Object.class, new CustomTableCellRenderer<>(categoryTableModel));
         table.getSelectionModel().addListSelectionListener(this::rowSelectionChanged);
-        categoryTab = new Tab("categories", table, categoryTableModel, new CategoryDialog(categories));
+        categoryTab = new Tab("category", table, categoryTableModel, new CategoryDialog(categories));
+
+        if (categoryTableModel.getEntity().size() == 0) {
+            categoryTableModel.addRow(new Category("", Color.WHITE));
+        }
 
         return table;
     }
@@ -277,7 +279,7 @@ public class MainWindow {
         unitTable.setAutoCreateRowSorter(true);
         unitTable.setDefaultRenderer(Object.class, new CustomTableCellRenderer<>(unitTableModel));
         unitTable.getSelectionModel().addListSelectionListener(this::rowSelectionChanged);
-        unitTab = new Tab("units", unitTable, unitTableModel, new UnitDialog(units));
+        unitTab = new Tab("unit", unitTable, unitTableModel, new UnitDialog(units));
         Box tables = Box.createVerticalBox();
         tables.add(new JLabel(" "));
         tables.add((unitTable.getTableHeader()));
@@ -359,16 +361,22 @@ public class MainWindow {
             specialEdit =
                     Arrays.stream(BaseUnit.values()).map(BaseUnit::toString).filter(name -> unit.getName().equals(name))
                           .toList().isEmpty();
+        } else if (tabContainer.getSelectedTab().getModel() instanceof CategoryTableModel) {
+            var table = tabContainer.getSelectedTab().getTable();
+
+            int index = table.convertRowIndexToModel(table.getSelectedRows()[0]);
+            Category category = (Category) tabContainer.getSelectedTab().getModel().getEntity(index);
+            specialEdit = !category.getName().equals("");
         } else {
             specialEdit = true;
         }
+
         editAction.setEnabled(selectionModel.getSelectedItemsCount() == 1 && specialEdit);
         deleteAction.setEnabled(selectionModel.getSelectedItemsCount() >= 1 && specialEdit);
         showAction.setEnabled(selectionModel.getSelectedItemsCount() == 1 &&
-                                      tabContainer.getSelectedTab().getModel() instanceof RecipeTableModel);
-        if (recipeTableModel.isActiveFiter()) {
-            deleteAction.setEnabled(false);
-        }
+                                      tabContainer.getSelectedTab().
+
+                                                  getModel() instanceof RecipeTableModel);
     }
 
     public void updateRecipeCountLabel() {

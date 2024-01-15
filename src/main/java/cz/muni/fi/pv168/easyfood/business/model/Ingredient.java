@@ -31,6 +31,16 @@ public class Ingredient extends Entity {
         this.unit = unit;
     }
 
+    // Copy constructor
+    public Ingredient(Ingredient i) {
+        this(
+                i.guid,
+                i.name,
+                i.calories,
+                i.unit
+        );
+    }
+
     public static Ingredient createEmptyIngredient() {
         return new Ingredient("", 0, Unit.createEmptyUnit());
     }

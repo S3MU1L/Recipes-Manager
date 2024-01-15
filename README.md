@@ -22,7 +22,11 @@ Welcome to Easy Food, a user-friendly desktop application designed to simplify t
 
 - Search and Sort: Quickly find recipes by name, category, or ingredients.
 
-- Export and Share: Share your recipes with friends or export them in various formats.
+- Import and Export: Import or export your recipes in various formats.
+
+## App Demo
+![Recipe Table](demo/app.png)
+
 
 ## Team Information
 
@@ -45,3 +49,13 @@ Welcome to Easy Food, a user-friendly desktop application designed to simplify t
 |----------------|----------------------|
 |PM              | [Michael Koudela](https://is.muni.cz/auth/osoba/485441) |
 |Technical Coach | [Vilém Obrátil](https://is.muni.cz/auth/osoba/408073) |
+
+## Diagrams
+### Use case diagram
+
+![Use case diagram](diagrams/UC.png)
+
+### Class diagrams
+
+![Class diagram](diagrams/ClassDiagram.png)
+

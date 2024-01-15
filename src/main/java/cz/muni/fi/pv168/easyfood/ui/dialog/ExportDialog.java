@@ -1,16 +1,25 @@
 package cz.muni.fi.pv168.easyfood.ui.dialog;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.itextpdf.text.Anchor;
 import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Chapter;
+import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
+import com.itextpdf.text.Section;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import cz.muni.fi.pv168.easyfood.business.model.BaseUnit;
 import cz.muni.fi.pv168.easyfood.business.model.Category;
 import cz.muni.fi.pv168.easyfood.business.model.Export;
 import cz.muni.fi.pv168.easyfood.business.model.Ingredient;
+import cz.muni.fi.pv168.easyfood.business.model.IngredientWithAmount;
 import cz.muni.fi.pv168.easyfood.business.model.Recipe;
 import cz.muni.fi.pv168.easyfood.business.model.Unit;
 import cz.muni.fi.pv168.easyfood.business.repository.Repository;
@@ -19,6 +28,7 @@ import org.tinylog.Logger;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
@@ -26,8 +36,12 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class ExportDialog extends EntityDialog<Export> {
     private final Export export;
@@ -80,88 +94,135 @@ public class ExportDialog extends EntityDialog<Export> {
             file = new File(file.getAbsolutePath() + "." + format);
         }
 
-        List<Recipe> recipes = recipeRepository.findAll();
-        List<Ingredient> ingredients = ingredientRepository.findAll();
-        List<Category> categories = categoryRepository.findAll();
-        List<Unit> units = unitRepository.findAll();
+        // Make `file` final, so I can use it inside Runnable
+        final File f = file;
+
+        new Thread(() -> {
+            threadExport(f);
+            JOptionPane.showMessageDialog(null, "Export complete", "Notice", JOptionPane.INFORMATION_MESSAGE);
+        }).start();
+
+        return null;
+    }
+
+    private void threadExport(File file) {
+        List<Recipe> recipes = recipeRepository.findAll().stream()
+                .map(this::getBaseUnitRecipe)
+                .collect(Collectors.toList());
+        List<Ingredient> ingredients = ingredientRepository.findAll().stream()
+                .map(this::getBaseUnitIngredient)
+                .collect(Collectors.toList());
 
         if (pdfFormatButton.isSelected()) {
-            writePDF(file, recipes, ingredients, categories, units);
-            return null;
+            writePDF(file, recipes, ingredients);
+            return;
         }
 
         try(FileWriter writer = new FileWriter(file.getAbsolutePath())) {
             XmlMapper mapper = new XmlMapper();
             writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
             writer.write("<EasyFood>\n");
-            writeXMLBlock(mapper, "Units", writer, units);
-            writeXMLBlock(mapper, "Categories", writer, categories);
             writeXMLBlock(mapper, "Ingredients", writer, ingredients);
             writeXMLBlock(mapper, "Recipes", writer, recipes);
             writer.write("</EasyFood>\n");
         } catch (IOException e) {
             Logger.error("Failed to save exported file");
+            JOptionPane.showMessageDialog(null, "An error occurred while trying to write the selected file, make sure you have the permissions to do so", "File Error", JOptionPane.ERROR_MESSAGE);
         }
-        return null;
     }
 
-    private void writePDF(File file, List<Recipe> recipes, List<Ingredient> ingredients, List<Category> categories, List<Unit> units) {
+    private Recipe getBaseUnitRecipe(Recipe recipe) {
+        recipe = new Recipe(recipe);
+        List<IngredientWithAmount> ingredients = new ArrayList<>();
+        for (IngredientWithAmount ingredientWithAmount : recipe.getIngredients()) {
+            Ingredient ingredient = ingredientWithAmount.getIngredient();
+            BaseUnit baseUnit = ingredient.getUnit().getBaseUnit();
+            double conversion = ingredient.getUnit().getConversion();
+            ingredients.add(new IngredientWithAmount(
+                    ingredientWithAmount.getGuid(),
+                    ingredientWithAmount.getName(),
+                    ingredient.getCalories(),
+                    new Unit("", "", baseUnit, 1),
+                    ingredientWithAmount.getAmount() * conversion
+            ));
+        }
+        recipe.setIngredients(ingredients);
+        return recipe;
+    }
+
+    private Ingredient getBaseUnitIngredient(Ingredient ingredient) {
+        ingredient = new Ingredient(ingredient);
+        ingredient.setUnit(new Unit("", "", ingredient.getUnit().getBaseUnit(), 1));
+        return ingredient;
+    }
+
+    private void writePDF(File file, List<Recipe> recipes, List<Ingredient> ingredients) {
         try {
             Document document = new Document();
             PdfWriter.getInstance(document, new FileOutputStream(file));
 
             document.open();
+
+            Chapter chapter = new Chapter(new Paragraph(new Anchor("Ingredients")), 1);
+            addEmptyLine(chapter);
+
             PdfPTable table = new PdfPTable(3);
-            writeHeader(table,"Name", "Abbreviation", "Conversion");
-            for (Unit unit : units) {
-                table.addCell(unit.getName());
-                table.addCell(unit.getAbbreviation());
-                table.addCell(unit.getFormattedBaseUnit());
-            }
-            document.add(table);
-
-            table = new PdfPTable(1);
-            writeHeader(table, "Name");
-            for (Category category : categories) {
-                table.addCell(category.getName());
-            }
-            document.add(table);
-
-            table = new PdfPTable(3);
-            writeHeader(table, "Name", "Calories", "Unit");
+            writeHeader(table, "Name", "Energy Value (kJ)", "Unit");
             for (Ingredient ingredient : ingredients) {
                 table.addCell(ingredient.getName());
                 table.addCell(String.valueOf(ingredient.getCalories()));
-                table.addCell(ingredient.getUnit().getAbbreviation());
+                table.addCell(ingredient.getUnit().getBaseUnit().toString());
             }
-            document.add(table);
+            chapter.add(table);
+            document.add(chapter);
 
-            table = new PdfPTable(6);
-            writeHeader(table, "Name", "Ingredients", "Description", "PreparationTime", "Portions", "Category");
+            chapter = new Chapter(new Paragraph(new Anchor("Recipes")), 2);
+            addEmptyLine(chapter);
+
             for (Recipe recipe : recipes) {
-                table.addCell(recipe.getName());
-                table.addCell(
-                        String.join("\n",
-                            recipe.getIngredients().stream()
-                                    .map(
-                                            i -> String.format(i.getFormattedAmount() + " " + i.getIngredient().getName())
-                                    )
-                                    .toList()
-                        )
-                );
-                table.addCell(recipe.getDescription());
-                table.addCell(recipe.getFormattedPreparationTime());
-                table.addCell(String.valueOf(recipe.getPortions()));
-                table.addCell(recipe.getCategory().getName());
+                Section section = chapter.addSection(new Paragraph(recipe.getName()));
+                addToSection(section, "Description", recipe.getDescription());
+                addToSection(section, "Portions", String.valueOf(recipe.getPortions()));
+                addToSection(section, "Preparation time",  recipe.getFormattedPreparationTime());
+                addToSection(section, "Energy value",  recipe.getFormattedCalories());
+                addEmptyLine(section);
+                table = new PdfPTable(2);
+                writeHeader(table, "Ingredient", "Amount");
+                for (IngredientWithAmount ingredient : recipe.getIngredients()) {
+                    table.addCell(ingredient.getName());
+                    table.addCell(String.format(
+                            "%.2f %s",
+                            ingredient.getAmount(),
+                            BaseUnit.getAbbreviation(ingredient.getIngredient().getUnit().getBaseUnit())
+                    ));
+                }
+                section.add(table);
+                addEmptyLine(section);
             }
-            document.add(table);
+            document.add(chapter);
 
             document.close();
         } catch (DocumentException e) {
-            e.printStackTrace();
+            Logger.error("Failed to write PDF");
+            JOptionPane.showMessageDialog(null, "An error occurred while trying to write into the PDF file", "PDF Error", JOptionPane.ERROR_MESSAGE);
         } catch (FileNotFoundException e) {
             Logger.error("Failed to create file");
+            JOptionPane.showMessageDialog(null, "An error occurred while trying to write the selected file, make sure you have the permissions to do so", "File Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private void addEmptyLine(Section element) {
+        element.add(new Paragraph(" "));
+    }
+
+    private void addToSection(Section section, String title, String value) {
+        Chunk titleChunk = new Chunk(title, new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD));
+        Chunk valueChunk = new Chunk(value, new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.NORMAL));
+        Paragraph paragraph = new Paragraph();
+        paragraph.add(titleChunk);
+        paragraph.add(": ");
+        paragraph.add(valueChunk);
+        section.add(paragraph);
     }
 
     private void writeHeader(PdfPTable table, String... titles) {

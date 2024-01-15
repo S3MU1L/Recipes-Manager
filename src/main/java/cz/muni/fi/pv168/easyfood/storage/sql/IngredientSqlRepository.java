@@ -66,4 +66,11 @@ public class IngredientSqlRepository implements Repository<Ingredient> {
                 .findByGuid(id)
                 .map(ingredientMapper::mapToBusiness);
     }
+
+    @Override
+    public Optional<Ingredient> findByName(String name) {
+        return ingredientDao
+                .findByName(name)
+                .map(ingredientMapper::mapToBusiness);
+    }
 }

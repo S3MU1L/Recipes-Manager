@@ -5,7 +5,6 @@ import cz.muni.fi.pv168.easyfood.business.model.Category;
 import cz.muni.fi.pv168.easyfood.business.model.Ingredient;
 import cz.muni.fi.pv168.easyfood.business.model.Recipe;
 import cz.muni.fi.pv168.easyfood.business.model.Unit;
-import cz.muni.fi.pv168.easyfood.ui.SingularConverter;
 import cz.muni.fi.pv168.easyfood.ui.resources.Icons;
 import cz.muni.fi.pv168.easyfood.ui.MainWindow;
 import cz.muni.fi.pv168.easyfood.ui.tab.TabContainer;
@@ -49,8 +48,7 @@ public final class AddAction extends AbstractAction {
         var table = tabContainer.getSelectedTab().getTable();
         var model = tabContainer.getSelectedTab().getModel();
 
-        StringBuilder title = new StringBuilder("Add ").append(SingularConverter.dictionary.get(tabContainer.getSelectedTab().getTitle()));
-        title.deleteCharAt(title.length() - 1);
+        StringBuilder title = new StringBuilder("Add ").append(tabContainer.getSelectedTab().getTitle());
 
         var dialog = tabContainer.getSelectedTab().getDialog().createNewDialog(recipes, ingredients, categories, units);
         var result = dialog.show(table, title.toString());
