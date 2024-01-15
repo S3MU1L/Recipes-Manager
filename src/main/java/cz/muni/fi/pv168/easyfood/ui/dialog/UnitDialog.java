@@ -84,7 +84,7 @@ public class UnitDialog extends EntityDialog<Unit> {
         if (stringBuilder.isEmpty()){
             return true;
         }
-        JOptionPane.showMessageDialog(null, stringBuilder.toString(), "Error", ERROR_MESSAGE, null);
+        JOptionPane.showMessageDialog(null, stringBuilder.toString(), "Unit Dialog Error", ERROR_MESSAGE, null);
         return false;
     }
 

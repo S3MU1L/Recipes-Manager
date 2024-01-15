@@ -93,7 +93,7 @@ public class CategoryTableModel extends AbstractTableModel implements EntityTabl
                            .intoException();
         int rowIndex = categories.indexOf(category);
         fireTableRowsUpdated(rowIndex, rowIndex);
-        recipeTableModel.updateAll();
+        //recipeTableModel.updateAll();
     }
 
     @Override

@@ -86,7 +86,7 @@ public class IngredientDialog extends EntityDialog<Ingredient> {
         if (stringBuilder.isEmpty()){
             return true;
         }
-        JOptionPane.showMessageDialog(null, stringBuilder.toString(), "Error", ERROR_MESSAGE, null);
+        JOptionPane.showMessageDialog(null, stringBuilder.toString(), "Ingredient Dialog Error", ERROR_MESSAGE, null);
         return false;
     }
 

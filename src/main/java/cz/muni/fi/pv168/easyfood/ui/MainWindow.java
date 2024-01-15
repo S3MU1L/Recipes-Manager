@@ -3,7 +3,6 @@ package cz.muni.fi.pv168.easyfood.ui;
 
 import cz.muni.fi.pv168.easyfood.business.model.BaseUnit;
 import cz.muni.fi.pv168.easyfood.business.model.Category;
-import cz.muni.fi.pv168.easyfood.business.model.Import;
 import cz.muni.fi.pv168.easyfood.business.model.Ingredient;
 import cz.muni.fi.pv168.easyfood.business.model.IngredientWithAmount;
 import cz.muni.fi.pv168.easyfood.business.model.Recipe;
@@ -147,8 +146,6 @@ public class MainWindow {
         categoryTable = createCategoryTable(categoryTableModel, categories);
         recipeTable = createRecipeTable(recipeTableModel, recipes);
 
-        categoryTable.getRowSorter().toggleSortOrder(0);
-
         tabContainer = new TabContainer();
         tabContainer.addTab(recipeTab);
         tabContainer.addTab(ingredientTab);
@@ -194,6 +191,9 @@ public class MainWindow {
         frame.add(createFooter(), BorderLayout.AFTER_LAST_LINE);
         frame.setJMenuBar(createMenuBar());
         frame.setSize(900, 600);
+
+        categoryTable.getRowSorter().toggleSortOrder(0);
+        ingredientTable.getRowSorter().toggleSortOrder(0);
     }
 
     private void tabChangeListener(ChangeEvent changeEvent) {
