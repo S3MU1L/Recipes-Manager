@@ -134,6 +134,8 @@ public final class RecipeDialog extends EntityDialog<Recipe> {
 
         Action deleteAction = new CustomDeleteAction(this::deleteSelected);
         table.setComponentPopupMenu(createPopUpMenu(deleteAction));
+        table.setAutoCreateRowSorter(true);
+        table.getRowSorter().toggleSortOrder(0);
 
         addIngredientButton.addActionListener(e -> addIngredient());
 

@@ -45,6 +45,8 @@ public class ShowDialog extends EntityDialog<Recipe> {
         table.setAutoCreateRowSorter(true);
         table.setCellSelectionEnabled(false);
         ingredientsTable = new JScrollPane(table);
+        table.setAutoCreateRowSorter(true);
+        table.getRowSorter().toggleSortOrder(0);
         setValues();
         addFields();
     }
