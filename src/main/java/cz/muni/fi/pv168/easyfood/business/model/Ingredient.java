@@ -82,7 +82,7 @@ public class Ingredient extends Entity {
     }
 
     public void setUnit(Unit unit) {
-        this.unit = Objects.requireNonNull(unit, "unit must not be null");
+        this.unit = unit;
     }
 
     @Override

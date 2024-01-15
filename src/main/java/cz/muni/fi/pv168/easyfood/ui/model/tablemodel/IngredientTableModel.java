@@ -24,7 +24,7 @@ public class IngredientTableModel extends AbstractTableModel implements EntityTa
 
     private final List<Column<Ingredient, ?>> columns =
             List.of(Column.readonly("Name", String.class, Ingredient::getName),
-                    Column.readonly("Calories", String.class, Ingredient::getFormattedCalories));
+                    Column.readonly("Nutritional value", String.class, Ingredient::getFormattedCalories));
 
     public IngredientTableModel(CrudService<Ingredient> ingredientCrudService, RecipeTableModel recipeTableModel,
                                 List<Ingredient> ingredients) {
@@ -45,8 +45,8 @@ public class IngredientTableModel extends AbstractTableModel implements EntityTa
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        var employee = getEntity(rowIndex);
-        return columns.get(columnIndex).getValue(employee);
+        var ingredient = getEntity(rowIndex);
+        return columns.get(columnIndex).getValue(ingredient);
     }
 
     @Override
@@ -77,6 +77,7 @@ public class IngredientTableModel extends AbstractTableModel implements EntityTa
                              .intoException();
         int rowIndex = ingredients.indexOf(ingredient);
         fireTableRowsUpdated(rowIndex, rowIndex);
+
     }
 
     @Override
