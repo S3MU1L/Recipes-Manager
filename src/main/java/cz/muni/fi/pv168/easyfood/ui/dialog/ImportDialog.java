@@ -15,6 +15,7 @@ import cz.muni.fi.pv168.easyfood.storage.sql.dao.IngredientWithAmountDao;
 import cz.muni.fi.pv168.easyfood.storage.sql.dao.RecipeDao;
 import cz.muni.fi.pv168.easyfood.storage.sql.entity.IngredientEntity;
 import cz.muni.fi.pv168.easyfood.storage.sql.entity.RecipeEntity;
+import cz.muni.fi.pv168.easyfood.ui.MainWindow;
 import cz.muni.fi.pv168.easyfood.ui.model.tablemodel.IngredientTableModel;
 import cz.muni.fi.pv168.easyfood.ui.model.tablemodel.RecipeTableModel;
 import cz.muni.fi.pv168.easyfood.wiring.DependencyProvider;
@@ -29,7 +30,6 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -38,7 +38,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class ImportDialog extends EntityDialog<Import> {
@@ -53,6 +52,7 @@ public class ImportDialog extends EntityDialog<Import> {
     private static String lastPath = System.getProperty("user.dir");
     private final JLabel fileNameLabel = new JLabel("<none>");
     private final JButton fileSelectorButton = new JButton("Select file");
+    public static boolean importRunning = false;
 
     public ImportDialog(
             DependencyProvider dependencyProvider,
@@ -74,6 +74,11 @@ public class ImportDialog extends EntityDialog<Import> {
 
     @Override
     public Import getEntity() {
+        if (importRunning || ExportDialog.exportRunning) {
+            JOptionPane.showMessageDialog(null, "Import or export is in progress", "Import can't start", JOptionPane.ERROR_MESSAGE);
+            return null;
+        }
+
         if (backupFile == null) {
             return null;
         }
@@ -107,6 +112,15 @@ public class ImportDialog extends EntityDialog<Import> {
     }
 
     private void threadImport(XmlMapper mapper) {
+        importRunning = true;
+        MainWindow.toggleWarning();
+        int decision = JOptionPane.showConfirmDialog(null, "Would you like to overwrite any existing items?");
+        if (decision > 1) {
+            importRunning = false;
+            MainWindow.toggleWarning();
+            return;
+        }
+
         try {
             Scanner scanner = new Scanner(backupFile);
             Map<String, Recipe> recipeNames = recipeRepository.findAll().stream().collect(Collectors.toMap(Recipe::getName, r -> r));
@@ -126,7 +140,6 @@ public class ImportDialog extends EntityDialog<Import> {
                     Ingredient i = mapper.readValue(line, Ingredient.class);
                     i.getUnit().setGuid(unitGuid.get(i.getUnit().getBaseUnit()));
                     if (ingredientNames.containsKey(i.getName())) {
-                        int decision = JOptionPane.showConfirmDialog(null, "Ingredient " + i.getName() + " already exists. Would you like to overwrite it?");
                         switch (decision) {
                             case 0:
                                 Ingredient oldIngredient = ingredientRepository.findByName(i.getName()).get();
@@ -134,8 +147,6 @@ public class ImportDialog extends EntityDialog<Import> {
                                 ingredientRepository.update(i);
                             case 1:
                                 continue;
-                            default:
-                                return;
                         }
                     }
                     ingredientRepository.create(i);
@@ -144,7 +155,6 @@ public class ImportDialog extends EntityDialog<Import> {
                     Recipe r = mapper.readValue(line.replace("\\n", "\n"), Recipe.class);
                     r.setCategory(importedCategory);
                     if (recipeNames.containsKey(r.getName())) {
-                        int decision = JOptionPane.showConfirmDialog(null, "Recipe " + r.getName() + " already exists. Would you like to overwrite it?");
                         switch (decision) {
                             case 0:
                                 Recipe oldRecipe = recipeRepository.findByName(r.getName()).get();
@@ -152,8 +162,6 @@ public class ImportDialog extends EntityDialog<Import> {
                                 recipeRepository.update(r);
                             case 1:
                                 continue;
-                            default:
-                                return;
                         }
                     }
                     recipeRepository.create(r);
@@ -175,6 +183,8 @@ public class ImportDialog extends EntityDialog<Import> {
 
         recipeTableModel.updateRecipes();
         ingredientTableModel.updateIngredients();
+        importRunning = false;
+        MainWindow.toggleWarning();
     }
 
     @Override
