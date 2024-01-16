@@ -121,6 +121,8 @@ public class ImportDialog extends EntityDialog<Import> {
             return;
         }
 
+        Map<String, Ingredient> importedIngredients = new HashMap<>();
+
         try {
             Scanner scanner = new Scanner(backupFile);
             Map<String, Recipe> recipeNames = recipeRepository.findAll().stream().collect(Collectors.toMap(Recipe::getName, r -> r));
@@ -131,8 +133,6 @@ public class ImportDialog extends EntityDialog<Import> {
             IngredientWithAmountDao ingredientWithAmountDao = dependencyProvider.getIngredientWithAmountDao();
             RecipeDao recipeDao = dependencyProvider.getRecipeDao();
             IngredientDao ingredientDao = dependencyProvider.getIngredientDao();
-
-            Map<String, Ingredient> importedIngredients = new HashMap<>();
 
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
@@ -150,6 +150,7 @@ public class ImportDialog extends EntityDialog<Import> {
                         }
                     }
                     ingredientRepository.create(i);
+                    ingredientNames.put(i.getName(), i);
                     importedIngredients.put(i.getName(), i);
                 } else if (line.startsWith("<Recipe>")) {
                     Recipe r = mapper.readValue(line.replace("\\n", "\n"), Recipe.class);
@@ -165,6 +166,7 @@ public class ImportDialog extends EntityDialog<Import> {
                         }
                     }
                     recipeRepository.create(r);
+                    recipeNames.put(r.getName(), r);
                     RecipeEntity recipeEntity = recipeDao.findByGuid(r.getGuid()).get();
                     for (IngredientWithAmount ingredientWithAmount : r.getIngredients()) {
                         ingredientWithAmount.setIngredient(importedIngredients.get(ingredientWithAmount.getIngredient().getName()));
@@ -179,6 +181,12 @@ public class ImportDialog extends EntityDialog<Import> {
         } catch (FileNotFoundException e) {
             Logger.error("Failed to read file");
             JOptionPane.showMessageDialog(null, "An error occurred while opening the selected file, make sure you have the permissions to do so", "File Error", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            for (Ingredient ingredient : importedIngredients.values()) {
+                if (ingredient.getGuid() != null) ingredientRepository.deleteByGuid(ingredient.getGuid());
+            }
+            Logger.error(e.getMessage());
+            JOptionPane.showMessageDialog(null, "The file you are trying to import is not a valid file used by this application. Ingredients and/or recipes may be missing.", "Import Error", JOptionPane.ERROR_MESSAGE);
         }
 
         recipeTableModel.updateRecipes();
