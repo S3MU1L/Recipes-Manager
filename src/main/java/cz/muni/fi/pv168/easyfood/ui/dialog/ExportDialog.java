@@ -7,7 +7,6 @@ import com.itextpdf.text.Chapter;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
@@ -23,6 +22,7 @@ import cz.muni.fi.pv168.easyfood.business.model.IngredientWithAmount;
 import cz.muni.fi.pv168.easyfood.business.model.Recipe;
 import cz.muni.fi.pv168.easyfood.business.model.Unit;
 import cz.muni.fi.pv168.easyfood.business.repository.Repository;
+import cz.muni.fi.pv168.easyfood.ui.MainWindow;
 import cz.muni.fi.pv168.easyfood.wiring.DependencyProvider;
 import org.tinylog.Logger;
 
@@ -39,8 +39,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class ExportDialog extends EntityDialog<Export> {
@@ -48,20 +46,17 @@ public class ExportDialog extends EntityDialog<Export> {
     private final DependencyProvider dependencyProvider;
     private final Repository<Recipe> recipeRepository;
     private final Repository<Ingredient> ingredientRepository;
-    private final Repository<Category> categoryRepository;
-    private final Repository<Unit> unitRepository;
     private static String lastPath = System.getProperty("user.dir");
     private final ButtonGroup buttonGroup = new ButtonGroup();
     private final JRadioButton xmlFormatButton = new JRadioButton("XML");
     private final JRadioButton pdfFormatButton = new JRadioButton("PDF");
+    public static boolean exportRunning = false;
 
     public ExportDialog(Export export, DependencyProvider dependencyProvider) {
         this.export = export;
         this.dependencyProvider = dependencyProvider;
         this.recipeRepository = dependencyProvider.getRecipeRepository();
         this.ingredientRepository = dependencyProvider.getIngredientRepository();
-        this.categoryRepository = dependencyProvider.getCategoryRepository();
-        this.unitRepository = dependencyProvider.getUnitRepository();
 
         addFields();
         setValues();
@@ -73,6 +68,11 @@ public class ExportDialog extends EntityDialog<Export> {
 
     @Override
     public Export getEntity() {
+        if (exportRunning || ImportDialog.importRunning) {
+            JOptionPane.showMessageDialog(null, "Import or export is in progress", "Export can't start", JOptionPane.ERROR_MESSAGE);
+            return null;
+        }
+
         JFileChooser chooser = new JFileChooser(lastPath);
         String format;
         if (xmlFormatButton.isSelected()) {
@@ -106,6 +106,8 @@ public class ExportDialog extends EntityDialog<Export> {
     }
 
     private void threadExport(File file) {
+        exportRunning = true;
+        MainWindow.toggleWarning();
         List<Recipe> recipes = recipeRepository.findAll().stream()
                 .map(this::getBaseUnitRecipe)
                 .collect(Collectors.toList());
@@ -115,6 +117,8 @@ public class ExportDialog extends EntityDialog<Export> {
 
         if (pdfFormatButton.isSelected()) {
             writePDF(file, recipes, ingredients);
+            exportRunning = false;
+            MainWindow.toggleWarning();
             return;
         }
 
@@ -129,6 +133,9 @@ public class ExportDialog extends EntityDialog<Export> {
             Logger.error("Failed to save exported file");
             JOptionPane.showMessageDialog(null, "An error occurred while trying to write the selected file, make sure you have the permissions to do so", "File Error", JOptionPane.ERROR_MESSAGE);
         }
+
+        exportRunning = false;
+        MainWindow.toggleWarning();
     }
 
     private Recipe getBaseUnitRecipe(Recipe recipe) {

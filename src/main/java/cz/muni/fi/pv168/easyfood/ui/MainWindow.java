@@ -56,6 +56,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
@@ -102,8 +103,20 @@ public class MainWindow {
     private final CrudService<Unit> unitCrudService;
     private final CrudService<IngredientWithAmount> ingredientWithAmountCrudService;
     private JLabel recipeCountLabel = new JLabel();
+    public static JLabel warningLabel = new JLabel();
 
     private final DependencyProvider dependencyProvider;
+
+    public static void toggleWarning() {
+        boolean state = ImportDialog.importRunning || ExportDialog.exportRunning;
+
+        if (ImportDialog.importRunning || ExportDialog.exportRunning) {
+            warningLabel.setText("Import or export is currently in progress!");
+            warningLabel.setForeground(Color.RED);
+        } else {
+            warningLabel.setText("");
+        }
+    }
 
     public MainWindow(DependencyProvider dependencyProvider) {
         this.dependencyProvider = dependencyProvider;
@@ -326,6 +339,8 @@ public class MainWindow {
         fileMenu.add(exportAction);
         menuBar.add(optionsMenu);
         menuBar.add(fileMenu);
+
+        menuBar.add(warningLabel);
         return menuBar;
     }
 

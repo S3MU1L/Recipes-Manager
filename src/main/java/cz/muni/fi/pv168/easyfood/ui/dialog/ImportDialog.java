@@ -15,6 +15,7 @@ import cz.muni.fi.pv168.easyfood.storage.sql.dao.IngredientWithAmountDao;
 import cz.muni.fi.pv168.easyfood.storage.sql.dao.RecipeDao;
 import cz.muni.fi.pv168.easyfood.storage.sql.entity.IngredientEntity;
 import cz.muni.fi.pv168.easyfood.storage.sql.entity.RecipeEntity;
+import cz.muni.fi.pv168.easyfood.ui.MainWindow;
 import cz.muni.fi.pv168.easyfood.ui.model.tablemodel.IngredientTableModel;
 import cz.muni.fi.pv168.easyfood.ui.model.tablemodel.RecipeTableModel;
 import cz.muni.fi.pv168.easyfood.wiring.DependencyProvider;
@@ -29,16 +30,16 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class ImportDialog extends EntityDialog<Import> {
@@ -53,6 +54,7 @@ public class ImportDialog extends EntityDialog<Import> {
     private static String lastPath = System.getProperty("user.dir");
     private final JLabel fileNameLabel = new JLabel("<none>");
     private final JButton fileSelectorButton = new JButton("Select file");
+    public static boolean importRunning = false;
 
     public ImportDialog(
             DependencyProvider dependencyProvider,
@@ -74,6 +76,11 @@ public class ImportDialog extends EntityDialog<Import> {
 
     @Override
     public Import getEntity() {
+        if (importRunning || ExportDialog.exportRunning) {
+            JOptionPane.showMessageDialog(null, "Import or export is in progress", "Import can't start", JOptionPane.ERROR_MESSAGE);
+            return null;
+        }
+
         if (backupFile == null) {
             return null;
         }
@@ -107,6 +114,18 @@ public class ImportDialog extends EntityDialog<Import> {
     }
 
     private void threadImport(XmlMapper mapper) {
+        importRunning = true;
+        MainWindow.toggleWarning();
+        int decision = JOptionPane.showConfirmDialog(null, "Would you like to overwrite any existing items?");
+        if (decision > 1) {
+            importRunning = false;
+            MainWindow.toggleWarning();
+            return;
+        }
+
+        Map<String, Ingredient> importedIngredients = new HashMap<>();
+        List<Recipe> importedRecipes = new ArrayList<>();
+
         try {
             Scanner scanner = new Scanner(backupFile);
             Map<String, Recipe> recipeNames = recipeRepository.findAll().stream().collect(Collectors.toMap(Recipe::getName, r -> r));
@@ -118,15 +137,12 @@ public class ImportDialog extends EntityDialog<Import> {
             RecipeDao recipeDao = dependencyProvider.getRecipeDao();
             IngredientDao ingredientDao = dependencyProvider.getIngredientDao();
 
-            Map<String, Ingredient> importedIngredients = new HashMap<>();
-
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 if (line.startsWith("<Ingredient>")) {
                     Ingredient i = mapper.readValue(line, Ingredient.class);
                     i.getUnit().setGuid(unitGuid.get(i.getUnit().getBaseUnit()));
                     if (ingredientNames.containsKey(i.getName())) {
-                        int decision = JOptionPane.showConfirmDialog(null, "Ingredient " + i.getName() + " already exists. Would you like to overwrite it?");
                         switch (decision) {
                             case 0:
                                 Ingredient oldIngredient = ingredientRepository.findByName(i.getName()).get();
@@ -134,17 +150,15 @@ public class ImportDialog extends EntityDialog<Import> {
                                 ingredientRepository.update(i);
                             case 1:
                                 continue;
-                            default:
-                                return;
                         }
                     }
                     ingredientRepository.create(i);
+                    ingredientNames.put(i.getName(), i);
                     importedIngredients.put(i.getName(), i);
                 } else if (line.startsWith("<Recipe>")) {
                     Recipe r = mapper.readValue(line.replace("\\n", "\n"), Recipe.class);
                     r.setCategory(importedCategory);
                     if (recipeNames.containsKey(r.getName())) {
-                        int decision = JOptionPane.showConfirmDialog(null, "Recipe " + r.getName() + " already exists. Would you like to overwrite it?");
                         switch (decision) {
                             case 0:
                                 Recipe oldRecipe = recipeRepository.findByName(r.getName()).get();
@@ -152,11 +166,11 @@ public class ImportDialog extends EntityDialog<Import> {
                                 recipeRepository.update(r);
                             case 1:
                                 continue;
-                            default:
-                                return;
                         }
                     }
                     recipeRepository.create(r);
+                    recipeNames.put(r.getName(), r);
+                    importedRecipes.add(r);
                     RecipeEntity recipeEntity = recipeDao.findByGuid(r.getGuid()).get();
                     for (IngredientWithAmount ingredientWithAmount : r.getIngredients()) {
                         ingredientWithAmount.setIngredient(importedIngredients.get(ingredientWithAmount.getIngredient().getName()));
@@ -171,10 +185,41 @@ public class ImportDialog extends EntityDialog<Import> {
         } catch (FileNotFoundException e) {
             Logger.error("Failed to read file");
             JOptionPane.showMessageDialog(null, "An error occurred while opening the selected file, make sure you have the permissions to do so", "File Error", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            safeDeleteIngredients(importedIngredients.values());
+            safeDeleteRecipes(importedRecipes);
+            Logger.error(e.getMessage());
+            JOptionPane.showMessageDialog(null, "The file you are trying to import is not a valid file used by this application. Ingredients and/or recipes may be missing.", "Import Error", JOptionPane.ERROR_MESSAGE);
         }
 
         recipeTableModel.updateRecipes();
         ingredientTableModel.updateIngredients();
+        importRunning = false;
+        MainWindow.toggleWarning();
+    }
+
+    private void safeDeleteIngredients(Collection<Ingredient> ingredients) {
+        for (Ingredient ingredient : ingredients) {
+            if (ingredient.getGuid() != null) {
+                try {
+                    ingredientRepository.deleteByGuid(ingredient.getGuid());
+                } catch (Exception e) {
+                    Logger.error("Failed to delete ingredient " + ingredient.getName());
+                }
+            }
+        }
+    }
+
+    private void safeDeleteRecipes(Collection<Recipe> recipes) {
+        for (Recipe recipe : recipes) {
+            if (recipe.getGuid() != null) {
+                try {
+                    recipeRepository.deleteByGuid(recipe.getGuid());
+                } catch (Exception e) {
+                    Logger.error("Failed to delete ingredient " + recipe.getName());
+                }
+            }
+        }
     }
 
     @Override
