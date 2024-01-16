@@ -34,6 +34,8 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -122,6 +124,7 @@ public class ImportDialog extends EntityDialog<Import> {
         }
 
         Map<String, Ingredient> importedIngredients = new HashMap<>();
+        List<Recipe> importedRecipes = new ArrayList<>();
 
         try {
             Scanner scanner = new Scanner(backupFile);
@@ -167,6 +170,7 @@ public class ImportDialog extends EntityDialog<Import> {
                     }
                     recipeRepository.create(r);
                     recipeNames.put(r.getName(), r);
+                    importedRecipes.add(r);
                     RecipeEntity recipeEntity = recipeDao.findByGuid(r.getGuid()).get();
                     for (IngredientWithAmount ingredientWithAmount : r.getIngredients()) {
                         ingredientWithAmount.setIngredient(importedIngredients.get(ingredientWithAmount.getIngredient().getName()));
@@ -182,9 +186,8 @@ public class ImportDialog extends EntityDialog<Import> {
             Logger.error("Failed to read file");
             JOptionPane.showMessageDialog(null, "An error occurred while opening the selected file, make sure you have the permissions to do so", "File Error", JOptionPane.ERROR_MESSAGE);
         } catch (Exception e) {
-            for (Ingredient ingredient : importedIngredients.values()) {
-                if (ingredient.getGuid() != null) ingredientRepository.deleteByGuid(ingredient.getGuid());
-            }
+            safeDeleteIngredients(importedIngredients.values());
+            safeDeleteRecipes(importedRecipes);
             Logger.error(e.getMessage());
             JOptionPane.showMessageDialog(null, "The file you are trying to import is not a valid file used by this application. Ingredients and/or recipes may be missing.", "Import Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -193,6 +196,30 @@ public class ImportDialog extends EntityDialog<Import> {
         ingredientTableModel.updateIngredients();
         importRunning = false;
         MainWindow.toggleWarning();
+    }
+
+    private void safeDeleteIngredients(Collection<Ingredient> ingredients) {
+        for (Ingredient ingredient : ingredients) {
+            if (ingredient.getGuid() != null) {
+                try {
+                    ingredientRepository.deleteByGuid(ingredient.getGuid());
+                } catch (Exception e) {
+                    Logger.error("Failed to delete ingredient " + ingredient.getName());
+                }
+            }
+        }
+    }
+
+    private void safeDeleteRecipes(Collection<Recipe> recipes) {
+        for (Recipe recipe : recipes) {
+            if (recipe.getGuid() != null) {
+                try {
+                    recipeRepository.deleteByGuid(recipe.getGuid());
+                } catch (Exception e) {
+                    Logger.error("Failed to delete ingredient " + recipe.getName());
+                }
+            }
+        }
     }
 
     @Override
